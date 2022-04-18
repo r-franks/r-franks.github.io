@@ -1,0 +1,108 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    --font-serif: Georgia, "Times New Roman", Times, serif;
+    --font-mono: 'Menlo', 'Monaco', monospace;
+    --font-sanserif: Verdana, Arial, Helvetica, sans-serif;
+
+    /* default light-mode colors */
+    --link-color: #0000EE;
+    --clicked-link-color: #551A8B;
+}
+
+/************* MENU ************/
+#menu {
+	width: 100%;
+	margin: 0px auto;
+	padding: 5px 0px 5px 0px;
+	background-color: #000000;
+}
+
+#menu ul {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	text-align: center;
+}
+
+#menu li {
+	display: inline;
+}
+
+#menu a {
+	padding: 5px 5px;
+	text-transform: uppercase;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+#menu a:hover {
+	background-color: #333330;
+}
+
+body {
+    font-family: var(--font-serif);
+    display: flex;
+    flex-direction: column;
+}
+
+.overlay {
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/************* CONTENT ************/
+content a {
+    color: var(--link-color);
+}
+
+content a:visited {
+    color: var(--clicked-link-color)
+}
+
+/************* BULLET POINTS ************/
+
+
+/************* MENU ************/
+h1 {font-size: 2em;}
+h2 {font-size: 1.3em;}
+h3 {font-size: 1em;}
+
+h1, h2, h3 {
+    margin-top: .5em;
+    margin-bottom: .5em;
+    font-weight: normal;
+    display: inline-block;
+}
+
+.aligned {
+    text-align: center;
+    width: 100%;
+}
+
+.rescaling {
+    width: 49%;
+}
+
+@media screen and (max-width: 650px) {
+    .overlay {
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+
+    h1, h2, h3 {
+        margin-top: 0.5em;
+        margin-bottom: .25em;
+    }
+
+    .rescaling {
+        width: 80%;
+    }
+}

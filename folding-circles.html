@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<head>
+    <link rel="shortcut icon" type="image/png" href="favicon.png"> 
+    <link rel="stylesheet" href="styles.css">
+    <title>Ryan Franks | Folding Circles</title>
+</head>
+<body>
+    <div class="overlay">
+        <div id="header">
+            <h1>Ryan Franks | Folding Circles</h1>
+        </div>
+        <div id="menu">
+            <a href="index.html">Home</a>
+            <a href="art.html">Art</a>
+            <a href="people.html">People</a>
+            <a href="interesting.html">Things of Interest</a>
+        </div>
+        <br>
+    </div>
+    <main>
+        <div class="overlay">
+            <h1>Method</h1>
+            <p>
+                One nice aspect of circles or discs is the ease with which they can be folded. Imagine a disc with a certain topology on its surface made of translucent dough. This dough can be pulled outward radially, stretching it into a wider circle. Then, the surface in excess of the original disc's shape can be pulled up and then back over the disc until the disc matches its original width. This can be visualized in the below diagram.
+            </p>
+            <div class="aligned">
+                <img width=75% src="folding_circles/method.svg" alt="Folding Illustration">
+            </div>
+            <p>
+                Mathematically, this is really simple to do. One simply maps the disc to polar coordinates centered on the original disc's center, enlarges the disc and its topological elements radial coordinates, reduces the radial coordinates where they exceed the original disc's radius, and finally map it back to cartesian coordinates. Note that the enlargement and reduction steps can be done by applying some periodic function with the same domain as the circle's original radius. For example 
+                    \[r'=\frac{R}{2}\left(\sin\left(\pi\cdot a\frac{r}{R}\right)+1\right)\]
+                or
+                    \[r'=\frac{R}{2}\left(\text{trianglewave}\left(\pi\cdot a\frac{r}{R}\right)+1\right)\]
+                suffice as transformations of the radial coordinate where \(a\) represents the amount of stretching and folding being done and \(R\) represents the radius of the original disc. Both of these are periodic functions with a domain of \([0, R]\) so, once \(a\) becomes sufficiently large, the topology will be folded multiple times.
+            </p> 
+            <p>
+                This can be done for other shapes like triangles but is trickier. While a hypothetical triangular analog to polar coordinates (imagine a point has coordinates where one represents the radius of a similar triangle that it falls on and the other represents angle), these would only map to Cartesian coordinates via piecewise functions.
+            </p>
+            <h1>Application</h1>
+            <p>
+                These folding methods can be applied to circles with interesting topology to produce more interesting topology. For example, consider the method used to <a href="folding_triangles.html">fold triangles into circles</a>. The left or top gif below shows that applying this method even to relatively simple topology like the one produced by folding a cartesian grid on a triangle into a circle will produce interesting flower like patterns &#8212 with petals growing in complexity as more folds happen. If such a simple topology looks so cool, it makes sense that more complicated topologies which follow it like the Sierpinski circle will be even cooler (as shown in the right or bottom gif below).
+            </p>
+            <div class="aligned">
+                <img class="rescaling" src="folding_circles/triangle_grid_triwave1.gif" alt="Grid on triangle, folded into a circle and then folded radially">
+                <img class="rescaling" src="folding_circles/sierpinski_triwave1.gif" alt="Sierpinski Triangle, folded into a circle and then folded radially">
+            </div>
+            <p>
+                In the above gifs, the original symmetries (reflection over the vertical axis) are naturally preserved since transformations that only alter radius will not impact radius. Also note that because the Sierpinski circle converts the Sierpinski triangle's self-similarity on top-vertex zoom into self-similarity on center zoom, the method applied here (which expands circles from the center) enlarges its recursively tiny copies. As this method folds these copies over and over each other, the complexity of the topology produced is only limited by the number of foldings and the resolution of the fractal.
+            </p>
+            <p>
+                This observation is true of any circular fractal that has self-similarity around its center. Below is the same folding methodology applied to an Appollonian window. The symmmetry across the vertical axis and the structure of the central triangles are preserved.
+            </p>
+            <div class="aligned">
+                <img class="rescaling" src="folding_circles/appollonian_triwave1.gif" alt="Appollonian Window, folded radially">
+            </div>
+        </div>
+    </main>
+</body>
+</html>
