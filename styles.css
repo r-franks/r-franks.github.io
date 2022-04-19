@@ -11,6 +11,11 @@ body {
     /* default light-mode colors */
     --link-color: #0000EE;
     --clicked-link-color: #551A8B;
+
+    text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
 }
 
 /************* MENU ************/
