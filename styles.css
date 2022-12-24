@@ -18,6 +18,10 @@ body {
     -ms-text-size-adjust: none;
 }
 
+th, td {
+    border: 1px solid black;
+}
+
 /************* MENU ************/
 #menu {
 	width: 100%;
