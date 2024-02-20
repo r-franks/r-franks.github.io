@@ -5,12 +5,12 @@
 <head>
     <link rel="shortcut icon" type="image/png" href="favicon.png"> 
     <link rel="stylesheet" href="styles.css">
-    <title>Ryan Franks | Chicago Logistics</title>
+    <title>Ryan Franks | Chicago Logistics and Transportation</title>
 </head>
 <body>
     <div class="overlay">
         <div id="header">
-            <h1>Ryan Franks | Chicago Logistics</h1>
+            <h1>Ryan Franks | Chicago Logistics and Transportation</h1>
         </div>
         <div id="menu">
             <a href="index.html">Home</a>
@@ -22,37 +22,50 @@
     </div>
     <main>
         <div class="overlay">
-            <h1>Basic Advice</h1>
+            <h1>Planning Your Route</h1>
                 <p>
-                    Google Maps is fairly mediocre at handling public transit in Chicago. It is useful for getting a broad sense of which trains/subways/buses you may want to use but can be bad when it comes to proposing specific timings. In particular:
+                    Google Maps is great for figuring out how to get from one place to another, however if you are time-sensitive, you should not rely on its specific directions. Maps will often suggest fast transfers (from train/bus to train/bus) that cannot be performed by humans or will be made impossible if any delay happens, and some delay almost always happen. If you want to be reasonably conservative, you should assume a fifteen minute headway per-transfer when building your plan (yes, it often is this bad).
                 </p>
-                <ul>
-                    <li>
-                        Google Maps will often schedule transfers between routes with extremely tight temporal spacings, which cannot be performed by humans. Moreover, any slight delay (as will periodically occur on El trains, etc) may throw off the whole travel plan. For example, if you are planning to transfer from one El to another, Google Maps may propose taking a train that arrives 5:56 PM to a train that departs at 5:55 PM. The severity of this issue depends on how frequently run your routes are.
-                    </li>
-                    <li>
-                        Google Maps often gives times for El trains, etc that can be off by several minutes. The Ventra app usually provides more accurate/up-to-date information. Plan accordingly.
-                    </li>
-                </ul>
                 <p>
-                    So your best bet for planning travel via CTA starts with identifying the routes you plan to use via Google Maps. But then, determine the specific timings of your routes using the Ventra app and manually add in the amount of padding that makes you comfortable (I usually add 10-15 min which may be on the excessive side). Finally (if you're as neurotic as I am), map each route on your travel plan individually as you initiate and complete it with Google Maps to get a sense of where you are.
+                    In many cases, Google Maps will provide you with several transit options with similar timings. Chicago has an extensive bus system and an extensive rail system coloquially known as the L (or the "El", which is short for "Elevated") so your options will usually involve taking some number of buses and some number of trains. When I first started in Chicago, I would <em>only</em> use the train system because there's always going to be another train at some point and train stations are less exposed structures than bus stops. But there are pros and cons to each. Here are some principles for how I pick routes:
+                </p>
+                <ol>
+                    <li>
+                        If I have to choose between a bus-to-train or train-to-bus transfer and a bus-to-bus transfer, I almost always choose the transfer that involves a train. A Bus-to-bus transfer rolls the dice in a number of ways. First, you have to hope the second bus is reliable. Second, you have to hope your first bus makes it in time for a smooth transfer (which is very unpredictable). As a result, bus-to-bus transfers can lead you to hang around an exposed bus-stop in an area you probably aren't very familiar with (after all, you had to take a bus to get there) for an indefinite amount of time.
+                    </li>
+                    <li>
+                        If there is an unusually large headway for my bus and the train is an alternative, I take the train (I check this near your time of departure). Buses get much slower as they have to make more stops and a delayed bus or bus with a long headway guarantees someone is going to be waiting at every stop. This creates a feedback loop which can result in the bus ride taking much longer than expected. Trains do not have this issue.
+                    </li>
+                    <li>
+                        If I have control over when I start my trip; the bus stop is close by; all else (travel time) is equal, and rule #1+#2 do not apply, I go with the bus over the train. In general, bus rides in Chicago are nicer than train rides and you can avoid hanging out at a bus stop for no reason by starting your walk to the bus so that you arrive only a few minutes before it does.
+                    </li>
+                </ol>  
+            <h1>Actually Doing the Route</h1>
+                <p>
+                    Fares for both the L and bus system can be paid for directly by credit card (slightly more expensive) or by the Ventra card (which also handles Metra, a heavy rail line used mainly by suburban commuters) at the turn-style. Credit can be placed on the Ventra card via machine or, more conveniently, by the Ventra App. If you plan to use the L or bus systems once a day, its also more economically to get a monthly unlimited pass.
+                </p>
+                <p>
+                    The Ventra app is also the most obvious / straightforward way to monitor train and bus schedules so you can know the specific timing details of your route. Still, ghost buses can happen. I personally cross-check Ventra's claims with Transit Tracks on Android and other third party apps (e.g. Transit) exist as well. I think whatever app is best is ultimately a matter of superstition. Whatever you choose, I dis-recommend Google Maps for getting times of arrival. It <em>often</em> works but latency / ambiguity about active vs. scheduled buses can make it misleading.
+                </p>
+                <p>
+                    For Ventra specifically, a train/bus is actively moving if green waves show up on the left of its estimated time of arrival. These ETAs have a high but non-guaranteed likelihood of being close-to-accurate. If it doesn't have the green waves, then the time displayed on Ventra is just the time the vehicle is scheduled to arrive and schedules do not mean much in Chicago. If you are near the route's starting point, you cannot depend on the green waves. By the time the bus is activate on the app, you might've missed it. Instead, you have to rely on the schedule and schedule reliability depends on bus route. The more heavily used a bus route is, the more reliable it will be (e.g. the 66 bus tends to be very reliable) because drivers are less likely to be pulled away from it. 
                 </p>
             <h1>Commute Oriented Transit Systems</h1>
                 <p>
-                    Chicago's El system is clearly designed around transporting people into and out of the downtown area, The Loop. It is called the loop, naturally, because this is where the El system loops around. The loop is where the major business districts are located so the system's main function is to facilitate commutes to work and back home. For this purpose, the system works well.
+                    Looking at a map of Chicago's L System, it seems designed around transporting people into and out of the downtown area, The Loop. It is called the loop, naturally, because this is where the L system loops around. The loop is where the major business districts are located so the system's main function is to facilitate commutes to work and back home. For this purpose, the system works well.
                 </p>
                 <p>
-                    However, being mainly about business, the loop is generally <a href="https://www.reddit.com/r/chicago/comments/25gxy5/is_it_true_that_the_loop_is_really_deserted_at/">lacking in nightlife</a> &#8212; which is more prominent in neighborhoods (e.g. Wicker Park, Lincoln Park, etc). As a result, the feasibility of meeting friends after work using the El boils down to whether you are both near the same El line into the loop or are willing to meet in the loop itself (not ideal compared to meeting in a neighborhood). Thus it doesn't happen. Neighborhoods on different El lines winds up de-facto isolated from each other, to almost the same extent that suburbs are. Romeo and Juliet are alas separated:
+                    However, being mainly about business, the loop is generally <a href="https://www.reddit.com/r/chicago/comments/25gxy5/is_it_true_that_the_loop_is_really_deserted_at/">lacking in nightlife</a> &#8212; which is more prominent in neighborhoods (e.g. Wicker Park, Lake View are some of the fancier ones). As a result, it is massively easier to meet friends after work if you are both near the same line into the loop or are willing to meet in the loop itself (not ideal compared to meeting in a neighborhood). Thus meetings between people located near different lines tend to be constrained. Buses are an alternative but... people are lazy. Romeo and Juliet are alas separated:
                 </p>
                 <div class="aligned">
                     <img width=75% src="chicago_logistics/chicago-centre-map-noted.png" alt="Chicago L Map">
                 </div>
                 <p>
-                    There are options that address this: Mercutio in Bucktown can give up on the El trains completely, and take a bus forty minutes north to Andersonville, 20 minutes east to Lincoln Park, and 10 minutes south to Wicker Park. However, if one is interested really convenient use of the El, it usually makes sense to commit to the red line or the blue line exclusively.
+                    There are options that address this: Mercutio in Bucktown can give up on the L trains completely, and take a bus forty minutes north to Andersonville, 20 minutes east to Lincoln Park, and 10 minutes south to Wicker Park. However, if one is interested really convenient use of the L, it usually makes sense to commit to the red line or the blue line exclusively.
                 </p>
             <h1>East-West Travel and North-South Travel in North Chicago</h1>
                 <p>
-                    While Chicago has a lot of public transit, the El system is designed around access to downtown/the loop. On the North side, one has the red line and the brown-line which both travel along the lake until Irving Park (about as north as Wrigley Field), at which point the Brown line goes west a little bit before ending. The blue-line also exists, traveling roughly North-West at a 45 degree angle, passing through Wicker Park etc but never links up with the brown line. As a result, if you are north of the loop but south of Wrigley Field, <b>you cannot travel East-West via the El</b>. Buses exist, but are not particularly fast, so this means many relatively closely distanced locations in Chicago wind up extremely far away temporally due to differences in access El lines.   
+                    While Chicago has a lot of public transit, the L system is designed around access to downtown/the loop. On the North side, one has the red line and the brown-line which both travel along the lake until Irving Park (about as north as Wrigley Field), at which point the Brown line goes west a little bit before ending. The blue-line also exists, traveling roughly North-West at a 45 degree angle, passing through Wicker Park etc but never links up with the brown line. As a result, if you are north of the loop but south of Wrigley Field, <b>you cannot travel East-West via the El</b>. Buses exist, but are not particularly fast, so this means many relatively closely distanced locations in Chicago wind up extremely far away temporally due to differences in access El lines.   
                 </p>
                 <h2>An Illustrative Concert</h2>
                 <p>
