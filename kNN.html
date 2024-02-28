@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<head>
+    <link rel="shortcut icon" type="image/png" href="favicon.png"> 
+    <link rel="stylesheet" href="styles.css">
+    <title>Ryan Franks | <em>k</em>-NN and its Variants</title>
+</head>
+<body>
+    <div class="overlay">
+        <div id="header">
+            <h1>Ryan Franks | <em>k</em>-NN and its Variants</h1>
+        </div>
+        <div id="menu">
+            <a href="index.html">Home</a>
+            <a href="art.html">Art</a>
+            <a href="science.html">Science</a>
+            <a href="people.html">People</a>
+            <a href="interesting.html">Things of Interest</a>
+        </div>
+        <br>
+    </div>
+    <main>
+        <div class="overlay">
+            <h1>Introduction</h1>
+            <p>
+                This article reviews some of the literature on <em>k</em>-NN and it variants. It covers the following approaches:
+                <ul>
+                    <li>The original <em>k</em>-NN algorithm (1951)
+                        <ul>
+                            <li>Description of the algorithm</li>
+                            <li>Strengths and Weaknesses</li>
+                            <li>Connection with Variable Width Kernel Density Estimators / Balloon Estimators</li>
+                        </ul>
+                    </li>
+                    <li>Weighted variants of <em>k</em>-NN
+                        <ul>
+                            <li>Optimally weighted <em>k</em>-NN based on proximity ranks (2013) and connection with bagged <em>k</em>-NN</li>
+                            <li>Distance weighted <em>k</em>-NN (1976), its asymptotic inferiority (1978), and connection with kernel density estimation</li>
+                        </ul>
+                    <li>Metric learning for <em>k</em>-NN
+                        <ul>
+                            <li>
+                                Neighborhood Component Analysi (2004): Learning a linear transformation of a dataset that yields good <em>k</em>-NN performance
+                            </li>
+                            <li>
+                                Metric learning for kernel regression (2007): An adaptation of Neighborhood Component Analysis for kernel density estimators
+                            </li>
+                            <li>
+                                Large Margin Nearest Neighbor Classification (2009) and Fast Neighborhood Analysis (2012), two modifications of Neighborhood Component Analysis to improve speed
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        An extra section showing some informal math to derive a lower bound on the asymptotic error rate of a <em>1</em>-NN classifier on an extremely simple toy example.
+                    </li>
+                </ul>
+            </p>
+            <h1><em>k</em> Nearest Neighbors</h1>
+            <hr>
+            <h2><em>k</em>-NN Definition</h2>
+            <p>
+                <a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm"><em>k</em>-nearest neighbors</a> is an over-seventy-year-old supervised learning method. Given a joint distribution \(X, Y\) where \(X\in \mathbb{R}^d\) are independent variables and \(Y\in \mathbb{R}\) is the dependent variable, <em>k</em>-NN regression uses parameter \(k \in \mathbb{N}\), a distance metric \(d(x_1, x_2): \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}\), and with a background dataset \(D=(D_X, D_Y)\) sampled from \(X, Y\) to predicts the dependent variable for a new input \(x\in \mathbb{R}^d\):
+            </p>
+            $$\mathbb{E}[Y | x] \approx k\text{NN}_{\text{regr}}(x) = \frac{1}{k}\sum_{i : i\in S_{D, d, k, x}}  D_{Y,i}$$
+            <p>
+                where \(S_{D, d, k, x} = \text{argmin}_{S=(i_1, i_2, ..., i_k)} \sum_{i \in S} d(x, D_{X, i})\). In other words, it estimates \(Y | x \) by averaging over the \(k\) nearest neighbors of \(x\) in the background dataset. In classification, the general formula is a little different as votes need for each class are computed separately and the class with the highest number of votes is returned:
+            </p>
+            $$k\text{NN}_{\text{clf}}(x) = \text{argmax}_y \sum_{i\in S_{D, d, k, x}}  \mathbb{1}_{D_{Y, i}=y} = \text{argmax}_y \frac{1}{k}\sum_{i\in S_{D, d, k, x}}  \mathbb{1}_{D_{Y, i}=y}$$
+            <p>
+                In practice, most literature reviewing <em>k</em>-NN focuses on the classificaiton regime so, unless it is noted, assume all results/proofs/etc discussed here are about classification performance (i.e. error rate).
+            </p>
+            <h2><em>k</em>-NN Definition Does Not Play Well with Probabilities</h2>
+            <p>
+                Note that in binary classification with \(Y\in \{0, 1\}\), classification and regression can be viewed equivalently as \(\mathbb{P}(Y=1 | x) = \mathbb{E}[Y | x]\). Therefore, it is tempting to view the quantity \(k\text{NN}_{\text{regr}}(x)=\frac{1}{k}\sum_{i\in S_{D, d, k, x}}  \mathbb{1}_{D_{Y, i}=y}\) as the probability \(\mathbb{P}(Y=1 | x)\) or at least \(\mathbb{P}(Y=1 | x\in A)\) with \(A\) being a region so that \(D_{X,i} \in A\, \forall\, i\in S_{D, d, k, x}\). However, this does not work very well as \(k\text{NN}(x) \in \{n/k : n\in \mathbb{N}, n \leq k\}\) regardless of the size of the background dataset. Unless <em>k</em> becomes large, using it for probabilities does not make sense.
+            </p>
+            <p>
+                Another related difficulty of using <em>k</em>-NN is that, if the distribution of \(X\) is mixed / partially discrete, then multiple samples in \(D_X\) may be equi-distant or identical. The contribution of these samples to the <em>k</em>-NN estimate of \(x\) must be done in some fashion not based on \(x-D_{X,i}\) which contrasts with the <a href="https://en.wikipedia.org/wiki/Variable_kernel_density_estimation">uniform kernel balloon estimator</a> which is ordinarily equivalent to <em>k</em>-NN. It is also why \(S_{D, d, k, x}\) is defined in such a complicated fashion. Otherwise, one could write \(S_{D, d, k, x} = \{i: d(x, D_{X, i}) \leq d_{D, d, k}\}\) where \(d_{D, d, k}\) is the <em>k</em>th closest distance. This makes it more clear that \(k\text{NN}_{\text{regr}}(x)\) is a low resolution estimate of \(\mathbb{P}(Y=1 | d(x, X) \leq d_{D, d, k})\). If \(d\) is Euclidean (it usually is), \(\{X\in \mathbb{R}^d : d(x, X) \leq d_{D, d, k}\}\) can be viewed as a tight ball around \(x\).
+            </p>
+            <h2>Important Properties of <em>k</em>-NN</h2>
+            <br>
+            <h3>Speed</h3>
+            <p>
+                <em>k</em>-NN is slow. One must compute all the distances to get the <em>k</em> nearest neighbors and the time to calculate a distance scales linearly with the number of dimensions \(d\). Because one is calculating all the distances <em>anyway</em>, the number of neighbors being considered in the estimate does not matter in pure implementations. Opting for weighted version of <em>k</em>-NN will not incurr an additional speed penalty. 
+            </p>
+            <h3>Convergence to the Best Possible Classifier</h3>
+            <p>
+                Provided that <em>k</em> and \(D\) are growing so that <em>k</em> becomes arbitrarily large while becoming an arbitrarily small fraction of the background dataset, <em>k</em>-NN will converge to the most accurate classifier possible. This reflects having access to arbitrary amounts of data on the classes associated with arbitrarily small balls of the feature space, so makes sense.
+            </p>
+            <h3>Sensitivity to Feature Space</h3>
+            <p>
+                <em>k</em>-NN relies on observations that are close in the provided space of independent variables also being close in the space of the dependent variable. However, many independent variables may be irrelevant to the dependent variable so that the "nearest neighbor" to a point might not be similar to it in a meaningful sense.                 If one has a background dataset of size \(n\), with a relevant feature \(x_1\) and an irrelevant feature \(x_2\) and \(a=\bar x_2/\bar x_1\) represents how poorly the features are scaled, then model inaccuracy scales with something like \((1-2/a)^n\) (see Extra for derivations).   
+            </p>
+            <h3>Optimizing <em>k</em></h3>
+            <p>
+                <a href="https://isl.stanford.edu/~cover/papers/transIT/0021cove.pdf">Cover and Hart showed in 1967</a> that <em>(k=1)</em>-NN is optimal regardless of background dataset size for some distribution. Imagine a distribution with two-classes that are fully separable in \(X\) into far away clusters. In this case, <em>k</em>-NN only misclassifies a new value \(x\) if less than \(k/2\) of the observations in the background dataset fall in the same cluster as \(x\). As <em>k</em> increases, the demand for samples in \(x\)'s cluster only increases; this demand gets harder to meet; and the error rate increases. In this cases, <em>(k=1)</em> is optimal.
+            </p>
+            <p>
+                On the other hand, one can imagine a distribution with two-classes that are <em>fully inseparable</em> &#x2192; a single fuzzy cluster that just happens to be the first class more of the time than the second class. In this case, the Bayes classifier always predicts the first class because it is more prevalent. But, in <em>(k=1)</em>-NN, there is a risk that \(x\) is put in the second class by chance. As <em>k</em> grows though, the proportion of votes for the first class converges to its prevalence in the distribution and <em>k</em>-NN becomes the Bayes classifier. In these cases <em>k</em>=\(|D|\) is optimal.
+            </p>
+            <p>
+                In practice, life does not provide us with fully separable classification problems with far-away clusters or fully inseparable clusters. Most problems are a mix of both, with the optimal <em>k</em> being a trade-off between the mistakes of accidentally including a neighbor from the wrong cluster and the mistakes of accidentally excluding a neighbor from the right cluster.
+            </p>
+            <p>
+                Can anything more be done here? <a href="https://arxiv.org/abs/1101.5783">Samworth in 2013</a> finds that, for optimally weighted <em>k</em>-NN, the optimal <em>k</em> is:
+            </p>
+            $$k^* = \left\lfloor{\left\{\frac{d(d+4)}{2(d+2)}\right\}^{d/(d+4)}\frac{B_1}{B_2}^{d/(d+4)}n^{4/(d+4)}}\right\rfloor$$
+            <p>
+                where \(n\) is the number of samples in the background dataset and \(d\) is the dimension. Furthermore, \(k^*\) is a factor \(\frac{2(d+4)}{d+2}^{d/(d+4)}\) larger than the optimal <em>k</em> for unweighted <em>k</em>-NN. Once one is found, the other can be derived. So now, all that is left is to find \(B_1\) and \(B_2\) but the optimal <em>k</em> must depend on the dataset so this is unlikely to be easy. Indeed \(B_1\) and \(B_2\) are integrals over \(\mathcal{S}=\{x\in\mathbb{R}: \eta(x)=1/2\}\) with \(\eta(x)=\mathbb{P}(Y = 1 | X=x)\) in a binary classification problem. In other words, \(\mathcal{S}\) is the decision boundary of the Bayes Classifier (i.e. the optimal classifier).                
+            </p>
+            <p>
+                So <em>k</em> is typically found by trial and error.
+            </p>
+        <h1>Weighted <em>k</em>-NN and Bootstrapping</h1>
+        <hr>
+        <h2><em>k</em>-NN with Proximity Rank Based Weights</h2>
+        <p>
+            While I reference <a href="https://arxiv.org/abs/1101.5783">Samworth's 2013</a> results on optimal <em>k</em> above, that paper also addressed how to optimally replace standard <em>k</em>-NN's average over neighbors with a weighted average based on proximity ranks. The asymptotically optimal weight for the <em>i</em>th nearest neighbor using a background dataset of size <em>n</em> and dimension \(d\) is given as 
+        </p>
+        $$w_{ni} = \left\{
+            \begin{array}{ll}
+                \frac{1}{k^*}\biggr[1+\frac{d}{2}-\frac{d}{2(k^*)^{2/d}}\{i^{1+2/d} - (i-1)^{1+2/d}\}\biggr] & 1\leq i\leq k^{*} \\
+                  0 & i > k^{*} \\
+            \end{array} 
+            \right.$$
+        <p>
+            This leads to an asymptotic reduction of regret of at least 5% for \(d\leq 15\) and around 2% for \(d=50\), relative to the optimal unweighted <em>k</em>-NN analogue.
+        </p>
+        <h2>Bagged <em>k</em>-NN as <em>k</em>-NN as a form of Weighted <em>k</em>-NN</h2>
+        <p>
+            By applying <em>(k=1)</em>-NN to many resamples of the background dataset and treating each of those results as votes for a particular class, one obtains the bagged nearest neighbor classifier. Notably, as the limit of resamples approaches infinity, the <em>i</em>th neighbor in the background dataset winds up getting a de-facto weight proportional to its probability of being the nearest neighbor during a given resample. This implies that the bagged nearest neighbor classifier is just a particular version of weighted <em>k</em>-NN with suboptimal weights.
+        </p>
+        <p>
+            For large enough \(n\), the weights also follow a geometric distribution which depends only on the ratio \(q\) between the subsample size and the background dataset size. One can also write the excess risk in terms of \(q\) and define its optimal value, which depends on \(B_1\) and \(B_2\) and would need to be identified through tuning.
+        </p>
+        <p>
+            By the time \(d\) exceeds five, the difference between the asymptotic regret of bagged <em>k</em>-NN and optimally weighted <em>k</em>-NN is small, and only gets smaller as \(d\) increases. Empirically, bagged <em>k</em>-NN and optimally weighted <em>k</em>-NN perform similarly and beat simple <em>k</em>-NN.
+        </p>
+        <h2>Distance Weighted <em>k</em>-NN</h2>
+        <p>
+            One might wonder if, instead of weighted neighbors based on their proximity rank, they can be weighted based on distance instead. This might be written as:
+        </p>
+        $$k\text{NN}(x) = \lim_{d'\to\infty} \frac{\sum_{i\in S_{D, d, k, x}} w(\max (d(D_{X,i}, x), d')) D_{Y,i}}{\sum_{i\in S_{D, d, k, x}} w(\max (d(D_{X,i}, x), d'))}$$
+        <p>
+            where \(w: \mathbb{R}_{\geq 0}\to \mathbb{R}\) determines the weight associated with a particular distance. Sometimes, one might choose the weight to be a simple inverse function of distance \(w(d)=d^{-u}\) so we use the limit as \(d'\to\infty \) so that if a neighbor is identical to \(x\) (\(d(D_{X,i}, x)=0\)), it gets some defined weight and the weights of all neighbors farther away go to zero. If \(w(d)\) never diverges, one could just write
+        </p>
+        $$k\text{NN}(x) = \frac{\sum_{i\in S_{D, d, k, x}} w(d(D_{X,i}, x)) D_{Y,i}}{\sum_{i\in S_{D, d, k, x}} w(d(D_{X,i}, x))}$$
+        <p>
+            which has a functional form resembling the <a href="https://en.wikipedia.org/wiki/Kernel_regression">Nadaraya-Watson kernel regression</a> and can be viewed as such with locally dependent truncations of the kernel. If <em>k</em> approaches the size of the background dataset, those truncations go away. Then, one loses the local properties of <em>k</em>-NN and gets kernel regression limited by the "bandwidth" of \(w\) which is not usually what a <em>k</em>-NN user wants.     
+        </p>
+        <p>
+            There is some dissonance in taking the "kernel/\(w\) which has a single scale / bandwidth, and applying an arbitrarily tight locally-dependent truncation to it. For this reason, one usually wants to incorporate both distance <em>and</em> local properties into \(w\). There are many ways of doing this. For example, when <a href="https://ieeexplore.ieee.org/document/5408784">Dudani</a> introduced distance-weighted <em>k</em>-NN, he proposed weights that linearly decrease from one to zero with distance over the course of the <em>k</em> neighbors (which means the weight of the <em>k</em>th neighbor is defined to be zero):
+        </p>
+        $$w(d) = \left\{
+            \begin{array}{ll}
+                \frac{d_{\text{max}}-d}{d_{\text{max}}-d_1} & d_{\text{max}}\neq d_{\text{min}}\\
+                1 & d_{\text{max}} = d_{\text{min}} \\
+        \end{array} 
+        \right.$$
+        <p>
+            where \(d_{\text{max}} = \text{max}\, d(D_{X,i} , x)\) and \(d_{\text{min}} = \text{min}\, d(D_{X,i} , x)\) such that \(i\in S_{D, d, k, x}\), making the weighting function locally dependent. The weighting function can vary and considerably impact performance, as found in 1987 by <a href="https://www.semanticscholar.org/paper/A-Re-Examination-of-the-Distance-Weighted-k-Nearest-Macleod-Luk/d3df24fcfb78828351b1238b0ea6578d4f16310b">Macleod and Titterington</a> who propose another locally dependent linear method of assigning weights which performs better in some cases.
+        </p>
+        <p>
+            Alas, while this method may be somewhat intuitive, it is less desirable than one might think. In "A note on distance-weighted k-nearest neighbour rules" (1978),  Bailey and Jain found that regular unweighted <em>k</em>-NN has better error than any distance-weighted <em>k</em>-NN when the background dataset gets arbitrarily large. Therefore, <em>k</em>-NN with optimal weighting based on proximity ranks must also beat it in the limit. Macleod and Titterington do argue that, practically speaking, datasets are finite so the method may still have some empirical use. However, computers and dataset sizes have grown considerably since 1987 so these empirical observations are less compelling now.
+        </p>
+        <h1>Neighborhood Component Analysis</h1>
+        <hr>
+        <h2>Methodology</h2>
+        <p>
+            As discussed earlier, the speed at which <em>k</em>-NN converges to a good classifier depends on the independent variables in the dataset being scaled so distances between observations are meaningful. <a href="https://www.cs.toronto.edu/~hinton/absps/nca.pdf">Developed in 2004 </a>, Neighborhood Component Analysis (NCA) addresses this challenge by finding a linear transformation of the independent features in a dataset or (equivalently) finding a adjusted distance metric for a <em>k</em>-NN <em>classifier</em> that yields good performance. 
+        </p>
+        <p>
+            Typically minimization is done through gradient descent but <em>k</em>-NN performance changes discontinuously when an observation in the background dataset moves out of the <em>k</em> neighbors. Thus NCA maximizes the performance of <em>stochastic</em> <em>1</em>-NN instead. Stochastic <em>1</em>-NN takes a new observation \(x\) and gives it the class of a randomly selected observation \(i\) in the background dataset with probability \(p\):
+        </p>
+        $$ p_{D, A, i}(x) = \frac{w(d(Ax, AD_{X,i}))}{\sum_{i=1}^n w(d(Ax, AD_{X,i}))}$$
+        <p>
+           where \(d: \mathbb{R}\times\mathbb{R}\to\mathbb{R}\geq 0\) is a distance metric, \(D_{X,i}, D_{X,j}\) are samples in the <em>k</em>-NN background dataset of size \(n\) and \(w:\, \mathbb{R}\to (0,1)\) determines how the probability of selection scales with distance. Using this, one can write the leave-one-out error for stochastic <em>k</em>-NN on the background dataset given \(A\) as the probability that \(i\) will be assigned the correct clas, averaged over all \(i\):
+        </p>
+        $$
+        LOO_D(A) = \sum_{i=1}^n \sum_{j\in C_{D,i}} p_{D\backslash i, A, j}(D_{X,i})
+        $$
+        <p>
+            where \(C_{D,i}=j\in [n]\\i: D_{Y,i}=D_{Y,j}\). Now can can simply take the derivative with respect to \(A\) and minimize. Note that this problem is not convex (i.e. multiple local minima exist) so minimization ought to be attempted from different starting positions to ensure good performance.
+        </p>
+        <p>
+            In the original paper, overfitting was not seen. KL-divergence was also considered as an alternative to leave-one-out error and yielded similar results. Furthermore, by making \(A\) a rectangular matrix instead of a square one, one can easily find lower dimensional representations of the dataset as well.
+        </p>
+        <h2>Adaptation to Kernel Regression</h2>
+        <p>
+            Understandably, NCA uses stochastic <em>k</em>-NN rather than any <em>k</em>-NN variant. This is necessary because <em>any</em> incorporation of discrete proximity ranks into the model would prevent its performance from being differentiable. However, proximity rank is also what makes <em>k</em>-NN equivalent to an variable kernel density estimator. Without this, its hard to equate stochastic <em>-</em>-NN to <em>k</em>-NN at all since it is not sensitive to the data's topology. Actually, with respect to topology, it is more like a kernel regressor with a global bandwidth of scale implicitly learned by \(A\).
+        </p>
+        <p>
+            Since regression and classification are the same when \(D_{Y}\in \{0,1\}\), one can even compare the stochastic <em>k</em>-NN loss directly to kernel regression using an analogous weighting function:
+        </p>
+        $$
+        \begin{aligned}
+        MSE_{\text{Stoch-kNN}}(A) &\propto \sum_{j\in[n]\backslash i}^n p_{D\backslash i, A, j}(D_{X,i})|D_{Y,i} - D_{Y,j}|^2 \\
+        MSE_{\text{Kernel}}(A) &= \sum_{i=1}^n \left |D_{Y,i}- \sum_{j\in[n]\backslash i} p_{D\backslash i, A, j}(D_{X,i})D_{Y,j} \right |^2
+        \end{aligned}
+        $$
+        <p>
+            While similar in some ways, the losses are materially different. Still, it is clear that both stochastic <em>k</em>-NN and kernel regression are topology-oblivious estimators with differentiable loss functions and comparable weighting methodologies. One may therefore wonder if an NCA style technique can be applied to kernel regression. Weinberger and Tesauro did <a href="https://proceedings.mlr.press/v2/weinberger07a.html">just this</a> in 2007 with their paper Metric Learning for Kernel Regression (MLKR), explicitly describing the paper as an adaptation of NCA for kernel regression. The methodology is near identical to NCA methodology with a kernel regresssion loss function swapped in with one distinction: to make the optimization efficient, only probabilities for the top 1000 nearest neighbors of an observation were computed, with those neighbors periodically updated every fifteen gradient steps.
+        </p>
+        <h2>Large Margin Nearest Neighbor Classification (LMNN)</h2>
+        <p>
+            NCA can be slow due to the need to recompute \(n\) probabilities every time \(A\) is updated. In 2009, Weinberger and Saul proposed another approach for finding a linear transformation of a dataset that improves <em>k</em>-NN performance in their paper <a href="https://dl.acm.org/doi/10.5555/1577069.1577078">Distance Metric Learning for Large Margin Nearest Neighbor Classification</a>. 
+        </p>
+        <p>
+            Conceptually, this approach notices that, for accuracy on a specific point, only a small set of the \(n\) observations in the background dataset need to be considered. Thus, it assigns each observation \(i\) a set \(\text{NS}_i\) of <em>k</em> target neighbors &#8212; observations of the same class as \(i\) that ought to be close to it. As a result, this method is sensitive to topology. Next, the set \(\text{NS}_i\) also defines the criteria for imposters: observations of the wrong class that invade a perimeter defined by \(\text{NS}_i\). More precisely, an imposter (\l\) for observation \(i\) satisfies
+        </p>
+        $$ d(A D_{X,i}, A D_{X,l}) \leq d(A D_{X,i}, A D_{X,j}) + 1$$
+        <p>
+            for some \(j\in \text{NS}_i\). Note the presence of the \(+1\) on the right hand side of the expression, to ensure that imposters are separated with a large margin. The loss function to be minimized is then defined by two terms:
+        </p>
+        $$
+            \begin{aligned}
+            \epsilon_{\text{pull}} &= \sum_{i=1}^n \sum_{j\in \text{NS}_i} d(A D_{X,i}, A D_{X,j}) \\
+            \epsilon_{\text{push}} &= \sum_{i=1}^n \sum_{j\in \text{NS}_i} \sum_{l=1}^n (1-D_{Y, l})[1+d(A D_{X,i}, A D_{X,j}) - d(A D_{X,i}, A D_{X,l})]_{+} \\ 
+            \epsilon_{\text{loss}} &= (1-u)\epsilon_{\text{pull}} + u\epsilon_{\text{push}}
+            \end{aligned}
+        $$
+        <p>
+            where \(u\) is a user-selected weight parameter (usually \(u=0.5\)) and \([z]_+=\max(z,0)\) denotes the hinge loss. Note that when the imposter inequality is satisfied, \(1+d(A D_{X,i}, A D_{X,j}) - d(A D_{X,i}, A D_{X,l})\) is negative and gets zeroed out. A benefit of this loss function is that it can be formulated as an instance of semidefinite programming (a convex optimization method with better properties than naive gradient descent) if re-framed in a certain way.
+        </p>
+        <p>
+            One limitation of LMNN is that there is not a principled way of ensuring the original target neighbors are a good choice. They have to be selected before a better feature representation is learned. Thus, one natural extension of of LMNN is multi-pass variant which learns \(A\), uses \(A\) to pick new sets of target neighbors, and then re-learns \(A\) and so on. This is comparable to the approach for training in Metric Learning for Kernel Regression.
+        </p>
+        <h2>Fast Neighborhood Component Analysis</h2>
+        <p>
+            <a href="https://www.sciencedirect.com/science/article/abs/pii/S0925231211007120">Fast neighborhood component analysis</a> was developed in 2012 by Yang, Wang and Zuoto as another way of accelerating NCA (info on FNCA freely available in <a href="https://dspace.cuni.cz/handle/20.500.11956/101948">Jan Hanousek's bachelor thesis</a>). Like LMNN, it also defines the set \(\text{NS}_i\). This corresponds to the \(k\) nearest neighbors of \(i\) in the untransformed dataset that share its class. However, instead of using this set to implicitly describe a set of imposters, another set \(\text{ND}_i\) is defined, corresponding to the \(k\) nearest neighbors in that untransformed dataset that do not share a class. \(A\) is then optimized to maximize the leave-one-out performance of stochastic nearest neighbors where \(j\) has a nonzero probability of selection for observation \(i\) only if \(j\in \text{ND}_i\) or \(j\in \text{NS}_i\). 
+        </p>
+        <p>
+            Assuming the original feature space is good enough, this variant of stochastic nearest neighbors should perform well since \(\text{ND}_i\) and \(\text{NS}_i\) should still capture the relevant neighbors even if \(A\) transforms the features. Furthermore, its performance might be <em>better</em> because there is no chance of selecting extremely distant observations. It is also faster as training scales with the size of the \(\text{ND}_i\) and \(\text{NS}_i\) sets instead of the full dataset. Unfortunately, because these sets are small, overfitting is now possible and a regularization term is needed.
+        </p>
+        <h1>Extra</h1>
+        <hr>
+        <h2>Impact of Bad Feature Scalings on <em>1</em>-NN</h2>
+        <p>
+            Consider a joint distribution \((X_1, X_2, Y)\) where \(X_1 \sim \mathcal{B}(1, 0.5)\) and \(X_2 \sim \mathcal{U}_{[0, a]}\). Let \(Y=X_1\) so \(Y\) is perfectly correlated with the first feature. For any model \(f\), the expected prediction error is
+        </p>
+        $$
+        \begin{aligned}
+        EPE &= \mathbb{E}_{(x_1, x_2)}\left[\sum_{y=0}^1 \mathbb{1}_{y \neq f((x_1, x_2))}P(y | (x_1, x_2)) \right] \\
+        &= \mathbb{E}_{(x_1, x_2)}\left[\sum_{y=0}^1 \mathbb{1}_{y \neq f((x_1, x_2))}\mathbb{1}_{y=x_1} \right] \\ 
+
+        &= \int_{\{0, 1\}\times [0, a]} \left[\sum_{y=0}^1 \mathbb{1}_{y \neq f((x_1, x_2))}\mathbb{1}_{y=x_1} \right] \, dP_X((x_1, x_2)) \\ 
+
+        &= \frac{1}{a}\int_0^a \left [\frac{1}{2} \sum_{x_1=0}^1 \sum_{y=0}^1 \mathbb{1}_{y\neq f((x_1, x_2))}\mathbb{1}_{y=x_1} \right ]\, dx_2\\
+    
+        &= \frac{1}{a}\int_0^a \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{x_1\neq f((x_1, x_2))} \right ]\, dx_2\\
+
+        &= \int_0^1 \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{x_1\neq f((x_1, a\cdot u))} \right ]\, du\\
+
+        \end{aligned}
+        $$
+        <p>
+            where \(u=x_2/a\). Now to calculate the average \(EPE\) for a <em>1</em>-NN using a background dataset composed of \(n\) samples from \(X_1, X_2, Y\, |\, X_1=0\) and \(n\) samples from \(X_1, X_2, Y\, |\, X_1=1\), one must marginalize over all possible background datasets satisfying those requirements. Letting \(f_{\mathcal{D}}\) be a <em>(k=1)</em>-NN model defined by background dataset \(\mathcal{D}\), one can write:
+        </p>
+        $$
+            \overline{EPE} = \int_{A} \int_0^1 \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{x_1\neq f_{\mathcal{D}}((x_1, a\cdot u))} \right ]\, du \, dP_D(\mathcal{D})
+        $$
+        <p>
+        where \(A=(\{0\}\times [0, a])^n \times (\{1\}\times [0, a])^n\). Note that <em>1</em>-NN outputs the \(y=x_1\) value associated with the point in the training dataset with the smallest distance so using Manhattan Distance (for simplicity), and since ties are neglible over continuously distributed distances:
+        </p>
+        $$
+        \begin{aligned}
+        x_1 \neq f_{\mathcal{D}}((x_1, a\cdot u)) &\Leftrightarrow \min_{\vec x'\in D: \vec x_1'\neq x_1} d(\vec x', (x_1, a\cdot u)) < \min_{\vec x'\in D: \vec x_1'= x_1} d(\vec x', (x_1, a\cdot u))\\
+        &\Leftrightarrow \min_{\vec x'\in D: \vec x_1'\neq x_1} 1+|\vec x_2' - a\cdot u| < \min_{\vec x'\in D: \vec x_1'= x_1} |\vec x_2' - a\cdot u|
+        \end{aligned}
+        $$
+        <p>
+            Now let \(d_{\mathcal{D},u}^{1*}=\min_{(x_1', x_2')\in \mathcal{D}:\, x_1'\neq x_1} |x_2' - a\cdot u|\) and \(d_{\mathcal{D},u}^{2*}=\min_{(x_1', x_2')\in \mathcal{D}:\, x_1'= x_1} |x_2' - a\cdot u|\). Note that \(d_{\mathcal{D},u}^{1*}\) and \(d_{\mathcal{D},u}^{2*}\) are minimum values of \(n\) samples from the same distribution after the same transformation is applied. One can write:
+        <p>
+        $$
+        x_1 \neq f_{\mathcal{b}}((x_1, a\cdot u)) \Leftrightarrow 1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}\\
+        $$
+        <p>
+            Thus
+        </p>
+        $$
+        \begin{aligned}
+            \overline{EPE} &= \int_{A} \int_0^1 \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}} \right ]\, du \, dP_D(\mathcal{D})\\
+
+            &= \int_{A} \int_0^1 \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}}\, du \, dP_D(\mathcal{D})\\
+
+            &= \int_0^1 \int_{A} \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}}\, dP_D(\mathcal{D}) \, du\\
+
+            &= \int_0^1 \int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D},u}^{1*} < n_{\mathcal{D},u}^{2*}}\, dP_D(\mathcal{D}) \, du
+        \end{aligned}
+        $$
+        <p>
+            where \(n_{\mathcal{D},u}^{1*} = d_{\mathcal{D},u}^{1*}/a\) and \(n_{\mathcal{D},u}^{2*} = d_{\mathcal{D},u}^{2*}/a\). Since \(d_{\mathcal{D},u}^{1*}\) and \(d_{\mathcal{D},u}^{2*}\) are produced by finding the minimum of \(n\) samples from \(|\mathcal{U}_{[0,a]}-a\cdot u|=a|\mathcal{U}_{[0,1]}-u|\) and linear transformations pass through, one can say that \(n_{\mathcal{D},u}^{1*}\) and \(n_{\mathcal{D},u}^{2*}\) are samples from the distribution of the minima of \(n\) samples from \(|\mathcal{U}_{[0,1]}-u|=|\mathcal{U}_{[-u,1-u]}|\).
+        </p>
+        <p>
+            Unfortunately, because the \(|\circ|\) operator is piecewise, \(|\mathcal{U}_{[-u,1-u]}|\) is also piecewise. All the density below zero is folded back, doubling the probability density from zero to \(u\). Computing distribution of the minima of \(n\) samples from \(|\mathcal{U}_{[-u,1-u]}|\) in generality would be challenging. However, the likelihood that two samples from the same distribution differ by \(1/a\) decreases as the variance of distribution is reduced. Thus, one can find a lower bound for \(\overline{EPE}\) by replacing the complicated distribution with a simpler, lower variance one.
+        </p>
+        <p>
+            In this case, one finds the \(u\) such that \(|\mathcal{U}_{[-u,1-u]}|\) is as low variance as possible. This occurs at \(u=0.5\) where \(|\mathcal{U}_{[-0.5,0.5]}|=\mathcal{U}_{[0, 0.5]}\). Therefore, one can write
+        </p>
+        $$
+        \begin{aligned}
+            \overline{EPE} &> \int_0^1 \int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D}}^{1*}{'} < n_{\mathcal{D}}^{2*}{'}}\, dP_D(\mathcal{D}) \, du \\
+            &>\int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D}}^{1*}{'} < n_{\mathcal{D}}^{2*}{'}}\, dP_D(\mathcal{D})
+        \end{aligned}
+        $$
+        where \(n_{\mathcal{D}}^{1*}{'}, n_{\mathcal{D}}^{2*}{'}\sim \mathcal{U}_{[0, 0.5]}\). The integral over \(u\) has also disappeared becaue the integrand has lost dependence on it. Letting \(z_1=\frac{1}{a} + n_{\mathcal{D},u}^{1*}{'}\sim \mathcal{U}_{[1/a, 0.5+1/a]}\) and \(z_2=n_{\mathcal{D},u}^{2*}{'}\sim \mathcal{U}_{[0, 0.5]}\) gets things even simpler.
+        $$
+            \overline{EPE} > \int_{A} \mathbb{1}_{z_1 < z_2}\, dP_D(\mathcal{D})
+        $$
+        <p>
+            The benefit to doing all this is that the minima of \(n\) samples from a uniform distribution has a known distribution with the following <a href="https://math.stackexchange.com/questions/786392/expectation-of-minimum-of-n-i-i-d-uniform-random-variables">CDF and PDF</a>:
+        </p>
+        $$
+        \begin{aligned}
+            \mathbb{P}(Z\sim\mathcal{U}_{[a, b]} \leq z) = F_{\mathcal{U}_{[a, b]}, n}(z) &= 1-\left(\frac{b-z}{b-a}\right)^n\\
+            \frac{d\mathbb{P}(Z\sim\mathcal{U}_{[a, b]} \leq z)}{dz} = f_{\mathcal{U}_{[a, b]}, n}(z) &= \frac{n}{b-a}\left(\frac{b-z}{b-a}\right)^{n-1}
+        \end{aligned}
+        $$
+        <p>
+            where the PDP is zero outside of \([a,b]\) and the CDF is zero for \(z\) below \(a\) and one for \(z\) above \(b\). This finally allows one to escape the integral over datasets and replace it with integral over \(z_2\). It just corresponds to the probability that the minimum of \(n\) samples of a uniform distribution exceed the minimum of another \(n\) samples of a uniform distribution by \(1/a\). Simplifying gives
+        </p>
+        $$
+        \begin{aligned}
+            \overline{EPE} &> \int_{0}^{0.5} F_{\mathcal{U}_{[1/a, 0.5+1/a]}, n}(z_2)\, dP_{\mathcal{U}_{[0, 0.5]}, n}(z_2) \\
+            &> \int_{0}^{0.5} F_{\mathcal{U}_{[1/a, 0.5+1/a]}, n}(z_2)\, f_{\mathcal{U}_{[0, 0.5]}, n}(z_2)\, dz_2\\
+            &> \int_{\min(1/a,\, 0.5)}^{0.5} \left (1-\left(\frac{0.5+1/a-z_2}{0.5}\right)^n \right ) \frac{n}{0.5}\left(\frac{0.5-z_2}{0.5}\right)^{n-1}\, dz_2 \\
+
+            &> 2n\int_{\min(1/a, 0.5)}^{0.5} \left (1 - \left (1+\frac{2}{a} - 2z_2\right)^n\right) (1-2z_2)^{n-1}\, dz_2
+
+        \end{aligned}
+        $$
+        <p>
+            This is solvable using Wolfram Alpha. \(_2F_1\) is the <a href="https://en.wikipedia.org/wiki/Hypergeometric_function">hypergeometric function</a>, which in this case is a finite polynomial for a fixed \(n\). The first piece of the product is zero when \(z=0.5\) so one simply must plug \(\mathcal{z}=\min (1/a, 0.5)\) into the below expression, which is the anti-derivative with the sign reversed, and simplify:
+        </p>
+        $$
+        \begin{aligned}
+            \overline{EPE} &> (1-2\mathcal{z})^n\left (1-\left( \frac{2+4/a-4\mathcal{z}}{2+a-2a\mathcal{z}}\right)^n\, _2F_1\left(-n, n; 1+n; a\left(\mathcal{z}-\frac{1}{2}\right)\right)\right) \\
+
+             &> (1-2\mathcal{z})^n\left (1-\left( \frac{2+4/a-4\mathcal{z}}{2+a-2a\mathcal{z}}\right)^n\sum_{i=0}^n \left [(-1)^i {n\choose i} \frac{(n)_i}{(n+1)_i}\left (a\mathcal{z}-\frac{a}{2}\right)^i\right]\right)\\
+
+             &> (1-2\mathcal{z})^n\left (1-\left( \frac{2+4/a-4\mathcal{z}}{2+a-2a\mathcal{z}}\right)^n\sum_{i=0}^n \left [{n\choose i} \frac{(n)_i}{(n+1)_i}\left (\frac{a}{2}-a\mathcal{z}\right)^i\right]\right)\\
+
+             &> (1-2\mathcal{z})^n\left (1-\left( \frac{2+4/a-4\mathcal{z}}{2+a-2a\mathcal{z}}\right)^n\sum_{i=0}^n \left [{n\choose i} \frac{n}{n+i}\left (\frac{a}{2}-a\mathcal{z}\right)^i\right]\right)
+        \end{aligned}
+        $$
+        <p>
+            For large \(a\), \(\mathcal{z}=1/a\) so
+        </p>
+        $$
+        \begin{aligned}
+        \overline{EPE} &> \left(1-\frac{2}{a}\right)^n\left (1-\left( \frac{2}{a}\right)^n\sum_{i=0}^n \left [{n\choose i} \frac{n}{n+i}\left (\frac{a}{2}-1\right)^i\right]\right) \\
+        \end{aligned}
+        $$
+        <p>
+            This function behaves as it should. One can  see from the first term in the product, which will always be less than one, that \(\bar{EPE}\) decays exponentially with \(n\). Furthermore, the first term scales with \(-a^{-1}\) inside the exponent and the second term does as well. Since we assume \(a/2 >> 1\) here, the sum terms are always positive as well so every \(a\) contributions to an increase in \(bar{EPE}\). Of course, \(\bar{EPE}\) cannot increase forever. When \(a\) gets large, any terms that do not grow as fast as \(a^n\) vanish so one has
+        </p>
+        $$
+        \begin{aligned}
+        \overline{EPE} &> \left(1\right)^n\left (1-\left( \frac{2}{a}\right)^n\, \left [{n\choose n} \frac{n}{n+n}\left (\frac{a}{2}-1\right)^n\right]\right) \\
+
+         &> 1-\left( \frac{2}{a}\right)^n\, \left [\frac{1}{2} \left (\frac{a}{2}-1\right)^n\right] \\
+
+         &> 1-\left [\frac{1}{2} \left (1-\frac{2}{a}\right)^n\right] \\
+
+         &> 1-\left [\frac{1}{2} \left (1\right)^n\right] \\
+
+         &> \frac{1}{2}
+        \end{aligned}
+        $$
+        <p>
+            This gives an expected error rate of \(1/2\), which means <em>(k=1)</em>-NN approaches performance of random guessing. This is what should happen as a larger \(a\) eventually washes out the signal that useful predictors contribute in the distance.
+        </p>
+        <p>
+            On the other hand, for small \(a\), \(\mathcal{z}=0.5\). As already seen, the first term goes to zero when \(\mathcal{z}=0.5\) which corresponds to perfect predictions. This is also what should happen since low \(a\) causes the distance metric to become perfectly correlated with the true class.
+        </p>
+        </div>
+    </main>
+</body>
+</html>
