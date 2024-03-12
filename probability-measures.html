@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<head>
+    <link rel="shortcut icon" type="image/png" href="favicon.png"> 
+    <link rel="stylesheet" href="styles.css">
+    <title>Ryan Franks | Probability Measures</title>
+</head>
+<body>
+    <div class="overlay">
+        <div id="header">
+            <h1>Ryan Franks | Probability Measures</h1>
+        </div>
+        <div id="menu">
+            <a href="index.html">Home</a>
+            <a href="art.html">Art</a>
+            <a href="science.html">Science</a>
+            <a href="people.html">People</a>
+            <a href="interesting.html">Things of Interest</a>
+        </div>
+        <br>
+    </div>
+    <main>
+        <div class="overlay">
+            <h1>Why Measure Theory?</h1>
+            <p>
+                When probability is commonly taught, one learns to distinguish between discrete probability distributions (i.e. a coinflip) and continuous probability distributions (i.e. randomly picking a number between zero and one). Conceptually, these distributions work similarly but have different (analogous) properties. Given discrete distribution \(d(x)\) and a continuous distribution \(c(x)\), one has
+            </p>
+            <ul>
+                <li>
+                    <p>
+                        Summing \(d(x)\) over all possibible outcomes \(x\) must produce one. In contrast, <em>integrating</em> \(c(x)\) over all possible outcomes must produce one. If one defines the set of all possible outcomes as \(A\), then
+                    </p>
+                    $$ \sum_{x\in A} d(x) = \int_{x\in A} c(x)\, dx = 1 $$               
+                </li>
+                <li>
+                    <p>
+                        Summing \(g(x)d(x)\) over \(x\in A\) produces the expected value of \(g\) on distribution \(d\). In contrast, <em>integrating</em> \(g(x)c(x)\) over \(x\in A\) produces the expected value of \(g\) on distribution \(c\)
+                    </p>
+                    $$ \mathbb{E}_{d}[g] = \sum_{x\in A} g(x)d(x) :: \mathbb{E}_{c}[g] = \int_{x\in A} g(x)c(x)\, dx $$               
+                </li>
+            </ul>
+            <p>
+                Given the analogousness, it would be nice to be able to think about continuous and discrete distributions in the same way. In practice, this is necessary because most real variables are partially continuous and partially discrete[1]. This is the purpose that measure theory serves. Another nice consequence of unifying discrete and continuous distributions is that it means a measure theory of probability can pretty much do probability analysis on events that correspond to arbitrary representations of numbers. As a result, measure theory notation shows up in academic papers pertaining to statistics very often.
+            </p>
+            <h1>Measure Theory Notation for Probability</h1>
+            <h2>An Introduction to the Probability Triple</h2>
+            <p>
+                <a href="https://en.wikipedia.org/wiki/Probability_space">A probability space</a> is defined by a probability triple \(\\(\Omega, \mathcal{F}, P\\)\). Here, \(\Omega\) (called the sample space) describes all possible outcomes; \(\mathcal{F}\) is a set of sets of outcomes that define events of interest, and \(P: \mathcal{F}\to [0,1]\) describes the probabilities of events of interest. For example, consider a scenario where one picks a colored ball from a bag with associated space triple \(\\(\Omega, \mathcal{F}, P\\)\):
+            </p>
+            <ul>
+                <li>
+                    \(\Omega = \{\text{light-blue}, \text{dark-blue}, \text{light-red}, \text{dark-red}\}\) implies the ball that is pulled will either be light-blue, dark-blue, light-red, or dark-red.
+                </li>
+                <li>
+                    \(\mathcal{F} = \{\{\text{light-blue}, \text{dark-blue}\}, \{\text{light-red}, \text{dark-red}\}\}\) implies that one is considering two possible events: the event where the ball is blue and the event where the ball is red, ignoring shade.
+                </li>
+                <li>
+                    \(P(\{\text{light-blue}, \text{dark-blue}\}) = P(\{\text{light-red}, \text{dark-red}\}) = 0.5\) implies that the probability of drawing a red ball or a blue ball are equal at 50%.
+                </li>
+            </ul>
+            <p>
+                This is all that's needed to define a probability space. \(\Omega\) describes outcomes and \(\mathcal{F}\) defines the set of events that \(P\) produces probabilities for. However, \(\mathcal{F} = \{\{\text{light-blue}, \text{dark-blue}\}, \{\text{light-red}, \text{dark-red}\}\}\) is actually invalid as a sigma algebra.
+            </p>
+            <h2>What's a Sigma Algebra Again?</h2>
+            <p>
+                There are some rules associated with probability function \(P\) and since \(P\) takes \(\mathcal{F}\) to \([0,1]\), this implies certain requirements \(\mathcal{F}\):                
+            </p>
+            <ul>
+                <li>
+                    The probability that some outcome in \(\Omega\) happens must be one axiomatically. Therefore, it is known that \(P(\Omega)=1\) which means \(\Omega\) must be included in \(\mathcal{F}\).
+                </li>
+                <li>
+                    Probabilities ought to satisfy \(P(A \cup B) = P(A) + P(B) - P(A\cap B)\), which implies
+                    <ul>
+                        <li>
+                            \(P(\Omega\backslash E) + P(E) = P(\Omega) = 1\) so \(P(\Omega\backslash E) = 1-P(E)\). Therefore, all complements \(\Omega\backslash E\) must be included in \(\mathcal{F}\). Since \(\Omega \in \mathcal{F}\), this includes the empty set.                    
+                        </li>
+                        <li>
+                            Clearly, in order to have \(P(A \cup B) = P(A) + P(B) - P(A\cap B)\), \(P(A\cap B)\) must be defined. This implies via De Morgan's Law that \(\mathcal{F}\) must include all countable unions of its sets.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <p>
+                Together these rules define a set called a sigma-algebra. Note that if \(\Omega\) is finite, the set can also be called an algebra (as in the earlier example). Note that \(\mathcal{F}\) is closed under <em>countable</em> unions of sets because \(\Omega\) is often uncountable (i.e. \(\mathbb{R}\)) and uncountable infinities can pose <a href="https://stats.stackexchange.com/questions/199280/why-do-we-need-sigma-algebras-to-define-probability-spaces">difficulties</a>.
+            </p>
+            <p>
+                Correcting \(\mathcal{F}\) in the earlier example yields
+            </p>
+            $$
+            \mathcal{F} = \{\emptyset, \{\text{light-blue}, \text{dark-blue}\}, \{\text{light-red}, \text{dark-red}\}, \Omega\}
+            $$
+            <h2>Random Variables</h2>
+            <p>
+                Now that probability space has been defined, random variables can be constructed based on it. Given a probability triple \(\\(\Omega, \mathcal{F}, P\\)\), one may describe a random variable \(X: \Omega \to E\) as a function that maps the sample space \(\Omega\) to a new space \(E\) that the random variable resides in. However, this is not all. Because \(P\) is only defined on the sigma algebra \(\mathcal{F}\), there is a risk that \(X(\omega)\) exists when \(P(\omega)\) is not defined.
+            </p>
+            <p>
+                To address this issue, one introduces a set of subsets \(B\in E\), \(\xi\), that are measurable. In other words, for every \(B \in \xi\), \(X^{-1}(B) = \{\omega: X(\omega) \in B \}\in \mathcal{F}\). This ensures that \(X\) is measurable on the probability space.              
+            </p>
+            <h1>Footnotes</h1>
+            <p>
+                [1] When one collects data, one typically measures <em>many</em> features \((X_1, X_2, ..., X_n)\). Usually at least one of these features will have a continuous component and one will have a discrete component (due to being categorical, due to measurement limitations or due to intrinsic properties). Then, one may be interested in estimating properties of \(G\) defined by a continuous function \(g: X_1, X_2, ..., X_n \to \mathbb{R}\). As long as \(G\) depends on both the discrete and continuous \(X\) features and the features are not perfectly related so that they cancel each other when plugged into \(G\), then \(G\) will have a mixed discrete and continuous distribution.
+            </p>
+        </div>
+    </main>
+</body>
+</html>
