@@ -87,7 +87,7 @@
                 </li>
             </ul>
             <p>
-                Together these rules define a set called a sigma-algebra. Note that if \(\Omega\) is finite, the set can also be called an algebra (as in the earlier example). Note that \(\mathcal{F}\) is closed under <em>countable</em> unions of sets because \(\Omega\) is often uncountable (i.e. \(\mathbb{R}\)) and uncountable infinities can pose <a href="https://stats.stackexchange.com/questions/199280/why-do-we-need-sigma-algebras-to-define-probability-spaces">difficulties</a>.
+                Together these rules define a set called a sigma-algebra. Note that if \(\Omega\) is finite, the set can also be called an algebra (as in the earlier example).
             </p>
             <p>
                 Correcting \(\mathcal{F}\) in the earlier example yields
@@ -95,12 +95,31 @@
             $$
             \mathcal{F} = \{\emptyset, \{\text{light-blue}, \text{dark-blue}\}, \{\text{light-red}, \text{dark-red}\}, \Omega\}
             $$
+            <h2>Borel \(\sigma\)-Algebra</h2>
+            <p>
+                As was seen in the example, when \(\Omega\) is finite, the power-set of \(\Omega\) (the set of all subsets of \(\Omega\)) is finite and constitutes an alegebra. From this, it is unclear why a \(\sigma\)-algebra needs to be defined at all. The reason is that, when \(\Omega\) is uncountably infinite (as is the case for continuous probability spaces), one can introduce a subset of it that is structually <a href="https://stats.stackexchange.com/questions/199280/why-do-we-need-sigma-algebras-to-define-probability-spaces">not Lebesque measurable</a>, violating measure theory and therefore probability spaces that include it.
+            </p>
+            <p>
+                A common example of this is the <a href="https://en.wikipedia.org/wiki/Vitali_set">Vitali Set</a> \(V\) such that for each real number \(r\in [0,1]\), there is exactly one number \(v\in V\) where \(v-r\) is rational. Because there is a one-to-one correspondence between \(V\) and \(\{r\in \mathbb{R}: r\in [0,1]\}\), \(V\) ought to have a measure of one. However, given a Vitali set \(V\), one can propose another Vitali Set \(V_k = V+q_k = \{v+q_k: v\in V\}\) that satisfies the same properties and has no overlap with \(V\). For each \(q_k \in [-1,1]\), one can therefore generate countably infinite disjoint \(V_k\) that fall in the interval \([0, 1] + [-1, 1]=[-1, 2]\) which has a measure of three. But the union of infinitely many disjoint sets that each measure one cannot be three so this yields a contradiction that breaks measure theory.
+            </p>
+            <p>
+                To see why this would break probability, just consider the case where \(P\) describes a uniform distribution over some interval on the real numbers. Because of the one-to-one correspondence between \(V\) and \([0,1]\), \(P(V_k) = P(V) = P([0,1])\). However, because probabilities are bounded by one and because of probability rules for additivity of disjoint sets, one has \(P(\cup_{k=1}^\infty V_k) = \sum_{k=1}^{\infty} P(V_k) = \sum_{k=1}^{\infty} P([0,1]) \leq 1\). This implies \(P([0,1])=0\) which cannot be true. More generally, if \(P(x)\) is bounded from below by a finite positive number on <em>any</em> interval \([a,b]\), one can construct modified Vitali sets where one produces a contradiction: \(P(\cup_{k=1}^\infty V_k) = \sum_{k=1}^\infty P([a, b]) \leq 1 \implies P([a,b]) = 0\). Therefore, while probability and Vitali sets <a href="https://math.stackexchange.com/questions/3145729/do-vitali-sets-really-explain-measure-theoretic-probability">can coexist</a> in principle when \(P\) is not translation invariant, the implications this has on \(P\) are very undesirable.
+            </p>
+            <p>
+                As defined earlier, a \(\sigma\)-algebra is the kind of set that excludes non-Lebesgue measurable sets like the Vitali sets or analogous sets in different \(\Omega\) from consideration in the probability space. This is why only <em>countably</em>> infinite unions of events in the \(\sigma\) algebra must be present in it. If \(\Omega\) is a topological space (e.g. Euclidean space, metric-defined spaces, manifolds), then the typical \(\sigma\) algebra used is its Borel \(\sigma\) algebra. The Borel \(\sigma\) algebra is a set composed of all  <a href="https://en.wikipedia.org/wiki/Borel_set">borel sets</a> of \(\Omega\) where a borel set is any set in \(\Omega\) that can be formed from open sets in that space through <em>countably</em> many unions, intersections, and complementations. 
+            </p>
+            <p>
+                Note that lots of things can be Borel sets. By taking intersections of open intervals \(\\(a, b\\)\) and \(\\(b, c\\)\), one can produce the interval \([b]\) and therefore borel sets include all closed intervals. By noting that the rational numbers (a union of countably infinite closed sets) are a Borel set, one also implies that the irrational numbers are a Borel set. However, Vitali sets are not a Borel sets because they are composed of the union of uncountably many numbers that cannot be described by a countable number of intervals. In other words, they include what one wants to include and excludes what one wants to exclude.
+            </p>
             <h2>Random Variables</h2>
             <p>
                 Now that probability space has been defined, random variables can be constructed based on it. Given a probability triple \(\\(\Omega, \mathcal{F}, P\\)\), one may describe a random variable \(X: \Omega \to E\) as a function that maps the sample space \(\Omega\) to a new space \(E\) that the random variable resides in. However, this is not all. Because \(P\) is only defined on the sigma algebra \(\mathcal{F}\), there is a risk that \(X(\omega)\) exists when \(P(\omega)\) is not defined.
             </p>
             <p>
-                To address this issue, one introduces a set of subsets \(B\in E\), \(\xi\), that are measurable. In other words, for every \(B \in \xi\), \(X^{-1}(B) = \{\omega: X(\omega) \in B \}\in \mathcal{F}\). This ensures that \(X\) is measurable on the probability space.              
+                To address this issue, one introduces a set of subsets \(B\in E\), \(\xi\), that are measurable. In other words, for every \(B \in \xi\), \(X^{-1}(B) = \{\omega: X(\omega) \in B \}\in \mathcal{F}\). This ensures that \(X\) is measurable on the probability space.
+            </p>
+            <p>
+                Formally, one therefore defines \(X\) as an \(\\(E, \xi\\)\)-valued random variable on probability space \(\\(\Omega, \mathcal{F}, P\\)\).
             </p>
             <h1>Footnotes</h1>
             <p>
