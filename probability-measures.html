@@ -96,15 +96,43 @@
             \mathcal{F} = \{\emptyset, \{\text{light-blue}, \text{dark-blue}\}, \{\text{light-red}, \text{dark-red}\}, \Omega\}
             $$
             <h2>Borel \(\sigma\)-Algebra</h2>
+            <br>
+            <h3>Why its Necessary</h3>
             <p>
                 As was seen in the example, when \(\Omega\) is finite, the power-set of \(\Omega\) (the set of all subsets of \(\Omega\)) is finite and constitutes an alegebra. From this, it is unclear why a \(\sigma\)-algebra needs to be defined at all. The reason is that, when \(\Omega\) is uncountably infinite (as is the case for continuous probability spaces), one can introduce a subset of it that is structually <a href="https://stats.stackexchange.com/questions/199280/why-do-we-need-sigma-algebras-to-define-probability-spaces">not Lebesque measurable</a>, violating measure theory and therefore probability spaces that include it.
             </p>
             <p>
-                A common example of this is the <a href="https://en.wikipedia.org/wiki/Vitali_set">Vitali Set</a> \(V\) such that for each real number \(r\in [0,1]\), there is exactly one number \(v\in V\) where \(v-r\) is rational. Because there is a one-to-one correspondence between \(V\) and \(\{r\in \mathbb{R}: r\in [0,1]\}\), \(V\) ought to have a measure of one. However, given a Vitali set \(V\), one can propose another Vitali Set \(V_k = V+q_k = \{v+q_k: v\in V\}\) that satisfies the same properties and has no overlap with \(V\). For each \(q_k \in [-1,1]\), one can therefore generate countably infinite disjoint \(V_k\) that fall in the interval \([0, 1] + [-1, 1]=[-1, 2]\) which has a measure of three. But the union of infinitely many disjoint sets that each measure one cannot be three so this yields a contradiction that breaks measure theory.
+                A common example of this is the <a href="https://en.wikipedia.org/wiki/Vitali_set">Vitali Set</a> \(V\in [0,1]\) such that for each real number \(r\in [0,1]\), there is exactly one number \(v\in V\) where \(v-r\) is rational. However, given a Vitali set \(V\), one can propose another Vitali Set \(V_{q_k} = V+q_k = \{v+q_k: v\in V\}\) where \(q_k\) is a rational number that satisfies the same properties and has no overlap with \(V\). One can therefore generate countably infinite disjoint \(V_{q_k}\) from the countably infinite \(q_k \in [-1,1]\) which fall in the interval \([0, 1] + [-1, 1]=[-1, 2]\) which has a measure of three. Therefore \(U=\cup_{k=1}^\infty V_{q_k} \in [-1,2]\).
             </p>
             <p>
-                To see why this would break probability, just consider the case where \(P\) describes a uniform distribution over some interval on the real numbers. Because of the one-to-one correspondence between \(V\) and \([0,1]\), \(P(V_k) = P(V) = P([0,1])\). However, because probabilities are bounded by one and because of probability rules for additivity of disjoint sets, one has \(P(\cup_{k=1}^\infty V_k) = \sum_{k=1}^{\infty} P(V_k) = \sum_{k=1}^{\infty} P([0,1]) \leq 1\). This implies \(P([0,1])=0\) which cannot be true. More generally, if \(P(x)\) is bounded from below by a finite positive number on <em>any</em> interval \([a,b]\), one can construct modified Vitali sets where one produces a contradiction: \(P(\cup_{k=1}^\infty V_k) = \sum_{k=1}^\infty P([a, b]) \leq 1 \implies P([a,b]) = 0\). Therefore, while probability and Vitali sets <a href="https://math.stackexchange.com/questions/3145729/do-vitali-sets-really-explain-measure-theoretic-probability">can coexist</a> in principle when \(P\) is not translation invariant, the implications this has on \(P\) are very undesirable.
+                However, for any \(r\in [0,1]\), the corresponding shifted number in the set \(V\), \(v=r+q\), will be recovered by the Vitali set \(V_{-q}=\{(r+q)-q): (r+q)\in V\}\) where \(q\in [-1,1]\). Therefore the union \(U\) of all \(V_{q_k}\) with \(q_k \in [-1,1]\) will contain each real number \(r\in [0,1]\), where each \(r\) is provided by some \(V_{q_k}\). Therefore \([0,1]\in U\). Now the whole inequality can be given for the Lebesgue measure \(\lambda\) defined so \(\lambda([a,b]) = b-a\):
             </p>
+            $$ \lambda([0, 1]) \leq \lambda(\cup_{k=1}^\infty V_{q_k}) \leq \lambda([0,3])$$
+            $$ \lambda([0, 1]) \leq \sum_{k=1}^\infty \lambda(V) \leq \lambda([0,3])$$
+            <p>
+                This breaks measure theory because \(\sum_{k=1}^\infty \lambda(V)\) is either infinity if \(\lambda(V)>0\) or zero if \(\lambda(V)=0\) but this shows \(\lambda(V)\) must have some positive non-infinite number.
+            </p>
+            <p>
+                To see why this would break probability, just consider the case where \(P\) describes a uniform distribution over some interval on the real numbers. Since \(P\) is uniform and \(V_{q_k}\) have one-to-one correspondence with \(V\), one knows \(P(V) = P(V_{q_k})\) and can just replace the lebesgue measure \(\lambda\) with probability measure \(P\):
+            </p>
+            $$ P([0,1]) \leq \sum_{k=1}^{\infty} P(V) \leq P([-1, 2])$$
+            <p>
+                where \(P(S)\leq 1\) for any set \(S\) because probabilities are bounded by one. Because \(P\) is uniform and probabilities are bounded by one, \(0 < P([0,1])\, ,P([-1,2]) \leq 1\) must be true so this becomes the following impossible inequality:
+            </p>
+            $$ 0 < \sum_{k=1}^{\infty} P(V) \leq 1$$
+            <p>
+                More generally, if any interval \([a,b]\) exists where \(f(S) = \min(P(S), g(S))\) is translation invariant for some translation invariant function \(g(S) > 0\), then one can produce modified "Vitali" sets based on \([a,b]\) where \(f(V_{q_k}) = \min(P(V_{q_k}), g(V_{q_k})) = \min(P(V_{q_k}), g(V)) = \min(P(V), g(V))\) by translation invariance of \(f\) and \(g\). One can see that all \(P(V_{q_k})\, , P(V) \geq \min(P(V), g(V))\) so this gives the following inequality:  
+            </p>
+            $$\sum_{k=1}^{\infty} \min(P(V), g(V)) \leq \sum_{k=1}^{\infty} P(V_{q_k}) \leq 1$$
+            <p>
+                From this, it is necessary that \(\min(P(V), g(V)) = 0\) to prevent divergence to infinity. However, this leads to contradictions. If \(g(V) \leq P(V)\), then \(\min(P(V), g(V)) = g(V) = 0\) which contradicts \(g(S) > 0\) in the definition. If \(P(V) < g(V)\), then one has \(f(V_{q_k}) = \min(P(V_{q_k}), g(V)) = f(V) = P(V)\) which implies all \(P(V_{q_k}) = P(V) = 0\). However, this invokes a second inequality which is violated whenever \(P([a,b]) > 0\). In this case \(P\) is never positive on \([a,b]\).
+            </p>
+            $$ P([a, b]) \leq P(\cup_{k=1}^\infty P(V_{q_k})) = \sum_{k=1}^\infty P(V) = \sum_{k=1}^\infty 0 $$
+            <p>
+                The upshot of this is that Vitali sets cannot coexist with probability distributions containing intervals of non-zero measure where its subsets \(S\) remain above some value \(g(S)\) after being translated. Therefore, while probability and Vitali sets <a href="https://math.stackexchange.com/questions/3145729/do-vitali-sets-really-explain-measure-theoretic-probability">can coexist</a>, this puts a lot of undesirable constraints on the probability function.
+            </p>
+            <h3>Solving the Problem with Borel Sets</h3>
+            <br>
             <p>
                 As defined earlier, a \(\sigma\)-algebra is the kind of set that excludes non-Lebesgue measurable sets like the Vitali sets or analogous sets in different \(\Omega\) from consideration in the probability space. This is why only <em>countably</em>> infinite unions of events in the \(\sigma\) algebra must be present in it. If \(\Omega\) is a topological space (e.g. Euclidean space, metric-defined spaces, manifolds), then the typical \(\sigma\) algebra used is its Borel \(\sigma\) algebra. The Borel \(\sigma\) algebra is a set composed of all  <a href="https://en.wikipedia.org/wiki/Borel_set">borel sets</a> of \(\Omega\) where a borel set is any set in \(\Omega\) that can be formed from open sets in that space through <em>countably</em> many unions, intersections, and complementations. 
             </p>
