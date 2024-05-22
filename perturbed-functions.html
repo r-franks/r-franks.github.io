@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<head>
+    <link rel="shortcut icon" type="image/png" href="favicon.png"> 
+    <link rel="stylesheet" href="styles.css">
+    <title>Ryan Franks | Perturbed Functions</title>
+</head>
+<body>
+    <div class="overlay">
+        <div id="header">
+            <h1>Ryan Franks | Perturbed Functions</h1>
+        </div>
+        <div id="menu">
+            <a href="index.html">Home</a>
+            <a href="art.html">Art</a>
+            <a href="science.html">Science</a>
+            <a href="people.html">People</a>
+            <a href="interesting.html">Things of Interest</a>
+        </div>
+        <br>
+    </div>
+    <main>
+        <div class="overlay">
+            <h1>Introduction</h1>
+            <p>
+                Given a function \(f(x): \mathbb{R} \to \mathbb{R}\) and an invertible transformation function \(g(x, \varepsilon): \mathbb{R}, \mathbb{R} \to \mathbb{R}\), one may define a randomly perturbed function \(Z(x)=f(g(x, \varepsilon))\) where \(\varepsilon\) is a random variable described by probability density function \(p(\varepsilon)\). The expectation of this function is given as           
+            </p>
+            $$E[Z(x)] = E[f(g(x, \varepsilon))] = \int_{-\infty}^{\infty} f(g(x, \varepsilon)) p(\varepsilon) d\varepsilon$$
+            <p>
+                Or equivalently, by letting \(u=g(x, \varepsilon)=g_x(\varepsilon)\) and U-substitution:
+            </p>
+            $$E[Z(x)] = E[f(g(x, \varepsilon))] = \int_{g(x, -\infty)}^{g(x, \infty)} f(u) p(g_{x}^{-1}(u)) \left (\frac{\partial g_x}{\partial\varepsilon}(g_x^{-1}(u)) \right)^{-1} du$$
+            <p>
+                where \(g_{x}^{-1}\) is an inverse function so \(g_{x}^{-1}(g(x, \varepsilon))=\varepsilon\) is satisfied. Note that whichever way it is viewed, \(E[Z(x)]\) constitutes a weighted average of values of \(f\) with weightings determined by \(g\) and \(p\).
+            </p>
+            <p>
+                The neat thing about these two representations is that one can switch between an integral where the only dependency on \(x\) is in \(f(g(x,\varepsilon))\) and an integral where the only dependency on \(x\) is in \(p(g_x^{-1}(u))\). When we take the derivative of \(E[Z(x)]\), there is therefore an equivalency between finding out how every value of the function \(f(g(x, \varepsilon))\) changes holding weights \(p(\epsilon)\) constant and finding out how the weights \(p(g_x^{-1}(u))\) change holding the function \(f(u)\) constant.
+            </p>
+            <p>
+                The first approach is the easiest, giving a derivative of:
+            </p>
+            $$\frac{d E[Z(x)]}{dx} = \int_{-\infty}^{\infty} \frac{\partial f\circ g}{\partial x}(x, \varepsilon) p(\varepsilon) d\varepsilon = \int_{-\infty}^{\infty} \left [f'(g(x, \varepsilon)) \frac{\partial g}{\partial x}(x, \varepsilon)\right ] p(\varepsilon) d\varepsilon$$
+            <p>
+                The second approach gives the following, which can be solved by quotient rule[1] assuming that \(g(x, -\infty)\) and \(g(x, \infty)\) do not depend on \(x\).
+            </p>
+            \begin{flalign}
+                \frac{d E[Z(x)]}{dx} &= \int_{g(x, -\infty)}^{g(x, \infty)} f(u) \frac{d}{dx} \left [p(g_{x}^{-1}(u)) \left (\frac{\partial g_x}{\partial\varepsilon}(g_x^{-1}(u)) \right)^{-1}\right ] du
+                \\
+                &= \left. -\int_{g(x, -\infty)}^{g(x, \infty)} f(u)
+
+                \frac{p'\frac{\partial g}{\partial x}
+                + p\left [\frac{\partial^2 g}{\partial x\partial \varepsilon} - \frac{\partial^2 g}{\partial \varepsilon^2}\frac{\partial g}{\partial x}\left (\frac{\partial g}{\partial \varepsilon}\right)^{-1}\right ]}
+
+                {\left (\frac{\partial g}{\partial\varepsilon}\right)^2} \right |_{(x, g_x^{-1}(u))}
+                
+                du
+            \end{flalign}
+            <h1>Simple Applications</h1>
+            <br>
+            <h2>Additive Noise</h2>
+            <p>
+                These equations can be used to generically handle different ways of randomly perturbing the input to a function. While the latter equation is kind of complicated, it simplifies greatly in cases where \(g\) is simple -- which it usually will be. For example, if \(g(x,\varepsilon) = x - \varepsilon\), the first representation is straightforward and the second derivatives in the second representation vanish nicely. Thus one has:
+            </p>
+            $$
+            \frac{d E[Z(x)]}{dx} = \int_{-\infty}^{\infty} f'(x - \varepsilon) p(\varepsilon)  d\varepsilon = \int_{-\infty}^{\infty} f(u) p'(u-x) du
+            $$
+            <p>
+                In this case, both representations look similar except with the differentiated component switched.This is due to the simplicity of \(g\) and, as \(g\) gets more complicated, the second integral representation does too. 
+            </p>
+            <p>
+                Also note that in the additive setting, the un-differentiated expression is just a convolution of \(f\) and \(p\) which satisy the property \((f * p)'=f * p' = f' * p\).
+            </p>
+            <h2>Multiplicative Noise</h2>
+            <p>
+                Another common application is multiplicative noise of the form \(g(x, \varepsilon) = (1+\epsilon)x\). Plugging into the first equation yields
+            </p>
+            $$
+                \frac{d E[Z(x)]}{dx} = \int_{-\infty}^{\infty} f'((1+\varepsilon)x)(1+\varepsilon) p(\varepsilon)  d\varepsilon
+            $$
+            <p>
+                Plugging in the second equation is not straightforward because \(g(x, \infty)=(1+\infty)x=\text{sign}(x)\infty\). Therefore, the integral bounds depend on \(x\) when \(x\) is changing sign so it is not <em>exactly</em> correct to use the formula introduced earlier. However, outside of \(x=0\), \(\text{sign}(x)\infty\) is locally constant so one can still move ahead and compute the derivative at every \(x \neq 0\):
+            </p>
+            </p>
+            \begin{flalign}
+            \frac{d E[Z(x)]}{dx} &= -\int_{g(x, -\infty)}^{g(x, \infty)} f(u) \frac{p'(u/x - 1)(1+u/x-1)+p(u/x-1)[1-0]}{x^2} du
+            \\
+            &= -\int_{g(x, -\infty)}^{g(x, \infty)} f(u) \frac{p'(u/x - 1)(u/x)+p(u/x-1)}{x^2} du
+            \\
+            &= -\text{sign}(x)\int_{-\infty}^{\infty} f(u) \frac{p'(u/x - 1)(u/x)+p(u/x-1)}{x^2} du
+
+            \end{flalign}
+            <p>
+                Note that the terms of this expression are simple enough that, once the U-Substitution is performed to convert \(g(g(x,\epsilon))\) to \(f(u)\), it can be evaluated easily by hand.
+            </p>
+            <h1>Differentiability</h1>
+            <p>
+                It is notable that one can compute derivatives of \(E[f(g(x, \varepsilon))]\) without ever needing to evaluate the derivative of \(f\) itself. In the case where \(g(x,\varepsilon)=x+\varepsilon\) and one has a convolution \(E[f(g(x, \varepsilon))] = f * p\), which is established to be differentiable as many times as \(f\) and \(p\) are in total. In this case, if \(p\) is infinitely differentiable, it follows that \(E[f(g(x \varepsilon))]\) is infinitely differentiable.
+            </p>
+            <p>
+                This can also be seen in the general case. After all, the \(n\)th derivative can be written in a way that only depends on the derivatives of \(p\) and \(g\):
+            </p>
+            $$
+            \frac{d^n E[Z(x)]}{dx^n} = \int_{g(x, -\infty)}^{g(x, \infty)} f(u) \frac{d^n}{dx^n} \left [p(g_{x}^{-1}(u)) \left (\frac{\partial g_x}{\partial\varepsilon}(g_x^{-1}(u)) \right)^{-1}\right ] du
+            $$
+            <p>
+                So if \(p\) is infinitely differentiable, \(E[Z(x)]\) will be too for most \(g\). This still holds even if \(f\) if some strange undifferentiable process which may make this useful for optimization (ie stochastic gradient descent).
+            </p>
+            <h1>Notes</h1>
+            <p>
+                [1] We can compute \(\partial g_x^{-1}(u) / \partial x\) using the total derivative of \(g\). Note that \(g(x, g_x^{-1}(u))=u\). We treat \(u\) as constant and differentiate both sides with respect to \(x\). By chain-rule:
+            </p>
+            \begin{flalign}
+                \frac{\partial g}{\partial x}\frac{\partial x}{\partial x} + \frac{\partial g}{\partial \varepsilon}\frac{\partial  g_x^{-1}(u)}{\partial x} &= 0 \to \frac{\partial  g_x^{-1}(u)}{\partial x} = -\frac{\partial g}{\partial x}\left (\frac{\partial g}{\partial \varepsilon}\right)^{-1}
+            \end{flalign}
+            <p>
+                Similarly by chain-rule:
+            </p>
+            \begin{flalign}
+                \frac{\partial}{\partial x}\left [\frac{\partial g_x}{\partial\varepsilon}\right](g_x^{-1}(u)) &= \frac{\partial}{\partial x} \left[\frac{\partial g}{\partial \varepsilon}(x, g_x^{-1}(u))\right]= \frac{\partial [\partial g/\partial\varepsilon]}{\partial x} +  \frac{\partial [\partial g/\partial\varepsilon]}{\partial \epsilon}\frac{\partial g_x^{-1}(u)}{\partial x} \\
+
+                &= \left. \frac{\partial^2 g}{\partial x\partial \varepsilon} - \frac{\partial^2 g}{\partial \varepsilon^2}\frac{\partial g}{\partial x}\left (\frac{\partial g}{\partial \varepsilon}\right)^{-1} \right |_{x, g_x^{-1}(u)}
+            \end{flalign}
+            <p>
+                Now we may apply quotient rule on \(p(g_{x}^{-1}(u))\) and \([\partial g_x/\partial\varepsilon](g_x^{-1}(u))\):
+            </p>
+            \begin{flalign}
+                \frac{d}{dx}\left [\frac{p(g_{x}^{-1}(u))}{\frac{\partial g_x}{\partial\varepsilon}(g_x^{-1}(u))}\right ] &= 
+                
+                \left. \frac{-p'\frac{\partial g}{\partial x}\left (\frac{\partial g}{\partial \varepsilon}\right)^{-1}
+                \frac{\partial g}{\partial\varepsilon} - p\left [\frac{\partial^2 g}{\partial x\partial \varepsilon} - \frac{\partial^2 g}{\partial \varepsilon^2}\frac{\partial g}{\partial x}\left (\frac{\partial g}{\partial \varepsilon}\right)^{-1}\right ]}
+
+                {\left (\frac{\partial g}{\partial\varepsilon}\right)^2} \right |_{(x, g_x^{-1}(u))}
+
+                \\
+
+                &=\left. -\frac{p'\frac{\partial g}{\partial x}
+                + p\left [\frac{\partial^2 g}{\partial x\partial \varepsilon} - \frac{\partial^2 g}{\partial \varepsilon^2}\frac{\partial g}{\partial x}\left (\frac{\partial g}{\partial \varepsilon}\right)^{-1}\right ]}
+
+                {\left (\frac{\partial g}{\partial\varepsilon}\right)^2} \right |_{(x, g_x^{-1}(u))}
+                
+            \end{flalign}
+
+        </div>
+    </main>
+</body>
+</html>
