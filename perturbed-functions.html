@@ -108,7 +108,7 @@
             \frac{d^n E[Z(x)]}{dx^n} = \int_{g(x, -\infty)}^{g(x, \infty)} f(u) \frac{d^n}{dx^n} \left [p(g_{x}^{-1}(u)) \left (\frac{\partial g_x}{\partial\varepsilon}(g_x^{-1}(u)) \right)^{-1}\right ] du
             $$
             <p>
-                So if \(p\) is infinitely differentiable, \(E[Z(x)]\) will be too for most \(g\). This still holds even if \(f\) if some strange undifferentiable process which may make this useful for optimization (ie stochastic gradient descent).
+                So if \(p\) is infinitely differentiable, \(E[Z(x)]\) will be too for most \(g\) (e.g. \(g(x,\varepsilon)=x-\varepsilon\)). This still holds even if \(f\) if some strange undifferentiable process which may make this useful for optimization (ie stochastic gradient descent).
             </p>
             <h1>Notes</h1>
             <p>
