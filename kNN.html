@@ -247,7 +247,7 @@
         EPE &= \mathbb{E}_{(x_1, x_2)}\left[\sum_{y=0}^1 \mathbb{1}_{y \neq f((x_1, x_2))}P(y | (x_1, x_2)) \right] \\
         &= \mathbb{E}_{(x_1, x_2)}\left[\sum_{y=0}^1 \mathbb{1}_{y \neq f((x_1, x_2))}\mathbb{1}_{y=x_1} \right] \\ 
 
-        &= \int_{\{0, 1\}\times [0, a]} \left[\sum_{y=0}^1 \mathbb{1}_{y \neq f((x_1, x_2))}\mathbb{1}_{y=x_1} \right] \, dP_X((x_1, x_2)) \\ 
+        &= \int_{\{0, 1\}\times [0, a]} \left[\sum_{y=0}^1 \mathbb{1}_{y \neq f((x_1, x_2))}\mathbb{1}_{y=x_1} \right] \, P_X((dx_1, dx_2)) \\ 
 
         &= \frac{1}{a}\int_0^a \left [\frac{1}{2} \sum_{x_1=0}^1 \sum_{y=0}^1 \mathbb{1}_{y\neq f((x_1, x_2))}\mathbb{1}_{y=x_1} \right ]\, dx_2\\
     
@@ -261,7 +261,7 @@
             where \(u=x_2/a\). Now to calculate the average \(EPE\) for a <em>1</em>-NN using a background dataset composed of \(n\) samples from \(X_1, X_2, Y\, |\, X_1=0\) and \(n\) samples from \(X_1, X_2, Y\, |\, X_1=1\), one must marginalize over all possible background datasets satisfying those requirements. Letting \(f_{\mathcal{D}}\) be a <em>(k=1)</em>-NN model defined by background dataset \(\mathcal{D}\), one can write:
         </p>
         $$
-            \overline{EPE} = \int_{A} \int_0^1 \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{x_1\neq f_{\mathcal{D}}((x_1, a\cdot u))} \right ]\, du \, dP_D(\mathcal{D})
+            \overline{EPE} = \int_{A} \int_0^1 \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{x_1\neq f_{\mathcal{D}}((x_1, a\cdot u))} \right ]\, du \, P_D(d\mathcal{D})
         $$
         <p>
         where \(A=(\{0\}\times [0, a])^n \times (\{1\}\times [0, a])^n\). Note that <em>1</em>-NN outputs the \(y=x_1\) value associated with the point in the training dataset with the smallest distance so using Manhattan Distance (for simplicity), and since ties are neglible over continuously distributed distances:
@@ -283,13 +283,13 @@
         </p>
         $$
         \begin{aligned}
-            \overline{EPE} &= \int_{A} \int_0^1 \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}} \right ]\, du \, dP_D(\mathcal{D})\\
+            \overline{EPE} &= \int_{A} \int_0^1 \left [\frac{1}{2} \sum_{x_1=0}^1 \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}} \right ]\, du \, P_D(d\mathcal{D})\\
 
-            &= \int_{A} \int_0^1 \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}}\, du \, dP_D(\mathcal{D})\\
+            &= \int_{A} \int_0^1 \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}}\, du \, P_D(d\mathcal{D})\\
 
-            &= \int_0^1 \int_{A} \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}}\, dP_D(\mathcal{D}) \, du\\
+            &= \int_0^1 \int_{A} \mathbb{1}_{1+d_{\mathcal{D},u}^{1*} < d_{\mathcal{D},u}^{2*}}\, P_D(d\mathcal{D}) \, du\\
 
-            &= \int_0^1 \int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D},u}^{1*} < n_{\mathcal{D},u}^{2*}}\, dP_D(\mathcal{D}) \, du
+            &= \int_0^1 \int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D},u}^{1*} < n_{\mathcal{D},u}^{2*}}\, P_D(d\mathcal{D}) \, du
         \end{aligned}
         $$
         <p>
@@ -303,13 +303,13 @@
         </p>
         $$
         \begin{aligned}
-            \overline{EPE} &> \int_0^1 \int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D}}^{1*}{'} < n_{\mathcal{D}}^{2*}{'}}\, dP_D(\mathcal{D}) \, du \\
-            &>\int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D}}^{1*}{'} < n_{\mathcal{D}}^{2*}{'}}\, dP_D(\mathcal{D})
+            \overline{EPE} &> \int_0^1 \int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D}}^{1*}{'} < n_{\mathcal{D}}^{2*}{'}}\, P_D(d\mathcal{D}) \, du \\
+            &>\int_{A} \mathbb{1}_{\frac{1}{a}+ n_{\mathcal{D}}^{1*}{'} < n_{\mathcal{D}}^{2*}{'}}\, P_D(d\mathcal{D})
         \end{aligned}
         $$
         where \(n_{\mathcal{D}}^{1*}{'}, n_{\mathcal{D}}^{2*}{'}\sim \mathcal{U}_{[0, 0.5]}\). The integral over \(u\) has also disappeared becaue the integrand has lost dependence on it. Letting \(z_1=\frac{1}{a} + n_{\mathcal{D},u}^{1*}{'}\sim \mathcal{U}_{[1/a, 0.5+1/a]}\) and \(z_2=n_{\mathcal{D},u}^{2*}{'}\sim \mathcal{U}_{[0, 0.5]}\) gets things even simpler.
         $$
-            \overline{EPE} > \int_{A} \mathbb{1}_{z_1 < z_2}\, dP_D(\mathcal{D})
+            \overline{EPE} > \int_{A} \mathbb{1}_{z_1 < z_2}\, P_D(d\mathcal{D})
         $$
         <p>
             The benefit to doing all this is that the minima of \(n\) samples from a uniform distribution has a known distribution with the following <a href="https://math.stackexchange.com/questions/786392/expectation-of-minimum-of-n-i-i-d-uniform-random-variables">CDF and PDF</a>:
@@ -325,7 +325,7 @@
         </p>
         $$
         \begin{aligned}
-            \overline{EPE} &> \int_{0}^{0.5} F_{\mathcal{U}_{[1/a, 0.5+1/a]}, n}(z_2)\, dP_{\mathcal{U}_{[0, 0.5]}, n}(z_2) \\
+            \overline{EPE} &> \int_{0}^{0.5} F_{\mathcal{U}_{[1/a, 0.5+1/a]}, n}(z_2)\, P_{d\mathcal{U}_{[0, 0.5]}, n}(z_2) \\
             &> \int_{0}^{0.5} F_{\mathcal{U}_{[1/a, 0.5+1/a]}, n}(z_2)\, f_{\mathcal{U}_{[0, 0.5]}, n}(z_2)\, dz_2\\
             &> \int_{\min(1/a,\, 0.5)}^{0.5} \left (1-\left(\frac{0.5+1/a-z_2}{0.5}\right)^n \right ) \frac{n}{0.5}\left(\frac{0.5-z_2}{0.5}\right)^{n-1}\, dz_2 \\
 
