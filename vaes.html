@@ -31,10 +31,10 @@
                 Auto-encoders are unsupervised models that seek to learn a low-dimensional representation of a particular distribution. They do this by taking a high dimesnional input \(x\), mapping it to a low dimensional vector (the encoder), and then mapping that vector back to a high dimensional \(x'\) (the decoder) which is hopefully similar to \(x\). This is achieved by applying stochastic gradient descent to the encoder parameterss \(\phi\) and decoder parameters \(\theta\) with the aim of minimizing the distance between \(x\) and \(x'\).
             </p>
             <p>
-                Variational-autoencders are extensions of auto-encoders that seek to learn distributions. In particular we do the following
+                Variational-autoencoders are extensions of auto-encoders that seek to learn distributions. In particular we do the following
                 <ol>
                     <li>
-                        We define our decoder as computing the parameters of a distribution describing the latent variable \(z\) conditional on \(x\): \(E_\phi = q_\phi(z | x)\). Here, we must make some high-level assumptions about the distributions so that the problem does not become too complicated. For example, we may assume \(z | x\) should be normally distributed and have \(E_\phi = q_\phi(z | x) = \mathcal{N}(\mu_{\phi}(x), \sigma_{\phi}(x))\) where \(\mu_{\phi}\) and \(\sigma_{\phi}^2\) are the functions we actually learn.
+                        We define our decoder as computing the parameters of a distribution describing the latent variable \(z\) conditional on \(x\): \(E_\phi = q_\phi(z | x)\). Here, we must make some high-level assumptions about the distributions so that the problem does not become too complicated. For example, we may assume \(z | x\) should be normally distributed and have \(E_\phi = q_\phi(z | x) = \mathcal{N}(\mu_{\phi}(x), \sigma_{\phi}(x))\) where \(\mu_{\phi}\) and \(\sigma_\phi^2\) are the functions we actually learn.
                     </li>
                     <li>
                         We pass \(x\) through our decoder to get our conditional distribution and generate a point in the low dimensional space by sampling \(z\) with \(z\sim q_{\phi}(z | x)\).
