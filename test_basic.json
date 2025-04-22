@@ -1,0 +1,7 @@
+[
+  {"data": {"id": "a"}, "position": {"x": 100, "y": 100}},
+  {"data": {"id": "b"}, "position": {"x": 200, "y": 100}},
+  {"data": {"id": "c"}, "position": {"x": 150, "y": 200}},
+  {"data": {"id": "a-b", "source": "a", "target": "b"}},
+  {"data": {"id": "b-c", "source": "b", "target": "c"}}
+]
