@@ -1,0 +1,5566 @@
+[
+    {
+        "data": {
+            "id": "hakuvillage",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 0.7501842200561328,
+            "y": -0.17267376371438736
+        }
+    },
+    {
+        "data": {
+            "id": "yokaiportal",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": -0.5244551562151138,
+            "y": 0.5635063281063495
+        }
+    },
+    {
+        "data": {
+            "id": "hakuwar",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": -0.22572906384101854,
+            "y": -0.3908325643919621
+        }
+    },
+    {
+        "data": {
+            "id": "pinewoodpink",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 5.73582486623274,
+            "y": -0.17267376371438736
+        }
+    },
+    {
+        "data": {
+            "id": "sewerpink",
+            "color": "#add8e6",
+            "info": "Summer 2015 Adventure Map"
+        },
+        "position": {
+            "x": 4.461185489961493,
+            "y": 0.5635063281063495
+        }
+    },
+    {
+        "data": {
+            "id": "swordhavenpink",
+            "color": "#add8e6",
+            "info": "Summer 2015 Adventure Map"
+        },
+        "position": {
+            "x": 4.759911582335588,
+            "y": -0.3908325643919621
+        }
+    },
+    {
+        "data": {
+            "id": "downbelow",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": 3.243004543144436,
+            "y": -4.4903652174435935
+        }
+    },
+    {
+        "data": {
+            "id": "deepforest",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": 1.9683651668731892,
+            "y": -3.7541851256228567
+        }
+    },
+    {
+        "data": {
+            "id": "transformation",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": 2.2670912592472847,
+            "y": -4.708524018121168
+        }
+    },
+    {
+        "data": {
+            "id": "puzzlebox",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 3.243004543144436,
+            "y": 4.145017690014818
+        }
+    },
+    {
+        "data": {
+            "id": "gonnagetcha",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 1.9683651668731892,
+            "y": 4.881197781835555
+        }
+    },
+    {
+        "data": {
+            "id": "voltairetown",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 2.2670912592472847,
+            "y": 3.9268588893372436
+        }
+    },
+    {
+        "data": {
+            "id": "icestormarena",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": -2.041484858468539,
+            "y": 4.3176468449270065
+        }
+    },
+    {
+        "data": {
+            "id": "icestormunder",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": -2.7184153130892095,
+            "y": 5.053693826856186
+        }
+    },
+    {
+        "data": {
+            "id": "icewing",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": -2.718560797772444,
+            "y": 3.5817336894421126
+        }
+    },
+    {
+        "data": {
+            "id": "infernalparadise",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -4.534305181556842,
+            "y": -4.460885245083368e-05
+        }
+    },
+    {
+        "data": {
+            "id": "celestialpast",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -5.211235636177513,
+            "y": 0.7360023730767282
+        }
+    },
+    {
+        "data": {
+            "id": "infernaldianoia",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -5.211381120860747,
+            "y": -0.7359577643373453
+        }
+    },
+    {
+        "data": {
+            "id": "archportal",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -2.0414848584032597,
+            "y": -4.31773606259422
+        }
+    },
+    {
+        "data": {
+            "id": "originul",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -2.71841531302393,
+            "y": -3.5816890806650403
+        }
+    },
+    {
+        "data": {
+            "id": "fiendshard",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -2.718560797707165,
+            "y": -5.053649218079114
+        }
+    },
+    {
+        "data": {
+            "id": "baconcat",
+            "color": "#8b0000",
+            "info": "Throne of Darkness"
+        },
+        "position": {
+            "x": 0.45133546472856345,
+            "y": -8.635427516348551
+        }
+    },
+    {
+        "data": {
+            "id": "baconcatlair",
+            "color": "#8b0000",
+            "info": "Throne of Darkness"
+        },
+        "position": {
+            "x": -0.22559498989210658,
+            "y": -7.899380534419372
+        }
+    },
+    {
+        "data": {
+            "id": "baconcatyou",
+            "color": "#8b0000",
+            "info": "Throne of Darkness"
+        },
+        "position": {
+            "x": -0.22574047457534174,
+            "y": -9.371340671833446
+        }
+    },
+    {
+        "data": {
+            "id": "seraphicwar",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": 5.43697611094869,
+            "y": -8.635427516222922
+        }
+    },
+    {
+        "data": {
+            "id": "seraphicwarlaken",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": 4.76004565632802,
+            "y": -7.899380534293742
+        }
+    },
+    {
+        "data": {
+            "id": "seraphicwardage",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": 4.7599001716447855,
+            "y": -9.371340671707816
+        }
+    },
+    {
+        "data": {
+            "id": "falguard",
+            "color": "#add8e6",
+            "info": "ThunderForge"
+        },
+        "position": {
+            "x": 7.929796433928196,
+            "y": -4.317736062380649
+        }
+    },
+    {
+        "data": {
+            "id": "deathpits",
+            "color": "#add8e6",
+            "info": "ThunderForge"
+        },
+        "position": {
+            "x": 7.252865979307526,
+            "y": -3.58168908045147
+        }
+    },
+    {
+        "data": {
+            "id": "stormtemple",
+            "color": "#add8e6",
+            "info": "ThunderForge"
+        },
+        "position": {
+            "x": 7.252720494624292,
+            "y": -5.053649217865543
+        }
+    },
+    {
+        "data": {
+            "id": "atlaspromenade",
+            "color": "#0000ff",
+            "info": "Dage's Dark Birthday"
+        },
+        "position": {
+            "x": 10.721480665535173,
+            "y": 0.17260791966048994
+        }
+    },
+    {
+        "data": {
+            "id": "sevencircleswar",
+            "color": "#0000ff",
+            "info": "Dage's Dark Birthday"
+        },
+        "position": {
+            "x": 9.745586533183205,
+            "y": 0.3908523753540998
+        }
+    },
+    {
+        "data": {
+            "id": "sevencircles",
+            "color": "#0000ff",
+            "info": "Dage's Dark Birthday"
+        },
+        "position": {
+            "x": 9.446776678944907,
+            "y": -0.5634602940630502
+        }
+    },
+    {
+        "data": {
+            "id": "darkoviainvasion",
+            "color": "#ff0000",
+            "info": "Infernal Invasion"
+        },
+        "position": {
+            "x": 8.228660341870363,
+            "y": 4.490299373521532
+        }
+    },
+    {
+        "data": {
+            "id": "safiriainvasion",
+            "color": "#ff0000",
+            "info": "Infernal Invasion"
+        },
+        "position": {
+            "x": 7.252766209518395,
+            "y": 4.708543829215143
+        }
+    },
+    {
+        "data": {
+            "id": "lycaninvasion",
+            "color": "#ff0000",
+            "info": "Infernal Invasion"
+        },
+        "position": {
+            "x": 6.953956355280097,
+            "y": 3.754231159797993
+        }
+    },
+    {
+        "data": {
+            "id": "yard",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 5.735840018379633,
+            "y": 8.807990827483078
+        }
+    },
+    {
+        "data": {
+            "id": "lab",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 4.7599458860276656,
+            "y": 9.026235283176687
+        }
+    },
+    {
+        "data": {
+            "id": "mountain",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 4.461136031789367,
+            "y": 8.071922613759538
+        }
+    },
+    {
+        "data": {
+            "id": "lostvilla",
+            "color": "#9370db",
+            "info": "Book of Monsters: The Reshaper"
+        },
+        "position": {
+            "x": 0.750199371800599,
+            "y": 8.807990826352704
+        }
+    },
+    {
+        "data": {
+            "id": "brokenwoods",
+            "color": "#9370db",
+            "info": "Book of Monsters: The Reshaper"
+        },
+        "position": {
+            "x": -0.22569476055136883,
+            "y": 9.026235282046313
+        }
+    },
+    {
+        "data": {
+            "id": "twistedcavern",
+            "color": "#9370db",
+            "info": "Book of Monsters: The Reshaper"
+        },
+        "position": {
+            "x": -0.5245046147896675,
+            "y": 8.071922612629164
+        }
+    },
+    {
+        "data": {
+            "id": "zephyrus",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": -4.2354412747784345,
+            "y": 8.807990826170617
+        }
+    },
+    {
+        "data": {
+            "id": "hyperium",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": -5.211335407130402,
+            "y": 9.026235281864226
+        }
+    },
+    {
+        "data": {
+            "id": "banzai",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": -5.5101452613687005,
+            "y": 8.071922612447077
+        }
+    },
+    {
+        "data": {
+            "id": "dreampalace",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": -6.728261596528901,
+            "y": 4.490299371204328
+        }
+    },
+    {
+        "data": {
+            "id": "djinngate",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": -7.704155728880869,
+            "y": 4.708543826897939
+        }
+    },
+    {
+        "data": {
+            "id": "djinnguard",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": -8.002965583119167,
+            "y": 3.7542311574807887
+        }
+    },
+    {
+        "data": {
+            "id": "stonewooddeep",
+            "color": "#8b4513",
+            "info": "Doomwood Part 3"
+        },
+        "position": {
+            "x": -9.212872747699224,
+            "y": -0.32138587018041265
+        }
+    },
+    {
+        "data": {
+            "id": "thorngarde",
+            "color": "#8b4513",
+            "info": "Doomwood Part 3"
+        },
+        "position": {
+            "x": -10.346828651888654,
+            "y": 0.8258506632710527
+        }
+    },
+    {
+        "data": {
+            "id": "stonewood",
+            "color": "#8b4513",
+            "info": "Doomwood Part 3"
+        },
+        "position": {
+            "x": -10.863774917737993,
+            "y": -0.03016718597303636
+        }
+    },
+    {
+        "data": {
+            "id": "techdungeon",
+            "color": "#8b4513",
+            "info": "Doomwood Part 3"
+        },
+        "position": {
+            "x": -10.07485147631757,
+            "y": -0.8283303162585811
+        }
+    },
+    {
+        "data": {
+            "id": "marsh",
+            "color": "#008000",
+            "info": "Neverglades"
+        },
+        "position": {
+            "x": -7.659960762119669,
+            "y": -4.833484618618302
+        }
+    },
+    {
+        "data": {
+            "id": "marsh2",
+            "color": "#008000",
+            "info": "Neverglades"
+        },
+        "position": {
+            "x": -7.297232296386932,
+            "y": -3.901589742493761
+        }
+    },
+    {
+        "data": {
+            "id": "ruins",
+            "color": "#008000",
+            "info": "Neverglades"
+        },
+        "position": {
+            "x": -8.648369631614155,
+            "y": -4.985299989939616
+        }
+    },
+    {
+        "data": {
+            "id": "chaosmarsh",
+            "color": "#008000",
+            "info": "Neverglades"
+        },
+        "position": {
+            "x": -7.034280359806523,
+            "y": -5.613564123644087
+        }
+    },
+    {
+        "data": {
+            "id": "reddeath",
+            "color": "#ffd700",
+            "info": "Mirror Realm"
+        },
+        "position": {
+            "x": -4.265673802283926,
+            "y": -10.135200266584562
+        }
+    },
+    {
+        "data": {
+            "id": "battleoff",
+            "color": "#ffd700",
+            "info": "Mirror Realm"
+        },
+        "position": {
+            "x": -5.0517252506434325,
+            "y": -8.591787450911834
+        }
+    },
+    {
+        "data": {
+            "id": "lightoviacave",
+            "color": "#ffd700",
+            "info": "Mirror Realm"
+        },
+        "position": {
+            "x": -5.99533423438376,
+            "y": -10.04423438104577
+        }
+    },
+    {
+        "data": {
+            "id": "brightfall",
+            "color": "#ffd700",
+            "info": "Mirror Realm"
+        },
+        "position": {
+            "x": -5.104244429129729,
+            "y": -9.590407366675393
+        }
+    },
+    {
+        "data": {
+            "id": "necrocavern",
+            "color": "#8b4513",
+            "info": "Doomwood Part 2"
+        },
+        "position": {
+            "x": -0.49610620847913545,
+            "y": -13.601833264957854
+        }
+    },
+    {
+        "data": {
+            "id": "necroproject",
+            "color": "#8b4513",
+            "info": "Doomwood Part 2"
+        },
+        "position": {
+            "x": -2.0014342257139925,
+            "y": -12.745102525706832
+        }
+    },
+    {
+        "data": {
+            "id": "necropolis",
+            "color": "#8b4513",
+            "info": "Doomwood Part 2"
+        },
+        "position": {
+            "x": -1.4960870788519443,
+            "y": -13.608018663670647
+        }
+    },
+    {
+        "data": {
+            "id": "necrodungeon",
+            "color": "#8b4513",
+            "info": "Doomwood Part 2"
+        },
+        "position": {
+            "x": -1.9907208008749744,
+            "y": -14.477120200338053
+        }
+    },
+    {
+        "data": {
+            "id": "pyrewatch",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 4.902852445627897,
+            "y": -13.707877853966668
+        }
+    },
+    {
+        "data": {
+            "id": "phoenixrise",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 3.3975244283930395,
+            "y": -12.851147114715646
+        }
+    },
+    {
+        "data": {
+            "id": "embersea",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 3.9028715752550878,
+            "y": -13.71406325267946
+        }
+    },
+    {
+        "data": {
+            "id": "fireforge",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 3.4082378532320576,
+            "y": -14.583164789346867
+        }
+    },
+    {
+        "data": {
+            "id": "shadowspire",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 9.999576903918618,
+            "y": -11.923669402054053
+        }
+    },
+    {
+        "data": {
+            "id": "dragonspire",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 8.494248886683762,
+            "y": -11.06693866280303
+        }
+    },
+    {
+        "data": {
+            "id": "shadowflame",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 8.99959603354581,
+            "y": -11.929854800766845
+        }
+    },
+    {
+        "data": {
+            "id": "queenspire",
+            "color": "#ff4500",
+            "info": "Ring of Fire Islands"
+        },
+        "position": {
+            "x": 8.50496231152278,
+            "y": -12.798956337434252
+        }
+    },
+    {
+        "data": {
+            "id": "digitalmaintown",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 11.743984053911108,
+            "y": -7.279227471067605
+        }
+    },
+    {
+        "data": {
+            "id": "digitaltrainers",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 12.45109086751153,
+            "y": -6.57212069422293
+        }
+    },
+    {
+        "data": {
+            "id": "digitalrecruit",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 11.0368773466618,
+            "y": -6.572120615943826
+        }
+    },
+    {
+        "data": {
+            "id": "digitalyulgar",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 11.036877430626479,
+            "y": -7.986334414092619
+        }
+    },
+    {
+        "data": {
+            "id": "digitalmain",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 12.451090940878787,
+            "y": -7.986334178482233
+        }
+    },
+    {
+        "data": {
+            "id": "chaoscave",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 15.599869110601281,
+            "y": -2.7649477389430825
+        }
+    },
+    {
+        "data": {
+            "id": "vampirewar",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 14.33446641044842,
+            "y": -1.8786721676428
+        }
+    },
+    {
+        "data": {
+            "id": "wargrounds",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 13.599944223172814,
+            "y": -2.6519143591424856
+        }
+    },
+    {
+        "data": {
+            "id": "lycanwar",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 14.644734362361847,
+            "y": -3.061119332289904
+        }
+    },
+    {
+        "data": {
+            "id": "camlan",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": 15.465956904221827,
+            "y": 3.193133919986319
+        }
+    },
+    {
+        "data": {
+            "id": "lotustomb",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": 14.54181002326017,
+            "y": 3.575171277581805
+        }
+    },
+    {
+        "data": {
+            "id": "hiddenduat",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": 13.252470052860346,
+            "y": 2.775102706578154
+        }
+    },
+    {
+        "data": {
+            "id": "shadowduat",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": 14.176616933894248,
+            "y": 2.393065349405703
+        }
+    },
+    {
+        "data": {
+            "id": "bludrut2",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": 12.059390659927006,
+            "y": 8.003576181766778
+        }
+    },
+    {
+        "data": {
+            "id": "bludrut",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": 11.665757262558763,
+            "y": 8.922843688250248
+        }
+    },
+    {
+        "data": {
+            "id": "bludrut3",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": 10.881972610611665,
+            "y": 7.623540453015419
+        }
+    },
+    {
+        "data": {
+            "id": "bludrut4",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": 11.275606008493478,
+            "y": 6.704272946626322
+        }
+    },
+    {
+        "data": {
+            "id": "swordhavenundead",
+            "color": "#9acd32",
+            "info": "Oaklore Intro"
+        },
+        "position": {
+            "x": 9.100729296482413,
+            "y": 12.409810569146648
+        }
+    },
+    {
+        "data": {
+            "id": "warhorc",
+            "color": "#9acd32",
+            "info": "Oaklore Intro"
+        },
+        "position": {
+            "x": 8.31839999435528,
+            "y": 13.709990611099585
+        }
+    },
+    {
+        "data": {
+            "id": "portalundead",
+            "color": "#9acd32",
+            "info": "Oaklore Intro"
+        },
+        "position": {
+            "x": 7.923737519679783,
+            "y": 12.791164440878573
+        }
+    },
+    {
+        "data": {
+            "id": "castleundead",
+            "color": "#9acd32",
+            "info": "Oaklore Intro"
+        },
+        "position": {
+            "x": 8.70606682081365,
+            "y": 11.490984399109305
+        }
+    },
+    {
+        "data": {
+            "id": "fotia",
+            "color": "#ff0000",
+            "info": "Isle of Fotia"
+        },
+        "position": {
+            "x": 3.260705166998295,
+            "y": 12.43139480539002
+        }
+    },
+    {
+        "data": {
+            "id": "frozenfotia",
+            "color": "#ff0000",
+            "info": "Isle of Fotia"
+        },
+        "position": {
+            "x": 3.753308366396982,
+            "y": 14.402930758661276
+        }
+    },
+    {
+        "data": {
+            "id": "styx",
+            "color": "#ff0000",
+            "info": "Isle of Fotia"
+        },
+        "position": {
+            "x": 1.7910825579886396,
+            "y": 13.97920114470102
+        }
+    },
+    {
+        "data": {
+            "id": "judgement",
+            "color": "#ff0000",
+            "info": "Isle of Fotia"
+        },
+        "position": {
+            "x": 1.7507591396354236,
+            "y": 12.980014464479396
+        }
+    },
+    {
+        "data": {
+            "id": "pirates",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 3.8711952902388775,
+            "y": 13.22341867463609
+        }
+    },
+    {
+        "data": {
+            "id": "underrealm",
+            "color": "#ff0000",
+            "info": "Isle of Fotia"
+        },
+        "position": {
+            "x": 2.6386388768274194,
+            "y": 14.807931721868322
+        }
+    },
+    {
+        "data": {
+            "id": "backroom",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": -2.2283736139275,
+            "y": 14.708138941975104
+        }
+    },
+    {
+        "data": {
+            "id": "crownsreach",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": -3.3478486077067955,
+            "y": 13.327309473631711
+        }
+    },
+    {
+        "data": {
+            "id": "chaoslibrarium",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": -3.226838680702039,
+            "y": 14.652753831783695
+        }
+    },
+    {
+        "data": {
+            "id": "dualplane",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": -4.420044476852421,
+            "y": 13.492433896923
+        }
+    },
+    {
+        "data": {
+            "id": "forestreach",
+            "color": "#4b0082",
+            "info": "Shadows of Chaos"
+        },
+        "position": {
+            "x": -2.339973346288493,
+            "y": 12.873136683311802
+        }
+    },
+    {
+        "data": {
+            "id": "icedimension",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -9.486378782562028,
+            "y": 11.613532684512942
+        }
+    },
+    {
+        "data": {
+            "id": "darkdimension",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -8.057846288083226,
+            "y": 12.32125226184116
+        }
+    },
+    {
+        "data": {
+            "id": "sanddimension",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -9.188731161734609,
+            "y": 12.808337481200512
+        }
+    },
+    {
+        "data": {
+            "id": "pocketdimension",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -10.345572664838935,
+            "y": 12.12518283125184
+        }
+    },
+    {
+        "data": {
+            "id": "ivoliss",
+            "color": "#ffd700",
+            "info": "Celestial Realm Map"
+        },
+        "position": {
+            "x": -7.944348643672448,
+            "y": 13.314790527190414
+        }
+    },
+    {
+        "data": {
+            "id": "battleconvip",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -10.92832692726577,
+            "y": 7.7319805961617245
+        }
+    },
+    {
+        "data": {
+            "id": "artistalley",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -12.921729750974437,
+            "y": 8.468920217793567
+        }
+    },
+    {
+        "data": {
+            "id": "vendorbooths",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -12.049940524760162,
+            "y": 7.507210723714961
+        }
+    },
+    {
+        "data": {
+            "id": "battlecon",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -13.484297609845534,
+            "y": 7.51581141279163
+        }
+    },
+    {
+        "data": {
+            "id": "undergroundlab",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -11.984032006592335,
+            "y": 6.140610855018453
+        }
+    },
+    {
+        "data": {
+            "id": "undergroundlabb",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": -12.931604767996792,
+            "y": 5.8210707763986775
+        }
+    },
+    {
+        "data": {
+            "id": "northlands",
+            "color": "#87cefa",
+            "info": "Frozen Northlands"
+        },
+        "position": {
+            "x": -14.717759930119698,
+            "y": 2.0647960620593926
+        }
+    },
+    {
+        "data": {
+            "id": "frozenqueen",
+            "color": "#87cefa",
+            "info": "Frozen Northlands"
+        },
+        "position": {
+            "x": -16.812021653307376,
+            "y": 1.4554365537477199
+        }
+    },
+    {
+        "data": {
+            "id": "mountfrost",
+            "color": "#87cefa",
+            "info": "Frozen Northlands"
+        },
+        "position": {
+            "x": -15.192299616979653,
+            "y": 2.9450301704617297
+        }
+    },
+    {
+        "data": {
+            "id": "northlandlight",
+            "color": "#87cefa",
+            "info": "Frozen Northlands"
+        },
+        "position": {
+            "x": -16.883815810530173,
+            "y": 2.4528560240813837
+        }
+    },
+    {
+        "data": {
+            "id": "void",
+            "color": "#87cefa",
+            "info": "Frozen Northlands"
+        },
+        "position": {
+            "x": -15.29590242371442,
+            "y": 0.14828558578434925
+        }
+    },
+    {
+        "data": {
+            "id": "blindingsnow",
+            "color": "#87cefa",
+            "info": "Frozen Northlands"
+        },
+        "position": {
+            "x": -15.578036723008342,
+            "y": 1.1179316536769814
+        }
+    },
+    {
+        "data": {
+            "id": "underlair",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": -13.664319899934842,
+            "y": -3.036202045834811
+        }
+    },
+    {
+        "data": {
+            "id": "lair",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": -13.07388151455302,
+            "y": -3.84354336865036
+        }
+    },
+    {
+        "data": {
+            "id": "laircross",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": -13.74844683244206,
+            "y": -5.160058929427146
+        }
+    },
+    {
+        "data": {
+            "id": "thunderfang",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": -15.170229547973573,
+            "y": -4.749007754555652
+        }
+    },
+    {
+        "data": {
+            "id": "razorclaw",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": -14.310753996804745,
+            "y": -6.25131392053073
+        }
+    },
+    {
+        "data": {
+            "id": "nothing",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": -15.353190891468195,
+            "y": -3.7658876465390163
+        }
+    },
+    {
+        "data": {
+            "id": "ectocave",
+            "color": "#8b0000",
+            "info": "Skullholme"
+        },
+        "position": {
+            "x": -12.569195478245053,
+            "y": -5.498721883593104
+        }
+    },
+    {
+        "data": {
+            "id": "deathsrealm",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": -10.059225484341582,
+            "y": -9.832904634858146
+        }
+    },
+    {
+        "data": {
+            "id": "evilwardage",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": -9.42450333261774,
+            "y": -10.605919403819879
+        }
+    },
+    {
+        "data": {
+            "id": "revenant",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": -11.536401206891384,
+            "y": -8.931641272238824
+        }
+    },
+    {
+        "data": {
+            "id": "underworld",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": -11.502313224400813,
+            "y": -10.158081892799004
+        }
+    },
+    {
+        "data": {
+            "id": "deimos",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": -10.552066157528559,
+            "y": -12.059652337950032
+        }
+    },
+    {
+        "data": {
+            "id": "legionlibrary",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": -12.699280045394618,
+            "y": -10.430689439071761
+        }
+    },
+    {
+        "data": {
+            "id": "legionarena",
+            "color": "#ffd700",
+            "info": "Seraphic Saga"
+        },
+        "position": {
+            "x": -11.458569206900128,
+            "y": -11.637453070447059
+        }
+    },
+    {
+        "data": {
+            "id": "naoisegrave",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -8.303438523088689,
+            "y": -17.230086792165952
+        }
+    },
+    {
+        "data": {
+            "id": "castlegaheris",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -7.365512222008249,
+            "y": -15.219086824709995
+        }
+    },
+    {
+        "data": {
+            "id": "liatarahill",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -8.504940385291318,
+            "y": -16.064167506775988
+        }
+    },
+    {
+        "data": {
+            "id": "queeniona",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -6.274582164558581,
+            "y": -14.869301264774888
+        }
+    },
+    {
+        "data": {
+            "id": "coldthunder",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -8.094370245102043,
+            "y": -14.472755861508498
+        }
+    },
+    {
+        "data": {
+            "id": "loughshine",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -7.154343585336065,
+            "y": -17.62445809209527
+        }
+    },
+    {
+        "data": {
+            "id": "balemorale",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -5.512460461941123,
+            "y": -16.266706090923677
+        }
+    },
+    {
+        "data": {
+            "id": "castleeblana",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -6.084862175822543,
+            "y": -17.086679430701018
+        }
+    },
+    {
+        "data": {
+            "id": "nerites",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -0.02871437980607583,
+            "y": -18.48190648339447
+        }
+    },
+    {
+        "data": {
+            "id": "twilightzone",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -0.3755072157096726,
+            "y": -21.52675184659606
+        }
+    },
+    {
+        "data": {
+            "id": "kathooldepths",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -3.0735318177882323,
+            "y": -19.243554362844694
+        }
+    },
+    {
+        "data": {
+            "id": "midnightzone",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -1.5893386263810494,
+            "y": -21.68837216083138
+        }
+    },
+    {
+        "data": {
+            "id": "abyssalzone",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -2.3874345601819873,
+            "y": -20.795731874402367
+        }
+    },
+    {
+        "data": {
+            "id": "sunlightzone",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": 0.3841051744281576,
+            "y": -20.59082993064795
+        }
+    },
+    {
+        "data": {
+            "id": "seavoice",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -1.5787374820161175,
+            "y": -18.342343154334838
+        }
+    },
+    {
+        "data": {
+            "id": "ashray",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": 0.356389987548432,
+            "y": -19.40477951162993
+        }
+    },
+    {
+        "data": {
+            "id": "trenchobserve",
+            "color": "#1e90ff",
+            "info": "Age of Ruin: Voice in the Sea"
+        },
+        "position": {
+            "x": -2.017499025604011,
+            "y": -19.427603045272036
+        }
+    },
+    {
+        "data": {
+            "id": "hachiko",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 8.088067970713047,
+            "y": -20.973988176085502
+        }
+    },
+    {
+        "data": {
+            "id": "shogunwar",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 8.569406940820606,
+            "y": -19.640045731421957
+        }
+    },
+    {
+        "data": {
+            "id": "junkyard",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 4.2794683579912185,
+            "y": -19.137770295028844
+        }
+    },
+    {
+        "data": {
+            "id": "shinkansen",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 5.489699734371946,
+            "y": -17.674548113973334
+        }
+    },
+    {
+        "data": {
+            "id": "dragonkoi",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 7.86528688005259,
+            "y": -18.40922736969027
+        }
+    },
+    {
+        "data": {
+            "id": "yokairiver",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 4.90061694454436,
+            "y": -21.18524461072362
+        }
+    },
+    {
+        "data": {
+            "id": "akiba",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 7.119527872719292,
+            "y": -19.753133776980256
+        }
+    },
+    {
+        "data": {
+            "id": "bamboo",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 5.15386065840627,
+            "y": -19.878664546563243
+        }
+    },
+    {
+        "data": {
+            "id": "yokaigrave",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 5.602080108375594,
+            "y": -21.97378731259754
+        }
+    },
+    {
+        "data": {
+            "id": "onsen",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 6.382053586673311,
+            "y": -18.125884576363546
+        }
+    },
+    {
+        "data": {
+            "id": "dragonkoiz",
+            "color": "#ff0000",
+            "info": "Yokai"
+        },
+        "position": {
+            "x": 6.990989990997656,
+            "y": -21.33531313604066
+        }
+    },
+    {
+        "data": {
+            "id": "cleric",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 18.062552092627953,
+            "y": -19.071432443603953
+        }
+    },
+    {
+        "data": {
+            "id": "swordhaven",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 15.657831534826405,
+            "y": -17.72504902884829
+        }
+    },
+    {
+        "data": {
+            "id": "swordhavenfalls",
+            "color": "#778899",
+            "info": "Swordhaven City"
+        },
+        "position": {
+            "x": 18.695253862808478,
+            "y": -17.056765852527985
+        }
+    },
+    {
+        "data": {
+            "id": "tavern",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 13.50213901516939,
+            "y": -15.322240841220944
+        }
+    },
+    {
+        "data": {
+            "id": "boxes",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 17.192397292448074,
+            "y": -17.688814033103974
+        }
+    },
+    {
+        "data": {
+            "id": "mountainpath",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 11.970489260513583,
+            "y": -16.061434919117872
+        }
+    },
+    {
+        "data": {
+            "id": "archives",
+            "color": "#778899",
+            "info": "Swordhaven City"
+        },
+        "position": {
+            "x": 16.648798293335638,
+            "y": -13.955425936021587
+        }
+    },
+    {
+        "data": {
+            "id": "dwarfprison",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 13.337329891977504,
+            "y": -14.245209193529945
+        }
+    },
+    {
+        "data": {
+            "id": "alchemyacademy",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 15.028509439474677,
+            "y": -16.371147851253408
+        }
+    },
+    {
+        "data": {
+            "id": "pines",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 13.186304976884111,
+            "y": -17.143991424026105
+        }
+    },
+    {
+        "data": {
+            "id": "chaosaltar",
+            "color": "#778899",
+            "info": "Swordhaven City"
+        },
+        "position": {
+            "x": 14.636044965625166,
+            "y": -13.468705288203802
+        }
+    },
+    {
+        "data": {
+            "id": "portal",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 16.94115021681533,
+            "y": -19.410656795327398
+        }
+    },
+    {
+        "data": {
+            "id": "ceremony",
+            "color": "#778899",
+            "info": "Swordhaven City"
+        },
+        "position": {
+            "x": 15.296016153391445,
+            "y": -14.219996198117109
+        }
+    },
+    {
+        "data": {
+            "id": "dwarfhold",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 11.897378395442079,
+            "y": -15.04047699971737
+        }
+    },
+    {
+        "data": {
+            "id": "sewer",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 14.647665115437361,
+            "y": -18.787561594373667
+        }
+    },
+    {
+        "data": {
+            "id": "llama",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 11.834929875327722,
+            "y": -17.55928144615864
+        }
+    },
+    {
+        "data": {
+            "id": "pastelia",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 12.021909139804151,
+            "y": -19.249695253776462
+        }
+    },
+    {
+        "data": {
+            "id": "swordhavenbridge",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 16.32685121655428,
+            "y": -20.470518238864802
+        }
+    },
+    {
+        "data": {
+            "id": "castleroof",
+            "color": "#778899",
+            "info": "Swordhaven City"
+        },
+        "position": {
+            "x": 18.10461630557092,
+            "y": -16.20589314338122
+        }
+    },
+    {
+        "data": {
+            "id": "tercessuinotlim",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 13.681473490081919,
+            "y": -20.25274672813287
+        }
+    },
+    {
+        "data": {
+            "id": "graveyard",
+            "color": "#9acd32",
+            "info": "Oaklore Forest"
+        },
+        "position": {
+            "x": 15.356577407507487,
+            "y": -19.493065104978434
+        }
+    },
+    {
+        "data": {
+            "id": "castle",
+            "color": "#778899",
+            "info": "Swordhaven City"
+        },
+        "position": {
+            "x": 16.606635421153353,
+            "y": -15.364263557798177
+        }
+    },
+    {
+        "data": {
+            "id": "citadel",
+            "color": "#ffd700",
+            "info": "Dwarfhold"
+        },
+        "position": {
+            "x": 13.057062797971325,
+            "y": -19.148753476700506
+        }
+    },
+    {
+        "data": {
+            "id": "armory",
+            "color": "#778899",
+            "info": "Swordhaven City"
+        },
+        "position": {
+            "x": 17.76903506483215,
+            "y": -14.701474698452795
+        }
+    },
+    {
+        "data": {
+            "id": "classhalld",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 33.67838275616616,
+            "y": -14.820733568854777
+        }
+    },
+    {
+        "data": {
+            "id": "curio",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 30.223819038486077,
+            "y": -7.342361287187847
+        }
+    },
+    {
+        "data": {
+            "id": "timelibrary",
+            "color": "#40e0d0",
+            "info": "ChronoSpan"
+        },
+        "position": {
+            "x": 33.45904443671139,
+            "y": 1.3277277093858717
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 26.17481653630626,
+            "y": 2.7036227234547066
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 26.470384986157477,
+            "y": -5.152985858506652
+        }
+    },
+    {
+        "data": {
+            "id": "escherion",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 32.02597971513146,
+            "y": 0.8112025379551491
+        }
+    },
+    {
+        "data": {
+            "id": "wanders",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 27.622431704915297,
+            "y": 2.2226755844028143
+        }
+    },
+    {
+        "data": {
+            "id": "water",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 31.910200690200192,
+            "y": -15.166853227202548
+        }
+    },
+    {
+        "data": {
+            "id": "well",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 26.823931948643004,
+            "y": -12.28246043127291
+        }
+    },
+    {
+        "data": {
+            "id": "watchtower",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 29.579303179979025,
+            "y": -2.8996735793438435
+        }
+    },
+    {
+        "data": {
+            "id": "battleunderd",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 36.69721711192885,
+            "y": -12.946607314037783
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom3",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 24.539775935743407,
+            "y": 0.41276234287990965
+        }
+    },
+    {
+        "data": {
+            "id": "classhallc",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 34.66521239581416,
+            "y": -14.385440829172444
+        }
+    },
+    {
+        "data": {
+            "id": "shadowlord",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 38.32633998201985,
+            "y": -6.376980270934846
+        }
+    },
+    {
+        "data": {
+            "id": "orcpath",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 20.15348662013399,
+            "y": -11.055851584606277
+        }
+    },
+    {
+        "data": {
+            "id": "battleunderc",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 37.017393218334824,
+            "y": -11.694539049956873
+        }
+    },
+    {
+        "data": {
+            "id": "djinn",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 31.164049419455303,
+            "y": 1.852845708751786
+        }
+    },
+    {
+        "data": {
+            "id": "elemental",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 22.387162406710875,
+            "y": -1.653292783203177
+        }
+    },
+    {
+        "data": {
+            "id": "sandcastle",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 31.178211661339688,
+            "y": 2.832796419243491
+        }
+    },
+    {
+        "data": {
+            "id": "thespan",
+            "color": "#40e0d0",
+            "info": "ChronoSpan"
+        },
+        "position": {
+            "x": 34.18831084183221,
+            "y": -0.21276511665416065
+        }
+    },
+    {
+        "data": {
+            "id": "shadowwar",
+            "color": "#8b0000",
+            "info": "Shadows of War"
+        },
+        "position": {
+            "x": 38.20951203633976,
+            "y": -4.51436124580042
+        }
+    },
+    {
+        "data": {
+            "id": "ancienttemple",
+            "color": "#40e0d0",
+            "info": "Bloodtusk"
+        },
+        "position": {
+            "x": 23.93098352408271,
+            "y": -16.2233636508674
+        }
+    },
+    {
+        "data": {
+            "id": "starfield",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 20.89171893735955,
+            "y": -1.356116500224616
+        }
+    },
+    {
+        "data": {
+            "id": "otto",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 28.32166351232871,
+            "y": -0.09858432870134459
+        }
+    },
+    {
+        "data": {
+            "id": "classhallb",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 34.98235348290747,
+            "y": -13.291855121840488
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom2",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 25.49124982194731,
+            "y": 1.4600220296907191
+        }
+    },
+    {
+        "data": {
+            "id": "junkhoard",
+            "color": "#8b0000",
+            "info": "Shadows of War"
+        },
+        "position": {
+            "x": 36.69490752548048,
+            "y": -2.7869291358943977
+        }
+    },
+    {
+        "data": {
+            "id": "trigoras",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 23.373267571840266,
+            "y": -11.494909775906482
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom6",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 24.55146295310587,
+            "y": 2.7132919670785838
+        }
+    },
+    {
+        "data": {
+            "id": "garden",
+            "color": "#ff0000",
+            "info": "Elegy of Madness"
+        },
+        "position": {
+            "x": 38.23642649235344,
+            "y": -8.389785073797674
+        }
+    },
+    {
+        "data": {
+            "id": "cloister",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 19.366038811614352,
+            "y": -2.539664401199927
+        }
+    },
+    {
+        "data": {
+            "id": "mafic",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 20.4940129772656,
+            "y": -4.51563150456859
+        }
+    },
+    {
+        "data": {
+            "id": "gilead",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 21.998371727178156,
+            "y": -4.440375315671762
+        }
+    },
+    {
+        "data": {
+            "id": "tunnel",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 28.526471722700176,
+            "y": -6.712098090000019
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom5",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 26.677111512893152,
+            "y": 0.05111074661705173
+        }
+    },
+    {
+        "data": {
+            "id": "deathgazer",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 27.89079092621563,
+            "y": -3.8856005338147663
+        }
+    },
+    {
+        "data": {
+            "id": "pyramid",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 29.963828130785426,
+            "y": 3.305429415679288
+        }
+    },
+    {
+        "data": {
+            "id": "secretclub",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 35.61529133993083,
+            "y": -6.000156783490549
+        }
+    },
+    {
+        "data": {
+            "id": "willowcreek",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 25.617441485677627,
+            "y": -12.79488396855947
+        }
+    },
+    {
+        "data": {
+            "id": "ravenblight",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 23.437926875099723,
+            "y": -6.8829791106244915
+        }
+    },
+    {
+        "data": {
+            "id": "airstorm",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 26.347762819202735,
+            "y": -14.636104400914167
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 21.387528039960706,
+            "y": -3.012079911292253
+        }
+    },
+    {
+        "data": {
+            "id": "battleundere",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 35.875576216919725,
+            "y": -11.956476531231527
+        }
+    },
+    {
+        "data": {
+            "id": "castletunnels",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 18.57182294364084,
+            "y": -9.07153384720495
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 31.555964064641266,
+            "y": -9.134706538558195
+        }
+    },
+    {
+        "data": {
+            "id": "clubhouse",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 29.05348827139196,
+            "y": -4.916334490996611
+        }
+    },
+    {
+        "data": {
+            "id": "mudluk",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 19.605653030821916,
+            "y": -3.5497806937703698
+        }
+    },
+    {
+        "data": {
+            "id": "battleon",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 32.973128806893754,
+            "y": -6.228683227643783
+        }
+    },
+    {
+        "data": {
+            "id": "cellar",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 36.95185283845666,
+            "y": -8.410712274205482
+        }
+    },
+    {
+        "data": {
+            "id": "stairway",
+            "color": "#98fb98",
+            "info": "Mythsong"
+        },
+        "position": {
+            "x": 25.810070991700734,
+            "y": -1.7558553500055862
+        }
+    },
+    {
+        "data": {
+            "id": "twilight",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 30.795918599558796,
+            "y": -4.939894755870368
+        }
+    },
+    {
+        "data": {
+            "id": "nexus",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 33.4751003613826,
+            "y": -4.773351542851788
+        }
+    },
+    {
+        "data": {
+            "id": "bloodtuskwar",
+            "color": "#40e0d0",
+            "info": "Bloodtusk"
+        },
+        "position": {
+            "x": 21.80296521250071,
+            "y": -14.865087770134902
+        }
+    },
+    {
+        "data": {
+            "id": "sandport",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 28.646255302229925,
+            "y": 3.2007520719974205
+        }
+    },
+    {
+        "data": {
+            "id": "infirmary",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 25.574209269493128,
+            "y": -16.675063313625834
+        }
+    },
+    {
+        "data": {
+            "id": "faerie",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 30.929641628997885,
+            "y": -2.142525998561893
+        }
+    },
+    {
+        "data": {
+            "id": "forest",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 28.145087889988087,
+            "y": -11.487911456158802
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 25.816537601035908,
+            "y": -10.531970841844451
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom9",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 21.14816134720095,
+            "y": 0.5399808548664313
+        }
+    },
+    {
+        "data": {
+            "id": "timestream",
+            "color": "#8b0000",
+            "info": "Shadows of War"
+        },
+        "position": {
+            "x": 35.56558673582755,
+            "y": -4.014851742266648
+        }
+    },
+    {
+        "data": {
+            "id": "bloodtitan",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 27.407843202187742,
+            "y": -9.237404132824787
+        }
+    },
+    {
+        "data": {
+            "id": "trunk",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 24.62004848147198,
+            "y": -12.467144632797037
+        }
+    },
+    {
+        "data": {
+            "id": "museum",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 32.54367370093523,
+            "y": -11.123233485394856
+        }
+    },
+    {
+        "data": {
+            "id": "ancienttrigoras",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 21.901738388464175,
+            "y": -11.608151120364656
+        }
+    },
+    {
+        "data": {
+            "id": "lycan",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 18.887808999443426,
+            "y": -10.062506863170826
+        }
+    },
+    {
+        "data": {
+            "id": "orchestra",
+            "color": "#98fb98",
+            "info": "Mythsong"
+        },
+        "position": {
+            "x": 23.754727650082575,
+            "y": -3.0186706524327027
+        }
+    },
+    {
+        "data": {
+            "id": "templeb",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 19.096740431367763,
+            "y": -5.4007237878903895
+        }
+    },
+    {
+        "data": {
+            "id": "coliseum",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 30.333925745305212,
+            "y": -10.948255523136126
+        }
+    },
+    {
+        "data": {
+            "id": "temple",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 18.065561362692165,
+            "y": -5.8428204102977706
+        }
+    },
+    {
+        "data": {
+            "id": "orctown",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 19.164297497320106,
+            "y": -11.702025429948627
+        }
+    },
+    {
+        "data": {
+            "id": "mobius",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 29.479088889242256,
+            "y": -1.302242685974663
+        }
+    },
+    {
+        "data": {
+            "id": "ravinetemple",
+            "color": "#40e0d0",
+            "info": "Bloodtusk"
+        },
+        "position": {
+            "x": 23.193653136052202,
+            "y": -15.319218913029616
+        }
+    },
+    {
+        "data": {
+            "id": "greendragon",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 26.80438757835093,
+            "y": -3.2513009007336344
+        }
+    },
+    {
+        "data": {
+            "id": "battleundera",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 35.37766830379636,
+            "y": -9.657642112562609
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom7",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 23.314052747448393,
+            "y": 1.9491502265777991
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom8",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 22.27414265517219,
+            "y": 1.2018251130767488
+        }
+    },
+    {
+        "data": {
+            "id": "river",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 22.007900187435787,
+            "y": -10.149462103590237
+        }
+    },
+    {
+        "data": {
+            "id": "fire",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 31.9710909117597,
+            "y": -16.25139568999538
+        }
+    },
+    {
+        "data": {
+            "id": "dragonhame",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 26.894970985011067,
+            "y": -16.082752801365444
+        }
+    },
+    {
+        "data": {
+            "id": "ravenloss",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 32.78255078702161,
+            "y": -3.033404902821845
+        }
+    },
+    {
+        "data": {
+            "id": "blackhorn",
+            "color": "#add8e6",
+            "info": "ThunderForge"
+        },
+        "position": {
+            "x": 17.98317642871015,
+            "y": -4.527781308922099
+        }
+    },
+    {
+        "data": {
+            "id": "mqlesson",
+            "color": "#40e0d0",
+            "info": "ChronoSpan"
+        },
+        "position": {
+            "x": 35.49176168924407,
+            "y": -1.1891420946108187
+        }
+    },
+    {
+        "data": {
+            "id": "timevoid",
+            "color": "#40e0d0",
+            "info": "ChronoSpan"
+        },
+        "position": {
+            "x": 34.03429759414743,
+            "y": -1.6851982365865852
+        }
+    },
+    {
+        "data": {
+            "id": "earthstorm",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 28.240824744272818,
+            "y": -17.129682819707813
+        }
+    },
+    {
+        "data": {
+            "id": "aqlesson",
+            "color": "#40e0d0",
+            "info": "ChronoSpan"
+        },
+        "position": {
+            "x": 34.649310134268376,
+            "y": 1.2046556170318712
+        }
+    },
+    {
+        "data": {
+            "id": "yulgar",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 35.4325553000696,
+            "y": -7.283320224715247
+        }
+    },
+    {
+        "data": {
+            "id": "natatorium",
+            "color": "#00ffff",
+            "info": "Arcangrove"
+        },
+        "position": {
+            "x": 19.859154139570435,
+            "y": -1.6145347702545414
+        }
+    },
+    {
+        "data": {
+            "id": "farm",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 24.40218068219434,
+            "y": -8.951086850840841
+        }
+    },
+    {
+        "data": {
+            "id": "comet",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 30.856946988657185,
+            "y": -13.189345152874147
+        }
+    },
+    {
+        "data": {
+            "id": "trainers",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 33.69756919753597,
+            "y": -8.675572908345524
+        }
+    },
+    {
+        "data": {
+            "id": "maul",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 20.739655652371155,
+            "y": -6.784896064084169
+        }
+    },
+    {
+        "data": {
+            "id": "buyhouse",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 29.38785462464422,
+            "y": -8.489054097551044
+        }
+    },
+    {
+        "data": {
+            "id": "safiria",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 19.963109094014257,
+            "y": -9.097992749256672
+        }
+    },
+    {
+        "data": {
+            "id": "relativity",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 27.84603036709875,
+            "y": -1.5169481825168076
+        }
+    },
+    {
+        "data": {
+            "id": "shadowlordkeep",
+            "color": "#8b0000",
+            "info": "Shadows of War"
+        },
+        "position": {
+            "x": 37.18153471981228,
+            "y": -4.425295024936709
+        }
+    },
+    {
+        "data": {
+            "id": "ariapet",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 34.03199550524843,
+            "y": -10.393896949831785
+        }
+    },
+    {
+        "data": {
+            "id": "necrotower",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 19.513367013476884,
+            "y": -7.312479316769448
+        }
+    },
+    {
+        "data": {
+            "id": "ravinetempleb",
+            "color": "#40e0d0",
+            "info": "Bloodtusk"
+        },
+        "position": {
+            "x": 24.171877482981504,
+            "y": -14.686273579742766
+        }
+    },
+    {
+        "data": {
+            "id": "hydra",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 31.063246370929907,
+            "y": 0.010794009737265409
+        }
+    },
+    {
+        "data": {
+            "id": "mythsong",
+            "color": "#98fb98",
+            "info": "Mythsong"
+        },
+        "position": {
+            "x": 24.957542410268374,
+            "y": -2.7537834982278
+        }
+    },
+    {
+        "data": {
+            "id": "crossroads",
+            "color": "#40e0d0",
+            "info": "Bloodtusk"
+        },
+        "position": {
+            "x": 21.120671318456058,
+            "y": -13.842023760885574
+        }
+    },
+    {
+        "data": {
+            "id": "bloodtusk",
+            "color": "#40e0d0",
+            "info": "Bloodtusk"
+        },
+        "position": {
+            "x": 22.52501571329611,
+            "y": -12.885700492921762
+        }
+    },
+    {
+        "data": {
+            "id": "classhall",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 33.588762369054436,
+            "y": -13.02891454642047
+        }
+    },
+    {
+        "data": {
+            "id": "noobshire",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 27.078978802770216,
+            "y": -6.832849244518966
+        }
+    },
+    {
+        "data": {
+            "id": "shadowrealm",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 37.23343029002135,
+            "y": -6.525102362796609
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom10",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 21.874716244031724,
+            "y": -0.14712756590224485
+        }
+    },
+    {
+        "data": {
+            "id": "darkoviagrave",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 25.53619899221718,
+            "y": -7.951498582915001
+        }
+    },
+    {
+        "data": {
+            "id": "shallow",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 23.277926000125703,
+            "y": -9.704623361523552
+        }
+    },
+    {
+        "data": {
+            "id": "recruit",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 31.48240370584672,
+            "y": -6.904831002042945
+        }
+    },
+    {
+        "data": {
+            "id": "librarium",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 29.47734817024473,
+            "y": -9.830326883640106
+        }
+    },
+    {
+        "data": {
+            "id": "junkheap",
+            "color": "#8b0000",
+            "info": "Shadows of War"
+        },
+        "position": {
+            "x": 37.302133963322895,
+            "y": -1.9840447216123889
+        }
+    },
+    {
+        "data": {
+            "id": "waterstorm",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 28.64768505139442,
+            "y": -15.865645424841759
+        }
+    },
+    {
+        "data": {
+            "id": "ravenscar",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 24.51103919265713,
+            "y": -6.271011630161972
+        }
+    },
+    {
+        "data": {
+            "id": "fableforest",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 29.065290565656678,
+            "y": -12.317395085121872
+        }
+    },
+    {
+        "data": {
+            "id": "firestorm",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 28.073362272186422,
+            "y": -14.100342663636509
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom4",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 25.630261028892214,
+            "y": -0.1572784393603759
+        }
+    },
+    {
+        "data": {
+            "id": "cornelis",
+            "color": "#ff00ff",
+            "info": "Chiral Valley"
+        },
+        "position": {
+            "x": 32.217374246260775,
+            "y": -1.0767011587101067
+        }
+    },
+    {
+        "data": {
+            "id": "tower",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 31.21225915461352,
+            "y": -12.067723444388598
+        }
+    },
+    {
+        "data": {
+            "id": "twilightedge",
+            "color": "#add8e6",
+            "info": "Unknown"
+        },
+        "position": {
+            "x": 31.902135636194995,
+            "y": -3.7312004840948734
+        }
+    },
+    {
+        "data": {
+            "id": "bank",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 33.16574816248177,
+            "y": -7.556327756881501
+        }
+    },
+    {
+        "data": {
+            "id": "dragonplane",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 30.63046242668626,
+            "y": -15.315372301929713
+        }
+    },
+    {
+        "data": {
+            "id": "wind",
+            "color": "#dc143c",
+            "info": "Etherstorm Wastes"
+        },
+        "position": {
+            "x": 30.720476049574245,
+            "y": -16.681757516117386
+        }
+    },
+    {
+        "data": {
+            "id": "dflesson",
+            "color": "#40e0d0",
+            "info": "ChronoSpan"
+        },
+        "position": {
+            "x": 35.77870213764705,
+            "y": -0.03416955879044137
+        }
+    },
+    {
+        "data": {
+            "id": "doomwood",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 21.991475884076618,
+            "y": -6.101289492067133
+        }
+    },
+    {
+        "data": {
+            "id": "beehive",
+            "color": "#98fb98",
+            "info": "Mythsong"
+        },
+        "position": {
+            "x": 24.115852886014576,
+            "y": -1.510548909612885
+        }
+    },
+    {
+        "data": {
+            "id": "darkoviaforest",
+            "color": "#696969",
+            "info": "Darkovia"
+        },
+        "position": {
+            "x": 22.199305915778076,
+            "y": -8.196523885173704
+        }
+    },
+    {
+        "data": {
+            "id": "lightguard",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 23.65491641036801,
+            "y": -5.172127958988014
+        }
+    },
+    {
+        "data": {
+            "id": "alliance",
+            "color": "#40e0d0",
+            "info": "Bloodtusk"
+        },
+        "position": {
+            "x": 20.82988047404111,
+            "y": -12.65945997242949
+        }
+    },
+    {
+        "data": {
+            "id": "necrou",
+            "color": "#8b4513",
+            "info": "Doomwood"
+        },
+        "position": {
+            "x": 18.18521542063113,
+            "y": -7.326802030427906
+        }
+    },
+    {
+        "data": {
+            "id": "classhalla",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 32.64830777293373,
+            "y": -13.972288586453267
+        }
+    },
+    {
+        "data": {
+            "id": "sandsea",
+            "color": "#f4a460",
+            "info": "Sandsea"
+        },
+        "position": {
+            "x": 29.550210646524327,
+            "y": 1.8427218472328106
+        }
+    },
+    {
+        "data": {
+            "id": "aozorahills",
+            "color": "#8b0000",
+            "info": "Shadows of War"
+        },
+        "position": {
+            "x": 34.79445983285493,
+            "y": -3.0916500005221215
+        }
+    },
+    {
+        "data": {
+            "id": "battleunderb",
+            "color": "#228b22",
+            "info": "Greenguard Forest"
+        },
+        "position": {
+            "x": 37.061616674921105,
+            "y": -10.30025574370216
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-mudluk",
+            "source": "arcangrove",
+            "target": "mudluk"
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-gilead",
+            "source": "arcangrove",
+            "target": "gilead"
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-starfield",
+            "source": "arcangrove",
+            "target": "starfield"
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-natatorium",
+            "source": "arcangrove",
+            "target": "natatorium"
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-elemental",
+            "source": "arcangrove",
+            "target": "elemental"
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-greenguardwest",
+            "source": "arcangrove",
+            "target": "greenguardwest"
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-cloister",
+            "source": "arcangrove",
+            "target": "cloister"
+        }
+    },
+    {
+        "data": {
+            "id": "arcangrove-mafic",
+            "source": "arcangrove",
+            "target": "mafic"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-greenguardeast",
+            "source": "greenguardwest",
+            "target": "greenguardeast"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-mobius",
+            "source": "greenguardwest",
+            "target": "mobius"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-noobshire",
+            "source": "greenguardwest",
+            "target": "noobshire"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-battleontown",
+            "source": "greenguardwest",
+            "target": "battleontown"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-clubhouse",
+            "source": "greenguardwest",
+            "target": "clubhouse"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-lightguard",
+            "source": "greenguardwest",
+            "target": "lightguard"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-mythsong",
+            "source": "greenguardwest",
+            "target": "mythsong"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-greendragon",
+            "source": "greenguardwest",
+            "target": "greendragon"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-ravenscar",
+            "source": "greenguardwest",
+            "target": "ravenscar"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardwest-deathgazer",
+            "source": "greenguardwest",
+            "target": "deathgazer"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-darkoviagrave",
+            "source": "greenguardeast",
+            "target": "darkoviagrave"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-bloodtusk",
+            "source": "greenguardeast",
+            "target": "bloodtusk"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-battleontown",
+            "source": "greenguardeast",
+            "target": "battleontown"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-bloodtitan",
+            "source": "greenguardeast",
+            "target": "bloodtitan"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-forest",
+            "source": "greenguardeast",
+            "target": "forest"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-river",
+            "source": "greenguardeast",
+            "target": "river"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-shallow",
+            "source": "greenguardeast",
+            "target": "shallow"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-well",
+            "source": "greenguardeast",
+            "target": "well"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-trunk",
+            "source": "greenguardeast",
+            "target": "trunk"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-trigoras",
+            "source": "greenguardeast",
+            "target": "trigoras"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-firestorm",
+            "source": "greenguardeast",
+            "target": "firestorm"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-willowcreek",
+            "source": "greenguardeast",
+            "target": "willowcreek"
+        }
+    },
+    {
+        "data": {
+            "id": "greenguardeast-farm",
+            "source": "greenguardeast",
+            "target": "farm"
+        }
+    },
+    {
+        "data": {
+            "id": "mobius-watchtower",
+            "source": "mobius",
+            "target": "watchtower"
+        }
+    },
+    {
+        "data": {
+            "id": "mobius-cornelis",
+            "source": "mobius",
+            "target": "cornelis"
+        }
+    },
+    {
+        "data": {
+            "id": "mobius-hydra",
+            "source": "mobius",
+            "target": "hydra"
+        }
+    },
+    {
+        "data": {
+            "id": "mobius-relativity",
+            "source": "mobius",
+            "target": "relativity"
+        }
+    },
+    {
+        "data": {
+            "id": "mobius-sandsea",
+            "source": "mobius",
+            "target": "sandsea"
+        }
+    },
+    {
+        "data": {
+            "id": "mobius-otto",
+            "source": "mobius",
+            "target": "otto"
+        }
+    },
+    {
+        "data": {
+            "id": "mobius-faerie",
+            "source": "mobius",
+            "target": "faerie"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-battleon",
+            "source": "battleontown",
+            "target": "battleon"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-museum",
+            "source": "battleontown",
+            "target": "museum"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-ariapet",
+            "source": "battleontown",
+            "target": "ariapet"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-battleundera",
+            "source": "battleontown",
+            "target": "battleundera"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-yulgar",
+            "source": "battleontown",
+            "target": "yulgar"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-recruit",
+            "source": "battleontown",
+            "target": "recruit"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-librarium",
+            "source": "battleontown",
+            "target": "librarium"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-bank",
+            "source": "battleontown",
+            "target": "bank"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-trainers",
+            "source": "battleontown",
+            "target": "trainers"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-curio",
+            "source": "battleontown",
+            "target": "curio"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-classhall",
+            "source": "battleontown",
+            "target": "classhall"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-coliseum",
+            "source": "battleontown",
+            "target": "coliseum"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-buyhouse",
+            "source": "battleontown",
+            "target": "buyhouse"
+        }
+    },
+    {
+        "data": {
+            "id": "battleontown-tower",
+            "source": "battleontown",
+            "target": "tower"
+        }
+    },
+    {
+        "data": {
+            "id": "clubhouse-twilight",
+            "source": "clubhouse",
+            "target": "twilight"
+        }
+    },
+    {
+        "data": {
+            "id": "lightguard-doomwood",
+            "source": "lightguard",
+            "target": "doomwood"
+        }
+    },
+    {
+        "data": {
+            "id": "mythsong-orchestra",
+            "source": "mythsong",
+            "target": "orchestra"
+        }
+    },
+    {
+        "data": {
+            "id": "mythsong-stairway",
+            "source": "mythsong",
+            "target": "stairway"
+        }
+    },
+    {
+        "data": {
+            "id": "mythsong-beehive",
+            "source": "mythsong",
+            "target": "beehive"
+        }
+    },
+    {
+        "data": {
+            "id": "ravenscar-ravenblight",
+            "source": "ravenscar",
+            "target": "ravenblight"
+        }
+    },
+    {
+        "data": {
+            "id": "digitalmaintown-digitalmain",
+            "source": "digitalmaintown",
+            "target": "digitalmain"
+        }
+    },
+    {
+        "data": {
+            "id": "digitalmaintown-digitalyulgar",
+            "source": "digitalmaintown",
+            "target": "digitalyulgar"
+        }
+    },
+    {
+        "data": {
+            "id": "digitalmaintown-digitaltrainers",
+            "source": "digitalmaintown",
+            "target": "digitaltrainers"
+        }
+    },
+    {
+        "data": {
+            "id": "digitalmaintown-digitalrecruit",
+            "source": "digitalmaintown",
+            "target": "digitalrecruit"
+        }
+    },
+    {
+        "data": {
+            "id": "battleon-nexus",
+            "source": "battleon",
+            "target": "nexus"
+        }
+    },
+    {
+        "data": {
+            "id": "ariapet-battleundera",
+            "source": "ariapet",
+            "target": "battleundera"
+        }
+    },
+    {
+        "data": {
+            "id": "battleundera-cellar",
+            "source": "battleundera",
+            "target": "cellar"
+        }
+    },
+    {
+        "data": {
+            "id": "battleundera-battleunderb",
+            "source": "battleundera",
+            "target": "battleunderb"
+        }
+    },
+    {
+        "data": {
+            "id": "yulgar-cellar",
+            "source": "yulgar",
+            "target": "cellar"
+        }
+    },
+    {
+        "data": {
+            "id": "yulgar-secretclub",
+            "source": "yulgar",
+            "target": "secretclub"
+        }
+    },
+    {
+        "data": {
+            "id": "yulgar-shadowrealm",
+            "source": "yulgar",
+            "target": "shadowrealm"
+        }
+    },
+    {
+        "data": {
+            "id": "classhall-classhallc",
+            "source": "classhall",
+            "target": "classhallc"
+        }
+    },
+    {
+        "data": {
+            "id": "classhall-classhalld",
+            "source": "classhall",
+            "target": "classhalld"
+        }
+    },
+    {
+        "data": {
+            "id": "classhall-classhalla",
+            "source": "classhall",
+            "target": "classhalla"
+        }
+    },
+    {
+        "data": {
+            "id": "classhall-classhallb",
+            "source": "classhall",
+            "target": "classhallb"
+        }
+    },
+    {
+        "data": {
+            "id": "tower-comet",
+            "source": "tower",
+            "target": "comet"
+        }
+    },
+    {
+        "data": {
+            "id": "twilight-tunnel",
+            "source": "twilight",
+            "target": "tunnel"
+        }
+    },
+    {
+        "data": {
+            "id": "twilight-nexus",
+            "source": "twilight",
+            "target": "nexus"
+        }
+    },
+    {
+        "data": {
+            "id": "twilight-twilightedge",
+            "source": "twilight",
+            "target": "twilightedge"
+        }
+    },
+    {
+        "data": {
+            "id": "darkoviagrave-darkoviaforest",
+            "source": "darkoviagrave",
+            "target": "darkoviaforest"
+        }
+    },
+    {
+        "data": {
+            "id": "darkoviagrave-tunnel",
+            "source": "darkoviagrave",
+            "target": "tunnel"
+        }
+    },
+    {
+        "data": {
+            "id": "bloodtusk-alliance",
+            "source": "bloodtusk",
+            "target": "alliance"
+        }
+    },
+    {
+        "data": {
+            "id": "bloodtusk-crossroads",
+            "source": "bloodtusk",
+            "target": "crossroads"
+        }
+    },
+    {
+        "data": {
+            "id": "forest-fableforest",
+            "source": "forest",
+            "target": "fableforest"
+        }
+    },
+    {
+        "data": {
+            "id": "river-orcpath",
+            "source": "river",
+            "target": "orcpath"
+        }
+    },
+    {
+        "data": {
+            "id": "river-shallow",
+            "source": "river",
+            "target": "shallow"
+        }
+    },
+    {
+        "data": {
+            "id": "trigoras-ancienttrigoras",
+            "source": "trigoras",
+            "target": "ancienttrigoras"
+        }
+    },
+    {
+        "data": {
+            "id": "firestorm-waterstorm",
+            "source": "firestorm",
+            "target": "waterstorm"
+        }
+    },
+    {
+        "data": {
+            "id": "firestorm-dragonhame",
+            "source": "firestorm",
+            "target": "dragonhame"
+        }
+    },
+    {
+        "data": {
+            "id": "firestorm-airstorm",
+            "source": "firestorm",
+            "target": "airstorm"
+        }
+    },
+    {
+        "data": {
+            "id": "firestorm-dragonplane",
+            "source": "firestorm",
+            "target": "dragonplane"
+        }
+    },
+    {
+        "data": {
+            "id": "doomwood-maul",
+            "source": "doomwood",
+            "target": "maul"
+        }
+    },
+    {
+        "data": {
+            "id": "crossroads-bloodtuskwar",
+            "source": "crossroads",
+            "target": "bloodtuskwar"
+        }
+    },
+    {
+        "data": {
+            "id": "darkoviaforest-safiria",
+            "source": "darkoviaforest",
+            "target": "safiria"
+        }
+    },
+    {
+        "data": {
+            "id": "waterstorm-earthstorm",
+            "source": "waterstorm",
+            "target": "earthstorm"
+        }
+    },
+    {
+        "data": {
+            "id": "waterstorm-dragonhame",
+            "source": "waterstorm",
+            "target": "dragonhame"
+        }
+    },
+    {
+        "data": {
+            "id": "dragonhame-earthstorm",
+            "source": "dragonhame",
+            "target": "earthstorm"
+        }
+    },
+    {
+        "data": {
+            "id": "dragonhame-airstorm",
+            "source": "dragonhame",
+            "target": "airstorm"
+        }
+    },
+    {
+        "data": {
+            "id": "dragonhame-infirmary",
+            "source": "dragonhame",
+            "target": "infirmary"
+        }
+    },
+    {
+        "data": {
+            "id": "dragonplane-wind",
+            "source": "dragonplane",
+            "target": "wind"
+        }
+    },
+    {
+        "data": {
+            "id": "dragonplane-fire",
+            "source": "dragonplane",
+            "target": "fire"
+        }
+    },
+    {
+        "data": {
+            "id": "dragonplane-water",
+            "source": "dragonplane",
+            "target": "water"
+        }
+    },
+    {
+        "data": {
+            "id": "orcpath-orctown",
+            "source": "orcpath",
+            "target": "orctown"
+        }
+    },
+    {
+        "data": {
+            "id": "safiria-lycan",
+            "source": "safiria",
+            "target": "lycan"
+        }
+    },
+    {
+        "data": {
+            "id": "safiria-castletunnels",
+            "source": "safiria",
+            "target": "castletunnels"
+        }
+    },
+    {
+        "data": {
+            "id": "nexus-timestream",
+            "source": "nexus",
+            "target": "timestream"
+        }
+    },
+    {
+        "data": {
+            "id": "twilightedge-ravenloss",
+            "source": "twilightedge",
+            "target": "ravenloss"
+        }
+    },
+    {
+        "data": {
+            "id": "timestream-shadowlordkeep",
+            "source": "timestream",
+            "target": "shadowlordkeep"
+        }
+    },
+    {
+        "data": {
+            "id": "timestream-junkhoard",
+            "source": "timestream",
+            "target": "junkhoard"
+        }
+    },
+    {
+        "data": {
+            "id": "timestream-aozorahills",
+            "source": "timestream",
+            "target": "aozorahills"
+        }
+    },
+    {
+        "data": {
+            "id": "shadowlordkeep-shadowwar",
+            "source": "shadowlordkeep",
+            "target": "shadowwar"
+        }
+    },
+    {
+        "data": {
+            "id": "junkhoard-junkheap",
+            "source": "junkhoard",
+            "target": "junkheap"
+        }
+    },
+    {
+        "data": {
+            "id": "battlecon-artistalley",
+            "source": "battlecon",
+            "target": "artistalley"
+        }
+    },
+    {
+        "data": {
+            "id": "battlecon-vendorbooths",
+            "source": "battlecon",
+            "target": "vendorbooths"
+        }
+    },
+    {
+        "data": {
+            "id": "artistalley-vendorbooths",
+            "source": "artistalley",
+            "target": "vendorbooths"
+        }
+    },
+    {
+        "data": {
+            "id": "vendorbooths-undergroundlab",
+            "source": "vendorbooths",
+            "target": "undergroundlab"
+        }
+    },
+    {
+        "data": {
+            "id": "vendorbooths-battleconvip",
+            "source": "vendorbooths",
+            "target": "battleconvip"
+        }
+    },
+    {
+        "data": {
+            "id": "falguard-deathpits",
+            "source": "falguard",
+            "target": "deathpits"
+        }
+    },
+    {
+        "data": {
+            "id": "falguard-stormtemple",
+            "source": "falguard",
+            "target": "stormtemple"
+        }
+    },
+    {
+        "data": {
+            "id": "hyperium-banzai",
+            "source": "hyperium",
+            "target": "banzai"
+        }
+    },
+    {
+        "data": {
+            "id": "hyperium-zephyrus",
+            "source": "hyperium",
+            "target": "zephyrus"
+        }
+    },
+    {
+        "data": {
+            "id": "pirates-fotia",
+            "source": "pirates",
+            "target": "fotia"
+        }
+    },
+    {
+        "data": {
+            "id": "pirates-frozenfotia",
+            "source": "pirates",
+            "target": "frozenfotia"
+        }
+    },
+    {
+        "data": {
+            "id": "frozenfotia-underrealm",
+            "source": "frozenfotia",
+            "target": "underrealm"
+        }
+    },
+    {
+        "data": {
+            "id": "cornelis-thespan",
+            "source": "cornelis",
+            "target": "thespan"
+        }
+    },
+    {
+        "data": {
+            "id": "hydra-escherion",
+            "source": "hydra",
+            "target": "escherion"
+        }
+    },
+    {
+        "data": {
+            "id": "sandsea-sandcastle",
+            "source": "sandsea",
+            "target": "sandcastle"
+        }
+    },
+    {
+        "data": {
+            "id": "sandsea-djinn",
+            "source": "sandsea",
+            "target": "djinn"
+        }
+    },
+    {
+        "data": {
+            "id": "sandsea-pyramid",
+            "source": "sandsea",
+            "target": "pyramid"
+        }
+    },
+    {
+        "data": {
+            "id": "sandsea-sandport",
+            "source": "sandsea",
+            "target": "sandport"
+        }
+    },
+    {
+        "data": {
+            "id": "sandsea-wanders",
+            "source": "sandsea",
+            "target": "wanders"
+        }
+    },
+    {
+        "data": {
+            "id": "necropolis-necrocavern",
+            "source": "necropolis",
+            "target": "necrocavern"
+        }
+    },
+    {
+        "data": {
+            "id": "necropolis-necrodungeon",
+            "source": "necropolis",
+            "target": "necrodungeon"
+        }
+    },
+    {
+        "data": {
+            "id": "necropolis-necroproject",
+            "source": "necropolis",
+            "target": "necroproject"
+        }
+    },
+    {
+        "data": {
+            "id": "nothing-thunderfang",
+            "source": "nothing",
+            "target": "thunderfang"
+        }
+    },
+    {
+        "data": {
+            "id": "thunderfang-laircross",
+            "source": "thunderfang",
+            "target": "laircross"
+        }
+    },
+    {
+        "data": {
+            "id": "northlandlight-frozenqueen",
+            "source": "northlandlight",
+            "target": "frozenqueen"
+        }
+    },
+    {
+        "data": {
+            "id": "frozenqueen-blindingsnow",
+            "source": "frozenqueen",
+            "target": "blindingsnow"
+        }
+    },
+    {
+        "data": {
+            "id": "originul-archportal",
+            "source": "originul",
+            "target": "archportal"
+        }
+    },
+    {
+        "data": {
+            "id": "archportal-fiendshard",
+            "source": "archportal",
+            "target": "fiendshard"
+        }
+    },
+    {
+        "data": {
+            "id": "castle-ceremony",
+            "source": "castle",
+            "target": "ceremony"
+        }
+    },
+    {
+        "data": {
+            "id": "castle-armory",
+            "source": "castle",
+            "target": "armory"
+        }
+    },
+    {
+        "data": {
+            "id": "castle-castleroof",
+            "source": "castle",
+            "target": "castleroof"
+        }
+    },
+    {
+        "data": {
+            "id": "castle-archives",
+            "source": "castle",
+            "target": "archives"
+        }
+    },
+    {
+        "data": {
+            "id": "castle-swordhaven",
+            "source": "castle",
+            "target": "swordhaven"
+        }
+    },
+    {
+        "data": {
+            "id": "ceremony-chaosaltar",
+            "source": "ceremony",
+            "target": "chaosaltar"
+        }
+    },
+    {
+        "data": {
+            "id": "castleroof-swordhavenfalls",
+            "source": "castleroof",
+            "target": "swordhavenfalls"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhaven-graveyard",
+            "source": "swordhaven",
+            "target": "graveyard"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhaven-pines",
+            "source": "swordhaven",
+            "target": "pines"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhaven-sewer",
+            "source": "swordhaven",
+            "target": "sewer"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhaven-boxes",
+            "source": "swordhaven",
+            "target": "boxes"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhaven-portal",
+            "source": "swordhaven",
+            "target": "portal"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhaven-alchemyacademy",
+            "source": "swordhaven",
+            "target": "alchemyacademy"
+        }
+    },
+    {
+        "data": {
+            "id": "evilwardage-deathsrealm",
+            "source": "evilwardage",
+            "target": "deathsrealm"
+        }
+    },
+    {
+        "data": {
+            "id": "deathsrealm-underworld",
+            "source": "deathsrealm",
+            "target": "underworld"
+        }
+    },
+    {
+        "data": {
+            "id": "underworld-legionarena",
+            "source": "underworld",
+            "target": "legionarena"
+        }
+    },
+    {
+        "data": {
+            "id": "underworld-revenant",
+            "source": "underworld",
+            "target": "revenant"
+        }
+    },
+    {
+        "data": {
+            "id": "underworld-legionlibrary",
+            "source": "underworld",
+            "target": "legionlibrary"
+        }
+    },
+    {
+        "data": {
+            "id": "legionarena-deimos",
+            "source": "legionarena",
+            "target": "deimos"
+        }
+    },
+    {
+        "data": {
+            "id": "blindingsnow-void",
+            "source": "blindingsnow",
+            "target": "void"
+        }
+    },
+    {
+        "data": {
+            "id": "blindingsnow-northlands",
+            "source": "blindingsnow",
+            "target": "northlands"
+        }
+    },
+    {
+        "data": {
+            "id": "northlands-mountfrost",
+            "source": "northlands",
+            "target": "mountfrost"
+        }
+    },
+    {
+        "data": {
+            "id": "voltairetown-puzzlebox",
+            "source": "voltairetown",
+            "target": "puzzlebox"
+        }
+    },
+    {
+        "data": {
+            "id": "voltairetown-gonnagetcha",
+            "source": "voltairetown",
+            "target": "gonnagetcha"
+        }
+    },
+    {
+        "data": {
+            "id": "laircross-ectocave",
+            "source": "laircross",
+            "target": "ectocave"
+        }
+    },
+    {
+        "data": {
+            "id": "laircross-razorclaw",
+            "source": "laircross",
+            "target": "razorclaw"
+        }
+    },
+    {
+        "data": {
+            "id": "laircross-lair",
+            "source": "laircross",
+            "target": "lair"
+        }
+    },
+    {
+        "data": {
+            "id": "lair-underlair",
+            "source": "lair",
+            "target": "underlair"
+        }
+    },
+    {
+        "data": {
+            "id": "pines-llama",
+            "source": "pines",
+            "target": "llama"
+        }
+    },
+    {
+        "data": {
+            "id": "pines-mountainpath",
+            "source": "pines",
+            "target": "mountainpath"
+        }
+    },
+    {
+        "data": {
+            "id": "pines-citadel",
+            "source": "pines",
+            "target": "citadel"
+        }
+    },
+    {
+        "data": {
+            "id": "pines-tavern",
+            "source": "pines",
+            "target": "tavern"
+        }
+    },
+    {
+        "data": {
+            "id": "portal-cleric",
+            "source": "portal",
+            "target": "cleric"
+        }
+    },
+    {
+        "data": {
+            "id": "portal-swordhavenbridge",
+            "source": "portal",
+            "target": "swordhavenbridge"
+        }
+    },
+    {
+        "data": {
+            "id": "thespan-timevoid",
+            "source": "thespan",
+            "target": "timevoid"
+        }
+    },
+    {
+        "data": {
+            "id": "thespan-timelibrary",
+            "source": "thespan",
+            "target": "timelibrary"
+        }
+    },
+    {
+        "data": {
+            "id": "thespan-mqlesson",
+            "source": "thespan",
+            "target": "mqlesson"
+        }
+    },
+    {
+        "data": {
+            "id": "thespan-aqlesson",
+            "source": "thespan",
+            "target": "aqlesson"
+        }
+    },
+    {
+        "data": {
+            "id": "thespan-dflesson",
+            "source": "thespan",
+            "target": "dflesson"
+        }
+    },
+    {
+        "data": {
+            "id": "wanders-towerofdoom",
+            "source": "wanders",
+            "target": "towerofdoom"
+        }
+    },
+    {
+        "data": {
+            "id": "bloodtuskwar-ravinetemple",
+            "source": "bloodtuskwar",
+            "target": "ravinetemple"
+        }
+    },
+    {
+        "data": {
+            "id": "ravinetemple-ancienttemple",
+            "source": "ravinetemple",
+            "target": "ancienttemple"
+        }
+    },
+    {
+        "data": {
+            "id": "ravinetemple-ravinetempleb",
+            "source": "ravinetemple",
+            "target": "ravinetempleb"
+        }
+    },
+    {
+        "data": {
+            "id": "cellar-garden",
+            "source": "cellar",
+            "target": "garden"
+        }
+    },
+    {
+        "data": {
+            "id": "battleunderb-battleunderc",
+            "source": "battleunderb",
+            "target": "battleunderc"
+        }
+    },
+    {
+        "data": {
+            "id": "shadowrealm-shadowlord",
+            "source": "shadowrealm",
+            "target": "shadowlord"
+        }
+    },
+    {
+        "data": {
+            "id": "battleunderc-battleunderd",
+            "source": "battleunderc",
+            "target": "battleunderd"
+        }
+    },
+    {
+        "data": {
+            "id": "battleunderc-battleundere",
+            "source": "battleunderc",
+            "target": "battleundere"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom-towerofdoom2",
+            "source": "towerofdoom",
+            "target": "towerofdoom2"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom-towerofdoom6",
+            "source": "towerofdoom",
+            "target": "towerofdoom6"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom2-towerofdoom3",
+            "source": "towerofdoom2",
+            "target": "towerofdoom3"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom6-towerofdoom7",
+            "source": "towerofdoom6",
+            "target": "towerofdoom7"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom3-towerofdoom4",
+            "source": "towerofdoom3",
+            "target": "towerofdoom4"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom7-towerofdoom8",
+            "source": "towerofdoom7",
+            "target": "towerofdoom8"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom8-towerofdoom9",
+            "source": "towerofdoom8",
+            "target": "towerofdoom9"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom9-towerofdoom10",
+            "source": "towerofdoom9",
+            "target": "towerofdoom10"
+        }
+    },
+    {
+        "data": {
+            "id": "towerofdoom4-towerofdoom5",
+            "source": "towerofdoom4",
+            "target": "towerofdoom5"
+        }
+    },
+    {
+        "data": {
+            "id": "mountainpath-dwarfhold",
+            "source": "mountainpath",
+            "target": "dwarfhold"
+        }
+    },
+    {
+        "data": {
+            "id": "citadel-pastelia",
+            "source": "citadel",
+            "target": "pastelia"
+        }
+    },
+    {
+        "data": {
+            "id": "citadel-tercessuinotlim",
+            "source": "citadel",
+            "target": "tercessuinotlim"
+        }
+    },
+    {
+        "data": {
+            "id": "tavern-dwarfprison",
+            "source": "tavern",
+            "target": "dwarfprison"
+        }
+    },
+    {
+        "data": {
+            "id": "pinewoodpink-swordhavenpink",
+            "source": "pinewoodpink",
+            "target": "swordhavenpink"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhavenpink-sewerpink",
+            "source": "swordhavenpink",
+            "target": "sewerpink"
+        }
+    },
+    {
+        "data": {
+            "id": "portalundead-warhorc",
+            "source": "portalundead",
+            "target": "warhorc"
+        }
+    },
+    {
+        "data": {
+            "id": "portalundead-swordhavenundead",
+            "source": "portalundead",
+            "target": "swordhavenundead"
+        }
+    },
+    {
+        "data": {
+            "id": "swordhavenundead-castleundead",
+            "source": "swordhavenundead",
+            "target": "castleundead"
+        }
+    },
+    {
+        "data": {
+            "id": "twistedcavern-brokenwoods",
+            "source": "twistedcavern",
+            "target": "brokenwoods"
+        }
+    },
+    {
+        "data": {
+            "id": "brokenwoods-lostvilla",
+            "source": "brokenwoods",
+            "target": "lostvilla"
+        }
+    },
+    {
+        "data": {
+            "id": "undergroundlab-undergroundlabb",
+            "source": "undergroundlab",
+            "target": "undergroundlabb"
+        }
+    },
+    {
+        "data": {
+            "id": "underrealm-styx",
+            "source": "underrealm",
+            "target": "styx"
+        }
+    },
+    {
+        "data": {
+            "id": "styx-judgement",
+            "source": "styx",
+            "target": "judgement"
+        }
+    },
+    {
+        "data": {
+            "id": "pocketdimension-icedimension",
+            "source": "pocketdimension",
+            "target": "icedimension"
+        }
+    },
+    {
+        "data": {
+            "id": "icedimension-sanddimension",
+            "source": "icedimension",
+            "target": "sanddimension"
+        }
+    },
+    {
+        "data": {
+            "id": "sanddimension-darkdimension",
+            "source": "sanddimension",
+            "target": "darkdimension"
+        }
+    },
+    {
+        "data": {
+            "id": "darkdimension-ivoliss",
+            "source": "darkdimension",
+            "target": "ivoliss"
+        }
+    },
+    {
+        "data": {
+            "id": "maul-necrotower",
+            "source": "maul",
+            "target": "necrotower"
+        }
+    },
+    {
+        "data": {
+            "id": "necrotower-necrou",
+            "source": "necrotower",
+            "target": "necrou"
+        }
+    },
+    {
+        "data": {
+            "id": "necrou-temple",
+            "source": "necrou",
+            "target": "temple"
+        }
+    },
+    {
+        "data": {
+            "id": "temple-templeb",
+            "source": "temple",
+            "target": "templeb"
+        }
+    },
+    {
+        "data": {
+            "id": "temple-blackhorn",
+            "source": "temple",
+            "target": "blackhorn"
+        }
+    },
+    {
+        "data": {
+            "id": "lab-mountain",
+            "source": "lab",
+            "target": "mountain"
+        }
+    },
+    {
+        "data": {
+            "id": "lab-yard",
+            "source": "lab",
+            "target": "yard"
+        }
+    },
+    {
+        "data": {
+            "id": "yokaigrave-yokairiver",
+            "source": "yokaigrave",
+            "target": "yokairiver"
+        }
+    },
+    {
+        "data": {
+            "id": "yokairiver-bamboo",
+            "source": "yokairiver",
+            "target": "bamboo"
+        }
+    },
+    {
+        "data": {
+            "id": "bamboo-junkyard",
+            "source": "bamboo",
+            "target": "junkyard"
+        }
+    },
+    {
+        "data": {
+            "id": "bamboo-akiba",
+            "source": "bamboo",
+            "target": "akiba"
+        }
+    },
+    {
+        "data": {
+            "id": "akiba-dragonkoi",
+            "source": "akiba",
+            "target": "dragonkoi"
+        }
+    },
+    {
+        "data": {
+            "id": "akiba-onsen",
+            "source": "akiba",
+            "target": "onsen"
+        }
+    },
+    {
+        "data": {
+            "id": "akiba-hachiko",
+            "source": "akiba",
+            "target": "hachiko"
+        }
+    },
+    {
+        "data": {
+            "id": "akiba-shogunwar",
+            "source": "akiba",
+            "target": "shogunwar"
+        }
+    },
+    {
+        "data": {
+            "id": "akiba-dragonkoiz",
+            "source": "akiba",
+            "target": "dragonkoiz"
+        }
+    },
+    {
+        "data": {
+            "id": "onsen-shinkansen",
+            "source": "onsen",
+            "target": "shinkansen"
+        }
+    },
+    {
+        "data": {
+            "id": "hakuvillage-hakuwar",
+            "source": "hakuvillage",
+            "target": "hakuwar"
+        }
+    },
+    {
+        "data": {
+            "id": "hakuwar-yokaiportal",
+            "source": "hakuwar",
+            "target": "yokaiportal"
+        }
+    },
+    {
+        "data": {
+            "id": "embersea-pyrewatch",
+            "source": "embersea",
+            "target": "pyrewatch"
+        }
+    },
+    {
+        "data": {
+            "id": "embersea-phoenixrise",
+            "source": "embersea",
+            "target": "phoenixrise"
+        }
+    },
+    {
+        "data": {
+            "id": "embersea-fireforge",
+            "source": "embersea",
+            "target": "fireforge"
+        }
+    },
+    {
+        "data": {
+            "id": "shadowflame-dragonspire",
+            "source": "shadowflame",
+            "target": "dragonspire"
+        }
+    },
+    {
+        "data": {
+            "id": "shadowflame-queenspire",
+            "source": "shadowflame",
+            "target": "queenspire"
+        }
+    },
+    {
+        "data": {
+            "id": "shadowflame-shadowspire",
+            "source": "shadowflame",
+            "target": "shadowspire"
+        }
+    },
+    {
+        "data": {
+            "id": "icestormarena-icestormunder",
+            "source": "icestormarena",
+            "target": "icestormunder"
+        }
+    },
+    {
+        "data": {
+            "id": "icestormarena-icewing",
+            "source": "icestormarena",
+            "target": "icewing"
+        }
+    },
+    {
+        "data": {
+            "id": "nerites-ashray",
+            "source": "nerites",
+            "target": "ashray"
+        }
+    },
+    {
+        "data": {
+            "id": "ashray-sunlightzone",
+            "source": "ashray",
+            "target": "sunlightzone"
+        }
+    },
+    {
+        "data": {
+            "id": "sunlightzone-twilightzone",
+            "source": "sunlightzone",
+            "target": "twilightzone"
+        }
+    },
+    {
+        "data": {
+            "id": "twilightzone-midnightzone",
+            "source": "twilightzone",
+            "target": "midnightzone"
+        }
+    },
+    {
+        "data": {
+            "id": "midnightzone-abyssalzone",
+            "source": "midnightzone",
+            "target": "abyssalzone"
+        }
+    },
+    {
+        "data": {
+            "id": "abyssalzone-trenchobserve",
+            "source": "abyssalzone",
+            "target": "trenchobserve"
+        }
+    },
+    {
+        "data": {
+            "id": "trenchobserve-kathooldepths",
+            "source": "trenchobserve",
+            "target": "kathooldepths"
+        }
+    },
+    {
+        "data": {
+            "id": "trenchobserve-seavoice",
+            "source": "trenchobserve",
+            "target": "seavoice"
+        }
+    },
+    {
+        "data": {
+            "id": "camlan-lotustomb",
+            "source": "camlan",
+            "target": "lotustomb"
+        }
+    },
+    {
+        "data": {
+            "id": "lotustomb-shadowduat",
+            "source": "lotustomb",
+            "target": "shadowduat"
+        }
+    },
+    {
+        "data": {
+            "id": "coldthunder-castlegaheris",
+            "source": "coldthunder",
+            "target": "castlegaheris"
+        }
+    },
+    {
+        "data": {
+            "id": "castlegaheris-liatarahill",
+            "source": "castlegaheris",
+            "target": "liatarahill"
+        }
+    },
+    {
+        "data": {
+            "id": "castlegaheris-queeniona",
+            "source": "castlegaheris",
+            "target": "queeniona"
+        }
+    },
+    {
+        "data": {
+            "id": "shadowduat-hiddenduat",
+            "source": "shadowduat",
+            "target": "hiddenduat"
+        }
+    },
+    {
+        "data": {
+            "id": "liatarahill-naoisegrave",
+            "source": "liatarahill",
+            "target": "naoisegrave"
+        }
+    },
+    {
+        "data": {
+            "id": "naoisegrave-loughshine",
+            "source": "naoisegrave",
+            "target": "loughshine"
+        }
+    },
+    {
+        "data": {
+            "id": "loughshine-castleeblana",
+            "source": "loughshine",
+            "target": "castleeblana"
+        }
+    },
+    {
+        "data": {
+            "id": "castleeblana-balemorale",
+            "source": "castleeblana",
+            "target": "balemorale"
+        }
+    },
+    {
+        "data": {
+            "id": "djinnguard-djinngate",
+            "source": "djinnguard",
+            "target": "djinngate"
+        }
+    },
+    {
+        "data": {
+            "id": "djinngate-dreampalace",
+            "source": "djinngate",
+            "target": "dreampalace"
+        }
+    },
+    {
+        "data": {
+            "id": "safiriainvasion-lycaninvasion",
+            "source": "safiriainvasion",
+            "target": "lycaninvasion"
+        }
+    },
+    {
+        "data": {
+            "id": "safiriainvasion-darkoviainvasion",
+            "source": "safiriainvasion",
+            "target": "darkoviainvasion"
+        }
+    },
+    {
+        "data": {
+            "id": "seraphicwardage-seraphicwar",
+            "source": "seraphicwardage",
+            "target": "seraphicwar"
+        }
+    },
+    {
+        "data": {
+            "id": "seraphicwar-seraphicwarlaken",
+            "source": "seraphicwar",
+            "target": "seraphicwarlaken"
+        }
+    },
+    {
+        "data": {
+            "id": "chaoscave-lycanwar",
+            "source": "chaoscave",
+            "target": "lycanwar"
+        }
+    },
+    {
+        "data": {
+            "id": "lycanwar-vampirewar",
+            "source": "lycanwar",
+            "target": "vampirewar"
+        }
+    },
+    {
+        "data": {
+            "id": "lycanwar-wargrounds",
+            "source": "lycanwar",
+            "target": "wargrounds"
+        }
+    },
+    {
+        "data": {
+            "id": "vampirewar-wargrounds",
+            "source": "vampirewar",
+            "target": "wargrounds"
+        }
+    },
+    {
+        "data": {
+            "id": "dualplane-crownsreach",
+            "source": "dualplane",
+            "target": "crownsreach"
+        }
+    },
+    {
+        "data": {
+            "id": "crownsreach-chaoslibrarium",
+            "source": "crownsreach",
+            "target": "chaoslibrarium"
+        }
+    },
+    {
+        "data": {
+            "id": "crownsreach-forestreach",
+            "source": "crownsreach",
+            "target": "forestreach"
+        }
+    },
+    {
+        "data": {
+            "id": "chaoslibrarium-backroom",
+            "source": "chaoslibrarium",
+            "target": "backroom"
+        }
+    },
+    {
+        "data": {
+            "id": "deepforest-transformation",
+            "source": "deepforest",
+            "target": "transformation"
+        }
+    },
+    {
+        "data": {
+            "id": "transformation-downbelow",
+            "source": "transformation",
+            "target": "downbelow"
+        }
+    },
+    {
+        "data": {
+            "id": "baconcatlair-baconcat",
+            "source": "baconcatlair",
+            "target": "baconcat"
+        }
+    },
+    {
+        "data": {
+            "id": "baconcat-baconcatyou",
+            "source": "baconcat",
+            "target": "baconcatyou"
+        }
+    },
+    {
+        "data": {
+            "id": "battleoff-brightfall",
+            "source": "battleoff",
+            "target": "brightfall"
+        }
+    },
+    {
+        "data": {
+            "id": "brightfall-lightoviacave",
+            "source": "brightfall",
+            "target": "lightoviacave"
+        }
+    },
+    {
+        "data": {
+            "id": "brightfall-reddeath",
+            "source": "brightfall",
+            "target": "reddeath"
+        }
+    },
+    {
+        "data": {
+            "id": "stonewood-thorngarde",
+            "source": "stonewood",
+            "target": "thorngarde"
+        }
+    },
+    {
+        "data": {
+            "id": "stonewood-techdungeon",
+            "source": "stonewood",
+            "target": "techdungeon"
+        }
+    },
+    {
+        "data": {
+            "id": "techdungeon-stonewooddeep",
+            "source": "techdungeon",
+            "target": "stonewooddeep"
+        }
+    },
+    {
+        "data": {
+            "id": "infernalparadise-celestialpast",
+            "source": "infernalparadise",
+            "target": "celestialpast"
+        }
+    },
+    {
+        "data": {
+            "id": "infernalparadise-infernaldianoia",
+            "source": "infernalparadise",
+            "target": "infernaldianoia"
+        }
+    },
+    {
+        "data": {
+            "id": "marsh-ruins",
+            "source": "marsh",
+            "target": "ruins"
+        }
+    },
+    {
+        "data": {
+            "id": "marsh-chaosmarsh",
+            "source": "marsh",
+            "target": "chaosmarsh"
+        }
+    },
+    {
+        "data": {
+            "id": "marsh-marsh2",
+            "source": "marsh",
+            "target": "marsh2"
+        }
+    },
+    {
+        "data": {
+            "id": "sevencircleswar-sevencircles",
+            "source": "sevencircleswar",
+            "target": "sevencircles"
+        }
+    },
+    {
+        "data": {
+            "id": "sevencircleswar-atlaspromenade",
+            "source": "sevencircleswar",
+            "target": "atlaspromenade"
+        }
+    },
+    {
+        "data": {
+            "id": "bludrut-bludrut2",
+            "source": "bludrut",
+            "target": "bludrut2"
+        }
+    },
+    {
+        "data": {
+            "id": "bludrut2-bludrut3",
+            "source": "bludrut2",
+            "target": "bludrut3"
+        }
+    },
+    {
+        "data": {
+            "id": "bludrut3-bludrut4",
+            "source": "bludrut3",
+            "target": "bludrut4"
+        }
+    }
+]

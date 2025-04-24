@@ -2,20 +2,46 @@
 <html lang="en">
 <html>
 
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <head>
     <link rel="shortcut icon" type="image/png" href="favicon.png"> 
     <link rel="stylesheet" href="styles.css">
     <title>Ryan Franks | Graph Structure of AQW</title>
-    <script src="https://unpkg.com/cytoscape@3.24.0/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.14.7/dist/umd/popper.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-popper@1.0.4/cytoscape-popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
     <style>
       #cy {
         width: 100%;
         height: 100vh;
         display: block;
       }
+    .cy-button {
+        background: linear-gradient(135deg, #0074D9, #00c0ff);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-family: sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        z-index: 1000;
+    }
+
+    .cy-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .cy-button:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    }
     </style>
 </head>
 <body>
@@ -35,23 +61,173 @@
     <main>
         <div class="overlay">
             <h1>Graphing AdventureQuest Worlds</h1>
+            <p>
+                AdventureQuest Worlds (AQW for short) is a decade-plus old flash game where you fight monsters, travel to new locations, and fight even more monsters. While these locations may on occasion be walked or quick-travelled to, the fastest and most common method of travel is teleportation using text commands. What would the world of AQW look like without the power of unlimited teleportation?                
+            </p>
+            <p>
+                To address this, I developed a program that crawls the <a href="http://aqwwiki.wikidot.com/main">AQW Wiki</a> and looks at how different locations are connected to each other. The code for this and the details of my methodology can be found <a href="https://github.com/r-franks/graph-aqw">here</a>. Graphs produced by this code (as of 4/22/2025) are shown below, with clusters of only one or two locations omitted. Feel free to play with the check-boxes. You may mouse-over the check-boxes (or read the next paragraph) to see what they do. You may also mouse-over nodes in the graph to see what regions they are associated with and zoom in to get a closer look.
+            </p>
+            <label><input type="checkbox" id="walkable-only" title="Excludes routes that are not based on in-game walking. Many connections between locations are based on things like in-game buttons.">Walkable routes only</label>
+            <label><input type="checkbox" id="allow-one-way" title="Shows one-way routes. There are many places in AQW that you can travel to but you can't travel back from!">Allow one way travel</label>
+            <label><input type="checkbox" id="allow-one-way-to-hubs" title="Shows one-way routes to hub-towns. Many locations send you back to associated hub-towns even if you can't travel from a hub-town to them. We omit these by default.">Include one-way routes to hubs</label>
+            <div id="cy"></div>
+            <p>
+                You can see what happens when we require travel to be through in-game walking (rather than other travel methods like clicking buttons that trigger teleportation events). You can also see what happens when one-way travel is allowed. This occurs when you can travel to a location by some means (walking, pressing a button, etc) but that location provides no way back to where you came from.             
+            </p>
+            <p>
+                By default, I omit one-way connections to hub-towns (battleon, battleontown and castle) because they increase the graph complexity without providing geographic meaning. To see these connections, check the "include one-way routes to hubs" checkbox.
+            </p>
+            <h2>Discussion</h2>
+            <br>
+            <h3>No one-way travel</h3>
+            <p>
+                Since connections in physical space are typically two-way, the game has reason to ensure walkable routes are two-way. This is not the case for routes mediated by pressing buttons or talking to characters. As a result, we might expect that filtering down to two-way routes yields a graph similar to the one we would produce by filtering down to walkable routes only. This is somewhat true. Once we exclude one-way routes, requiring routes to be walkable has little further impact on our graph. However, it turns out plenty of walkable routes are <em>one-way</em> so excluding one-way routes is a much stronger filter than walkability.                
+            </p>
+            <p>
+                Since, filtering for walkability has little impact after filtering for two-way routes, we can discuss both two-way route only graphs at the same time. Both agree on the major location clusters. There's a big one centered around Greenguard Forest, a smaller one around Oaklore Forest, and can even smaller cluster centered around the Yokai Islands (even the AQW analog of Japan stands out for its walkability). Compared to these, the remaining clusters are tiny.
+            </p>
+            <p>
+                The lack of two-way routes between Oaklore Forest and Greenguard Forest is pretty surprising. This means that traveling from Battleon (the player's starting point) to Swordhaven (its capital city) is impossible without some non-physical or non-reciprocated connection. Clearly, the much maligned infrastructure investments of <a href="http://aqwwiki.wikidot.com/king-dudley-drakath">King Dudley the Dull</a> have fallen into disrepair.
+            </p>
+            <p>
+                Shadowfall (the capital city for the forces of Evil) is in even worse shape. There is only one two-way walkable connection with Shadowfall, and that's to Shadowfall Alliance (this cluster of two is omitted from the graph of two-way walkable connections). The remaining two-way trips to Shadowfall (from Mobius or from the Underword) are achieved by talking to people. Thus, while the forces of Good in Swordhaven have let their logistics falter, the forces of Evil in Shadowfall are completely isolated.
+            </p>
+            <p>
+                The Islands of Yokai and the Isle of Fotia also seem unnecessarily isolated. These two regions are accessed from the Yokaiboat (Yokai Ferry) via a one-way walking route and Pirates (Lolosia) via a two-way walking route respectively. However, despite Yokaiboat and Pirates being next to each other, perhaps even at the same dock, one cannot be reached from the other. Furthermore, there is <em>no route</em> to Yokaiboat and the only route to Pirates is from the Isle of Fotia, leaving both locations isolated from the continent they exist on. I strongly recommend that Swordhaven builds a connective road to Pirates and Yokaiboat. Access to the Yokai Islands in particular would be a major logistical boon and land routes to a major port cities always provide beneficial military and economic benefits. 
+            </p>
+            <p>
+                An interesting place where the two-way route graphs disagree is on the matter of the Age of Ruin trilogy. While two-way routes appear to exist connecting the Voice in the Sea Saga and Cold Thunder Saga to each other, requiring walkability splits them apart. Even the two-way connection may be spurious however, as I was not able to locate the "To Termina Temple" button in Nerites mentioned on the AQW Wiki.           
+            </p>
+            <h3>One-way and two-way travel</h3>
+            <p>
+                The graph of all walkable routes (either one-way or two-way) has much more connectivity but is still readable. Now, Termina Temple now connects to Camlan, Ashray, and Balemorale which together encompass much of the Age of Ruin Saga. The Ring of Fire Islands also makes an appearance as a cohesive region along with Shadows of Chaos region and Celestial Realm. You can also see on the lower left side of the Greenguard cluster how isolated the Yokaiboat location is.
+            </p>
+            <p>
+                The graph of all walkable routes also appears to suggest that Greenguard Forest and Oaklore Forest clusters are connected via one-way routes. If one-way routes to hub-towns are omitted, this connection is due to Archportal which can send players on one-way trips to Yulgar (in Greenguard Forest) or Citael (in Dwarfhold). However, since both trips are one-way, travel between Greenguard and Swordhaven still is not feasible.
+            </p>
+            <p>
+                If you expand the graph further to include all routes, even those achieved by pressing buttons or talking to NPCs, the graph connectivity expands significantly and connections stop being very meaningful. For example, you could talk to characters in Greenguard, such as Alina in Battleontown or Zio in Mobius (if you're Evil), and they'll send you to locations that are a walk away from Swordhaven. Still you can learn what clusters of locations are truly isolated: Bludrut, Shadows of Chaos, Doomwood Part 3, Sepulchure's Saga, Sepulchure's Rise, the Seraphic Saga, and the Glacera Saga can only be entered and exited using text-commands or maps.
+            </p>
+            <p>
+                While some of these isolated locations are tied to a specific time which makes them awkward to connect to other locations, Bludrut Keep at the very least should connect somewhere. Perhaps it can connect to Vasalkar Lair and even Shadowfall. This would strengthen the logistical capabilities of Empress Gravelyn (who still needs to figure out her dragon situation).
+            </p>
+            <h2>Trivia</h2>
+            <br>
+            <b>How many locations did you consider in your graphs?</b>
+            <p>
+                When I crawled the Wiki using all connections, I reviewed 1140 locations. When I crawled it using connections through walking, I reviewed 780 locations.
+            </p>
+            <b>How many locations were in the biggest cluster (the Greenguard cluster)?</b>
+            <p>
+                If we allow two-way connections by walking only, the Greenguard cluster has 133 locations. If we allow all two-way connections, it has 170 locations.
+            </p>
+            <b>What locations are the farthest away?</b>
+            <p>
+                If we only allow two-way connections by walking, Towerofdoom10 and Templeb (or Blackhorn Tomb) are the farthest locations away from each other, requiring travel through 16 rooms.
+            </p>
+            <p>
+                If we allow two-way connections by any means, Towerofdoom10 and Astraviapast are the locations farthest apart, requiring travel through 19 rooms.
+            </p>
+            <b>What connections between locations did you find most surprising?</b>
+            <p>
+                I didn't realize that you could get to Garden (a weird dimension beyond time, where experiments are conducted with parasitic beings from beyond the universe) from Cellar (the basement of Yulgar's Inn).
+            </p>
+            <p>
+                I also didn't realize you could walk left on the first screen in battleon to go to Nexus. There's no arrow or anything!
+            </p>
+            <b>Aside from what you mentioned, what other connections do you want?</b>
+            <p>
+                Lots of the Chaos Saga is pretty well connected to itself and other areas... but Thunderforge deserves more love. You can walk from Battleon through Greenguard Forest to Doomwood and then through Doomwood to Blackhorn Tomb which makes a lot of geographic sense. But then you can't walk from Blackhorn Tomb to Falguard or the rest of the Thunderforge area!
+            </p>
+            <p>
+                It would also be nice to add two-way connections on the Fire Islands, create some form of connection to the Frozen Northlands through Mythsong, and flesh out the geography of the Throne of Darkness saga.
+            </p>
         </div>
     </main>
-    <div id="cy"></div>
     <script>
-        fetch('test_basic.json')
-          .then(res => res.json())
-          .then(elements => {
-            cytoscape({
-              container: document.getElementById('cy'),
-              elements: elements,
-              layout: { name: 'preset' },
-              style: [
-                { selector: 'node', style: { 'background-color': '#0074D9', 'label': 'data(id)' }},
-                { selector: 'edge', style: { 'width': 2, 'line-color': '#aaa' }}
-              ]
-            });
-          });
-      </script>
+    let cy;
+   
+    document.getElementById('walkable-only').addEventListener('change', updateGraph);
+    document.getElementById('allow-one-way').addEventListener('change', updateGraph);
+    document.getElementById('allow-one-way-to-hubs').addEventListener('change', updateGraph);
+    updateGraph();
+
+    function updateGraph() {
+        const walk_only = document.getElementById('walkable-only').checked;
+        const allow_one_way = document.getElementById('allow-one-way').checked;
+        const allow_one_way_to_hubs = document.getElementById('allow-one-way-to-hubs').checked;
+
+        let filename = "aqw_graph/aqw_graph_none_dir_raw_ct";
+        if (!allow_one_way && walk_only) filename = "aqw_graph/aqw_graph_geo_ct.json";
+        if (!allow_one_way && !walk_only) filename = "aqw_graph/aqw_graph_none_ct.json";
+        if (allow_one_way && walk_only && allow_one_way_to_hubs) filename = "aqw_graph/aqw_graph_geo_dir_raw_ct.json";
+        if (allow_one_way && walk_only && !allow_one_way_to_hubs) filename = "aqw_graph/aqw_graph_geo_dir_ct.json";
+        if (allow_one_way && !walk_only && allow_one_way_to_hubs) filename = "aqw_graph/aqw_graph_none_dir_raw_ct.json";
+        if (allow_one_way && !walk_only && !allow_one_way_to_hubs) filename = "aqw_graph/aqw_graph_none_dir_ct.json";
+
+        const checkbox_hub = document.getElementById("allow-one-way-to-hubs") 
+        if (!allow_one_way) {
+            checkbox_hub.disabled = true;
+        } else {
+            checkbox_hub.disabled = false;
+        }
+        loadGraph(filename)
+    }
+
+    function loadGraph(file) {
+            const allow_one_way = document.getElementById('allow-one-way').checked;
+            let edge_style;
+            if (allow_one_way) {
+                edge_style = {'width': 0.1, 'line-color': '#aaa', 'curve-style': 'straight', "target-arrow-shape": 'vee', "arrow-scale": 0.05, 'target-arrow-color': '#aaa'};
+            } else {
+                edge_style = {'width': 0.1, 'line-color': '#aaa', 'curve-style': 'straight'};
+            }
+            console.log(edge_style)
+            fetch(file)
+                .then(res => res.json())
+                .then(elements => {
+                if (cy) {
+                    cy.elements().remove();           // clear old graph
+                    cy.add(elements);                 // add new graph
+                    cy.style().selector('edge').style(edge_style).update();
+                    cy.layout({ name: 'preset' }).run();
+                    cy.fit();
+                } else {
+                    cy = cytoscape({
+                    container: document.getElementById('cy'),
+                    elements,
+                    layout: { name: 'preset' },
+                    style: [
+                        { selector: 'node', style: { 'background-color': 'data(color)', 'label': 'data(id)', "width": 0.5, "height": 0.5, 'font-size': 0.2}},
+                        { selector: 'edge', style: edge_style}
+                    ]
+                    });
+                }
+                cy.ready(function() {
+                        cy.nodes().forEach(function(ele) {
+                            makePopper(ele);
+                        });});
+
+                cy.nodes().unbind('mouseover');
+                cy.nodes().bind('mouseover', (event) => event.target.tippy.show());
+
+                cy.nodes().unbind('mouseout');
+                cy.nodes().bind('mouseout', (event) => event.target.tippy.hide());
+            }
+        );
+    }
+
+    function makePopper(ele) {
+        let ref = ele.popperRef(); // used only for positioning
+        ele.tippy = tippy(ref, { // tippy options:
+        content: () => {
+            let content = document.createElement('div');
+            content.innerHTML = ele._private.data.info;
+            return content;
+        },
+        trigger: 'manual' // probably want manual mode
+        });
+    }
+    </script>
 </body>
 </html>
