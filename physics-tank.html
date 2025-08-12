@@ -168,60 +168,58 @@ class Segment {
         this.dy = this.end.y - this.start.y;
         this.dx2 = this.dx * this.dx;
         this.dy2 = this.dy * this.dy;
+        this.len2 = this.dx2 + this.dy2;
         this.dragging = opts.dragging || false;
     }
 }
 
 // Scene helpers
 function addCircle(x, y, opts={}){ 
-    const c=new Circle(x, y, opts); 
+    const c = new Circle(x, y, opts); 
     circles.push(c); 
     return c;
 }
 
 function addSegment(x1, y1, x2, y2, opts={}){ 
-    const s=new Segment(x1, y1, x2, y2, opts=opts); 
+    const s = new Segment(x1, y1, x2, y2, opts=opts); 
     segments.push(s); 
     return s;
 }
 
-// Basic collision detection returns manifold {a,b,normal,penetration,contacts:[]}
-function detectCircleCircleCollision(a,b){
-  const dx = a.pos.x - b.pos.x;
-  const dy = a.pos.y - b.pos.y;
-  if(Math.hypot(dx, dy) <= a.r + b.r){
-    return true;
-  } else {
-    return false;
-  }
-}
-
 function detectCircleSegmentCollision(c, s) {
-    // Find projection of circle center onto the segment
-    const t = Math.max(0, Math.min(1, ((c.pos.x - s.start.x) * s.dx + (c.pos.y - s.start.y) * s.dy) / (s.dx*s.dx + s.dy*s.dy)));
+    // Precompute vector from start to circle center
+    const vx = c.pos.x - s.start.x;
+    const vy = c.pos.y - s.start.y;
 
-    // Closest point on segment to circle center
-    const closestX = s.start.x + t * s.dx;
-    const closestY = s.start.y + t * s.dy;
+    // Project onto segment (normalized to [0,1])
+    let t = (vx * s.dx + vy * s.dy) / s.len2; // s.len2 = dx*dx + dy*dy (precomputed)
+    if (t < 0) t = 0;
+    else if (t > 1) t = 1;
 
-    // Distance from circle center to closest point
-    const distX = c.pos.x - closestX;
-    const distY = c.pos.y - closestY;
-    const distSq = distX*distX + distY*distY;
+    // Closest point
+    const px = s.start.x + t * s.dx;
+    const py = s.start.y + t * s.dy;
 
-    return distSq <= c.r2; // true if collision
+    // Squared distance check (avoids sqrt)
+    const dx = c.pos.x - px;
+    const dy = c.pos.y - py;
+    return dx*dx + dy*dy <= c.r2;
 }
 
 function resolveCircleCircle(a, b) {
     // Vector between centers
     const dx = b.pos.x - a.pos.x;
     const dy = b.pos.y - a.pos.y;
-    const dist = Math.hypot(dx, dy) || 1e-8; // avoid division by zero
+
+    const minDist = a.r + b.r;
+    const dist2 = dx*dx + dy*dy;
+    if (dist2 >= minDist * minDist) return; // no collision
+
+    const dist = Math.sqrt(dist2) || 1e-8; // avoid division by zero
     const nx = dx / dist; // normal unit vector x
     const ny = dy / dist; // normal unit vector y
-    
-    
-    const penetration = a.r + b.r - dist;
+
+    const penetration = minDist - dist;
     if (penetration <= 0) return; // not colliding
 
     // --- 1. Positional correction ---
@@ -255,7 +253,6 @@ function resolveCircleCircle(a, b) {
     b.vel.x += impulseX * b.invMass;
     b.vel.y += impulseY * b.invMass;
 }
-
 
 function resolveCircleSegment(c, s) {
     // Projection factor (clamped 0..1)
@@ -312,12 +309,9 @@ function resolveTunneledCircleSegment(c, s){
     ny /= dist;
 
     // Push circle toward wall
-    const penetration = 0.99*(dist - c.r);
-    c.pos.x = c.pos_old.x + nx * penetration;
-    c.pos.y = c.pos_old.y + ny * penetration;
-
-    // c.pos.x = c.pos_old.x;
-    // c.pos.y = c.pos_old.y;
+    // TODO: Compute intersection point, update to intersection
+    c.pos.x = c.pos_old.x;
+    c.pos.y = c.pos_old.y;
 
     // Reflect velocity: v' = v - (1 + e)*(v·n) n
     const dot = c.vel.x * nx + c.vel.y * ny;
@@ -325,12 +319,16 @@ function resolveTunneledCircleSegment(c, s){
     c.vel.y = c.vel.y - (1 + globalRestitution) * dot * ny;
 }
 
-function ccw(A,B,C){
-    return (C.y-A.y)*(B.x-A.x) > (B.y-A.y)*(C.x-A.x);
-}
+function lineIntersect(A,B,C,D){
+    const Ax = A.x, Ay = A.y;
+    const Bx = B.x, By = B.y;
+    const Cx = C.x, Cy = C.y;
+    const Dx = D.x, Dy = D.y;
 
-function lineintersect(A,B,C,D){
-        return ccw(A,C,D) != ccw(B,C,D) && ccw(A,B,C) != ccw(A,B,D)
+    return ((Dy - Ay)*(Cx - Ax) > (Cy - Ay)*(Dx - Ax)) !==
+           ((Dy - By)*(Cx - Bx) > (Cy - By)*(Dx - Bx)) &&
+           ((Cy - Ay)*(Bx - Ax) > (By - Ay)*(Cx - Ax)) !==
+           ((Dy - Ay)*(Bx - Ax) > (By - Ay)*(Dx - Ax));
 }
 
 function distanceCircToSegment(c, s) {
@@ -357,13 +355,6 @@ function distanceCircToSegment(c, s) {
     const distVector = {x: c.pos.x - closest.x, y: c.pos.y - closest.y};
     return Math.hypot(distVector.x, distVector.y);
 }
-
-function circleSegIntersect(c, s){
-    s_circ = new Segment(c.pos_old.x, c.pos_old.y, c.pos.x, c.pos.y);
-    return lineintersect(c.pos_old, c.pos, s.start, s.end);
-}
-
-function perpMul(vv, s){ return {x: -s*vv.y, y: s*vv.x} }
 
 function integrate(circle, dt){
     // velocity verlet
@@ -408,48 +399,41 @@ function step(){
             integrate(c, dt);
         }
     }
-    
-    // collisions
-    const circle_circle_pairs = [];
+
+    // handle circles that tunnel through segments
+    const circleSegmentTunneledPairs = [];
     for(let i=0; i<circles.length; i++){
-        for(let j=i+1; j<circles.length; j++){
-            const a=circles[i];
-            const b=circles[j];
-            const is_collided = detectCircleCircleCollision(a,b);
-            if(is_collided){
-                circle_circle_pairs.push({a, b});
+        let closestTunneledSegIdx = -1;
+        let lowestTunneledSegDist = 1000000;
+        for(let j=0; j<segments.length; j++){
+            const c=circles[i];
+            const s=segments[j];
+            if(lineIntersect(c.pos_old, c.pos, s.start, s.end)){
+                segDist = distanceCircToSegment(c, s);
+                if(segDist <= lowestTunneledSegDist){
+                    closestTunneledSegIdx = j;
+                    lowestTunneledSegDist = segDist;
+                }
             }
         }
+        if(closestTunneledSegIdx >= 0){
+            circleSegmentTunneledPairs.push({c: circles[i], s: segments[closestTunneledSegIdx]});
+        }
     }
-    // resolve
-    for(const pair of circle_circle_pairs){
-        resolveCircleCircle(pair.a, pair.b);
+    for(const pair of circleSegmentTunneledPairs){
+        resolveTunneledCircleSegment(pair.c, pair.s);
     }
 
-    // collisions
-    const circle_segment_collision_pairs = [];
-    const circle_segment_tunneled_pairs = [];
+    // handle circles colliding with segments
+    const circleSegmentCollisionPairs = [];
     for(let i=0; i<circles.length; i++){
         let closest_seg_idx = -1;
         let smallest_seg_dist = 1000;
         for(let j=0; j<segments.length; j++){
             const c=circles[i];
             const s=segments[j];
-
-            const is_tunneled = circleSegIntersect(c,s);
-            if(is_tunneled){
-                console.log("Tunneled!");
-                seg_dist = distanceCircToSegment(c, s);
-                console.log(seg_dist);
-                if(seg_dist <= smallest_seg_dist){
-                    closest_seg_idx = j;
-                    smallest_seg_dist = seg_dist
-                }
-            }
-
-            const is_collided = detectCircleSegmentCollision(c,s);
-            if(is_collided){
-                circle_segment_collision_pairs.push({c, s});
+            if(detectCircleSegmentCollision(c,s)){
+                circleSegmentCollisionPairs.push({c, s});
             }
         }
         if(closest_seg_idx >= 0){
@@ -457,11 +441,19 @@ function step(){
         }
     }
     // resolve
-    for(const pair of circle_segment_collision_pairs){
+    for(const pair of circleSegmentCollisionPairs){
         resolveCircleSegment(pair.c, pair.s);
     }
-    for(const pair of circle_segment_tunneled_pairs){
-        resolveTunneledCircleSegment(pair.c, pair.s);
+
+    // circle circle collisions
+    // we resolve all circle collisions in order that we detect them anyway
+    // so no point in separating collision detection and resolution (yet)
+    for(let i=0; i<circles.length; i++){
+        for(let j=i+1; j<circles.length; j++){
+            const a=circles[i];
+            const b=circles[j];
+            resolveCircleCircle(a, b);
+        }
     }
 
     // world bounds
@@ -684,6 +676,7 @@ canvas.addEventListener('pointermove', e=>{
         held_segment.dy = held_segment.end.y - held_segment.start.y;
         held_segment.dx2 = held_segment.dx * held_segment.dx;
         held_segment.dy2 = held_segment.dy * held_segment.dy;
+        held_segment.len2 = held_segment.dx2 + held_segment.dy2;
     }
 })
 
