@@ -297,16 +297,12 @@ function resolveTunneledCircleSegment(c, s){
     const closestY = s.start.y + t * s.dy;
 
     // Vector from closest point to circle center
-    let nx = c.pos_old.x - closestX;
-    let ny = c.pos_old.y - closestY;
-    const distSq = nx*nx + ny*ny;
+    const dx = c.pos_old.x - closestX;
+    const dy = c.pos_old.y - closestY;
+    const distSq = dx*dx + dy*dy;
     const radiusSq = c.r2;
 
-    const dist = Math.sqrt(distSq) || 0.0001; // avoid div by 0
-
-    // Normal vector (unit)
-    nx /= dist;
-    ny /= dist;
+    const invDistSq = 1/(distSq || 0.0001);
 
     // Push circle toward wall
     // TODO: Compute intersection point, update to intersection
@@ -314,9 +310,9 @@ function resolveTunneledCircleSegment(c, s){
     c.pos.y = c.pos_old.y;
 
     // Reflect velocity: v' = v - (1 + e)*(v·n) n
-    const dot = c.vel.x * nx + c.vel.y * ny;
-    c.vel.x = c.vel.x - (1 + globalRestitution) * dot * nx;
-    c.vel.y = c.vel.y - (1 + globalRestitution) * dot * ny;
+    const weightedDot = (1 + globalRestitution) * (c.vel.x * dx + c.vel.y * dy) * invDistSq;
+    c.vel.x = c.vel.x - weightedDot * dx;
+    c.vel.y = c.vel.y - weightedDot * dy;
 }
 
 function lineIntersect(A,B,C,D){
@@ -471,22 +467,23 @@ function step(){
         for(let j=i+1; j<circles.length; j++){
             const a=circles[i];
             const b=circles[j];
-            dx = a.pos.x - b.pos.x;
-            dy = a.pos.y - b.pos.y;
-            r2 = dx*dx + dy*dy;
+            const dx = a.pos.x - b.pos.x;
+            const dy = a.pos.y - b.pos.y;
+            const r2 = dx*dx + dy*dy;
 
-            minDist = a.r + b.r;
-            minDist2 = minDist*minDist;
+            const minDist = a.r + b.r;
+            const minDist2 = minDist*minDist;
 
+            let r3;
             if(minDist2 < r2){
                 r3 = r2 * Math.sqrt(r2);
             } else {
                 r3 = minDist2 * minDist;
             }
-            invr3 = 1/r3;
+            const invr3 = 1/r3;
 
-            gma = gravity*a.mass;
-            gmb = gravity*b.mass
+            const gma = gravity*a.mass;
+            const gmb = gravity*b.mass
 
             a.acc_new.x -= gmb*dx*invr3;
             a.acc_new.y -= gmb*dy*invr3;
