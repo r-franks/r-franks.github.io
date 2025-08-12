@@ -473,22 +473,29 @@ function step(){
             const b=circles[j];
             dx = a.pos.x - b.pos.x;
             dy = a.pos.y - b.pos.y;
-            r = Math.hypot(dx, dy);
-            nx = dx/r;
-            ny = dy/r;
+            r2 = dx*dx + dy*dy;
 
-            if(r > a.r + b.r){
-                force = gravity*a.mass*b.mass/(r*r);
+            minDist = a.r + b.r;
+            minDist2 = minDist*minDist;
 
-                a.acc_new.x -= (force/a.mass)*nx;
-                a.acc_new.y -= (force/a.mass)*ny;
+            if(minDist2 < r2){
+                r3 = r2 * Math.sqrt(r2);
+            } else {
+                r3 = minDist2 * minDist;
+            }
+            invr3 = 1/r3;
 
-                b.acc_new.x += (force/b.mass)*nx;
-                b.acc_new.y += (force/b.mass)*ny;
+            gma = gravity*a.mass;
+            gmb = gravity*b.mass
+
+            a.acc_new.x -= gmb*dx*invr3;
+            a.acc_new.y -= gmb*dy*invr3;
+
+            b.acc_new.x += gma*dx*invr3;
+            b.acc_new.y += gma*dy*invr3;
             }
         }
     }
-}
 
 // tracks when we are starting to fade-out trails
 let fade_trigger = false;
