@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Physics Tank</title>
+  <style>
+    html,
+    body{height:100%;
+         margin:0;
+         font-family:Inter,system-ui,Arial}
+    #app{display:flex;
+         height:100vh}
+    #canvasWrap{flex:1;
+                background:#0b1220;
+                display:flex;
+                align-items:stretch}
+    canvas{width:100%;
+           height:100%;
+           display:block}
+    #ui{width:320px;
+        background:#0f1724;
+        color:#e6eef8;
+        padding:14px;
+        box-sizing:border-box}
+    h1{font-size:16px;
+       margin:4px 0 10px}
+    .row{display:flex;
+         gap:8px;
+         margin-bottom:8px}
+    button, 
+    input[type=range]{padding:8px;
+                      border-radius:8px;
+                      border:1px solid rgba(255,255,255,0.06);
+                      background:#172034;color:inherit}
+    .small{font-size:13px}
+    label{font-size:12px;
+          opacity:.9}
+    .stat{font-family:monospace;
+          font-size:13px;margin-top:8px}
+    .hint{font-size:12px;
+          opacity:.8;
+          margin-top:6px}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="canvasWrap">
+      <canvas id="world"></canvas>
+    </div>
+    <div id="ui">
+      <h1>⚛️ Physics Tank 🐟</h1>
+      <div class="row">
+        <button id="addCircle">Add Circle</button>
+        <button id="velvector">Hide Velocity</button>
+        <button id="clear">Clear Screen</button>
+        <button id="copyBtn">Copy Image</button>
+      </div>
+
+      <div style="margin-top:8px">
+        <input id="downforce" type="range" min="0" max="2000" value="0"><label>Downforce: <span id="downforceVal">0</span> px/s²</label>
+      </div>
+
+      <div style="margin-top:8px">        
+        <input id="grav" type="range" min="0" max="2000" value="500"><label>Gravity: <span id="gravVal">500 px³/ms²</span></label>
+      </div>
+
+      <div style="margin-top:8px">
+        <input id="rest" type="range" min="0" max="1" step="0.01" value="1.0"><label>Coef. of Restitution: <span id="restVal">1.0</span></label>
+      </div>
+
+      <button id="fade">Trail 🐌</button>  
+      <div style="margin-top:8px">
+        <input id="alpha_downscale" type="range" min="1" max="100" step="1" value="100"><label>Trail Length: <span id="alphaDownscaleVal">Infinity</span></label>
+      </div>
+
+      <div style="margin-top:8px">
+        <input id="circle_radius" type="range" min="1" max="100" step="1" value="10"><label>Circle Radius: <span id="circleRadiusVal">20</span></label>
+      </div>
+
+      <div class="row">
+        <button id="pause">Pause ⏸️</button>
+        <button id="step">Step 👣</button>
+      </div>
+
+      <div style="margin-top:8px">
+        <input id="dt" type="range" min="0" max="0.1" step="0.001" value="0.02"><label>Δt: <span id="dtVal">0.02</span>s</label>
+      </div>
+
+      Controls 🎮
+      <div class="hint">
+        -Click and drag circles to move them<br>
+        -Click and drag elsewhere to create circles with velocity<br>
+        -Shift+click to spawn circle without velocity<br>
+        -Click right mouse and drag to create boundary walls<br>
+      </div>
+      <div class="stat" id="stats">circles: 0 | FPS: 0</div>
+    </div>
+  </div>
+
+<script>
+/****************************************************************
+ * Mini Rigid Body Engine
+ * - Shapes: Circle and Box (AABB with orientation)
+ * - Integrator: Semi-implicit Euler
+ * - Collision: Circle-Circle, AABB-AABB (oriented rect), Circle-AABB
+ * - Resolution: Impulse-based with positional correction
+ * - Simple constraints: world bounds
+ ****************************************************************/
+
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d');
+let W = canvas.width = innerWidth - 320; // leave room for UI
+let H = canvas.height = innerHeight;
+
+// Engine params
+let gravity = 500; // px/s^2
+let downforce = 0;
+let globalRestitution = 1.0;
+let circle_radius = 10;
+let alpha_downscale = 100;
+let fade = false;
+let dt = 0.02;
+let last = performance.now();
+let paused = false;
+let hideVelVector = false;
+
+// Scene
+const circles = [];
+const segments = [];
+
+function rand(min,max){return Math.random()*(max-min)+min}
+
+// Vector helpers
+const v = {
+  add:(a,b)=>({x:a.x+b.x,y:a.y+b.y}),
+  sub:(a,b)=>({x:a.x-b.x,y:a.y-b.y}),
+  mul:(a,s)=>({x:a.x*s,y:a.y*s}),
+  dot:(a,b)=>a.x*b.x+a.y*b.y,
+  len:(a)=>Math.hypot(a.x,a.y),
+  normalize:(a)=>{const L=Math.hypot(a.x,a.y)||1;return {x:a.x/L,y:a.y/L}},
+}
+
+class Circle {
+    constructor(x, y, opts={}){
+        this.pos = {x,y};
+        this.pos_old = {x,y}; // used to sweep lines
+        this.vel = opts.vel || {x:0.0, y:0.0};
+        this.acc = opts.acc || {x:0.0, y:0.0};
+        this.acc_new = opts.acc_new || {x:0.0, y:0.0};
+        this.r = opts.r ?? 1.0;
+        this.r2 = this.r*this.r;
+
+        this.density = opts.density ?? 1.0;
+        this.mass = this.density * Math.PI * this.r2;
+        this.invMass = 1/this.mass;
+
+        this.dragging = false;
+    }
+}
+
+class Segment {
+    constructor(x1, y1, x2, y2, opts={}){
+        this.start = {x: x1, y: y1};
+        this.end = {x: x2, y: y2};
+        this.dx = this.end.x - this.start.x;
+        this.dy = this.end.y - this.start.y;
+        this.dx2 = this.dx * this.dx;
+        this.dy2 = this.dy * this.dy;
+        this.dragging = opts.dragging || false;
+    }
+}
+
+// Scene helpers
+function addCircle(x, y, opts={}){ 
+    const c=new Circle(x, y, opts); 
+    circles.push(c); 
+    return c;
+}
+
+function addSegment(x1, y1, x2, y2, opts={}){ 
+    const s=new Segment(x1, y1, x2, y2, opts=opts); 
+    segments.push(s); 
+    return s;
+}
+
+// Basic collision detection returns manifold {a,b,normal,penetration,contacts:[]}
+function detectCircleCircleCollision(a,b){
+  const dx = a.pos.x - b.pos.x;
+  const dy = a.pos.y - b.pos.y;
+  if(Math.hypot(dx, dy) <= a.r + b.r){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function detectCircleSegmentCollision(c, s) {
+    // Find projection of circle center onto the segment
+    const t = Math.max(0, Math.min(1, ((c.pos.x - s.start.x) * s.dx + (c.pos.y - s.start.y) * s.dy) / (s.dx*s.dx + s.dy*s.dy)));
+
+    // Closest point on segment to circle center
+    const closestX = s.start.x + t * s.dx;
+    const closestY = s.start.y + t * s.dy;
+
+    // Distance from circle center to closest point
+    const distX = c.pos.x - closestX;
+    const distY = c.pos.y - closestY;
+    const distSq = distX*distX + distY*distY;
+
+    return distSq <= c.r2; // true if collision
+}
+
+function resolveCircleCircle(a, b) {
+    // Vector between centers
+    const dx = b.pos.x - a.pos.x;
+    const dy = b.pos.y - a.pos.y;
+    const dist = Math.hypot(dx, dy) || 1e-8; // avoid division by zero
+    const nx = dx / dist; // normal unit vector x
+    const ny = dy / dist; // normal unit vector y
+    
+    
+    const penetration = a.r + b.r - dist;
+    if (penetration <= 0) return; // not colliding
+
+    // --- 1. Positional correction ---
+    const totalInvMass = a.invMass + b.invMass;
+    const correction = penetration / totalInvMass;
+    
+    a.pos.x -= nx * correction * a.invMass;
+    a.pos.y -= ny * correction * a.invMass;
+    
+    b.pos.x += nx * correction * b.invMass;
+    b.pos.y += ny * correction * b.invMass;
+
+    // --- 2. Relative velocity ---
+    const rvx = b.vel.x - a.vel.x;
+    const rvy = b.vel.y - a.vel.y;
+    const velAlongNormal = rvx * nx + rvy * ny;
+
+    // If moving apart, skip
+    if (velAlongNormal > 0) return;
+
+    // --- 3. Calculate impulse scalar ---
+    const j = -(1 + globalRestitution) * velAlongNormal / totalInvMass;
+
+    // --- 4. Apply impulse ---
+    const impulseX = j * nx;
+    const impulseY = j * ny;
+
+    a.vel.x -= impulseX * a.invMass;
+    a.vel.y -= impulseY * a.invMass;
+
+    b.vel.x += impulseX * b.invMass;
+    b.vel.y += impulseY * b.invMass;
+}
+
+
+function resolveCircleSegment(c, s) {
+    // Projection factor (clamped 0..1)
+    const t = Math.max(0, Math.min(1, ((c.pos.x - s.start.x) * s.dx + (c.pos.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
+
+    // Closest point on segment
+    const closestX = s.start.x + t * s.dx;
+    const closestY = s.start.y + t * s.dy;
+
+    // Vector from closest point to circle center
+    let nx = c.pos.x - closestX;
+    let ny = c.pos.y - closestY;
+    const distSq = nx*nx + ny*ny;
+    const radiusSq = c.r2;
+
+    // If not colliding, exit
+    if (distSq > radiusSq) return false;
+
+    const dist = Math.sqrt(distSq) || 0.0001; // avoid div by 0
+
+    // Normal vector (unit)
+    nx /= dist;
+    ny /= dist;
+
+    // Push circle out of wall
+    const penetration = c.r - dist;
+    c.pos.x += nx * penetration;
+    c.pos.y += ny * penetration;
+
+    // Reflect velocity: v' = v - (1 + e)*(v·n) n
+    const dot = c.vel.x * nx + c.vel.y * ny;
+    c.vel.x = c.vel.x - (1 + globalRestitution) * dot * nx;
+    c.vel.y = c.vel.y - (1 + globalRestitution) * dot * ny;
+}
+
+function resolveTunneledCircleSegment(c, s){
+    // Projection factor (clamped 0..1)
+    const t = Math.max(0, Math.min(1, ((c.pos_old.x - s.start.x) * s.dx + (c.pos_old.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
+
+    // Closest point on segment
+    const closestX = s.start.x + t * s.dx;
+    const closestY = s.start.y + t * s.dy;
+
+    // Vector from closest point to circle center
+    let nx = c.pos_old.x - closestX;
+    let ny = c.pos_old.y - closestY;
+    const distSq = nx*nx + ny*ny;
+    const radiusSq = c.r2;
+
+    const dist = Math.sqrt(distSq) || 0.0001; // avoid div by 0
+
+    // Normal vector (unit)
+    nx /= dist;
+    ny /= dist;
+
+    // Push circle toward wall
+    const penetration = 0.99*(dist - c.r);
+    c.pos.x = c.pos_old.x + nx * penetration;
+    c.pos.y = c.pos_old.y + ny * penetration;
+
+    // c.pos.x = c.pos_old.x;
+    // c.pos.y = c.pos_old.y;
+
+    // Reflect velocity: v' = v - (1 + e)*(v·n) n
+    const dot = c.vel.x * nx + c.vel.y * ny;
+    c.vel.x = c.vel.x - (1 + globalRestitution) * dot * nx;
+    c.vel.y = c.vel.y - (1 + globalRestitution) * dot * ny;
+}
+
+function ccw(A,B,C){
+    return (C.y-A.y)*(B.x-A.x) > (B.y-A.y)*(C.x-A.x);
+}
+
+function lineintersect(A,B,C,D){
+        return ccw(A,C,D) != ccw(B,C,D) && ccw(A,B,C) != ccw(A,B,D)
+}
+
+function distanceCircToSegment(c, s) {
+    const seg_start_to_c = {x: c.pos.x - s.start.x, y: c.pos.y - s.start.y};
+    const AB = {x: s.dx, y: s.dy};
+
+    const s2 = s.dx2 + s.dy2;
+    if (s2 === 0) {
+        // A and B are the same point
+        return Math.hypot(seg_start_to_c.x, seg_start_to_c.y);
+    }
+
+    const t = (seg_start_to_c.x * s.dx + seg_start_to_c.y * s.dy) / s2;
+
+    let closest;
+    if (t < 0) {
+        closest = s.start;
+    } else if (t > 1) {
+        closest = s.end;
+    } else {
+        closest = {x: s.start.x + t * s.dx, y: s.start.y + t * s.dy};
+    }
+
+    const distVector = {x: c.pos.x - closest.x, y: c.pos.y - closest.y};
+    return Math.hypot(distVector.x, distVector.y);
+}
+
+function circleSegIntersect(c, s){
+    s_circ = new Segment(c.pos_old.x, c.pos_old.y, c.pos.x, c.pos.y);
+    return lineintersect(c.pos_old, c.pos, s.start, s.end);
+}
+
+function perpMul(vv, s){ return {x: -s*vv.y, y: s*vv.x} }
+
+function integrate(circle, dt){
+    // velocity verlet
+
+    // update position
+    circle.pos_old.x = circle.pos.x;
+    circle.pos_old.y = circle.pos.y;
+    circle.pos.x += circle.vel.x * dt + 0.5 * circle.acc.x * dt * dt;
+    circle.pos.y += circle.vel.y * dt + 0.5 * circle.acc.y * dt * dt;
+
+    // update velocity
+    circle.vel.x += 0.5*(circle.acc.x + circle.acc_new.x)*dt;
+    circle.vel.y += 0.5*(circle.acc.y + circle.acc_new.y)*dt;
+
+    // update acceleration
+    circle.acc = circle.acc_new
+    circle.acc_new.x = 0.0; // to be updated on next step
+    circle.acc_new.y = 0.0; // to be updated on next step
+}
+
+// World bounds collision
+function worldBounds(b){
+    if(b.pos.x - b.r < 0){
+        b.pos.x = b.r; b.vel.x *= -globalRestitution;
+    }
+    if(b.pos.x + b.r > W){
+        b.pos.x = W - b.r; b.vel.x *= -globalRestitution;
+    }
+    if(b.pos.y - b.r < 0){
+        b.pos.y = b.r; b.vel.y *= -globalRestitution; 
+    }
+    if(b.pos.y + b.r > H){ 
+        b.pos.y = H - b.r; b.vel.y *= -globalRestitution; 
+    }
+}
+
+// Main step
+function step(){
+    // integrate
+    for(const c of circles) {
+        if (!c.dragging){
+            integrate(c, dt);
+        }
+    }
+    
+    // collisions
+    const circle_circle_pairs = [];
+    for(let i=0; i<circles.length; i++){
+        for(let j=i+1; j<circles.length; j++){
+            const a=circles[i];
+            const b=circles[j];
+            const is_collided = detectCircleCircleCollision(a,b);
+            if(is_collided){
+                circle_circle_pairs.push({a, b});
+            }
+        }
+    }
+    // resolve
+    for(const pair of circle_circle_pairs){
+        resolveCircleCircle(pair.a, pair.b);
+    }
+
+    // collisions
+    const circle_segment_collision_pairs = [];
+    const circle_segment_tunneled_pairs = [];
+    for(let i=0; i<circles.length; i++){
+        let closest_seg_idx = -1;
+        let smallest_seg_dist = 1000;
+        for(let j=0; j<segments.length; j++){
+            const c=circles[i];
+            const s=segments[j];
+
+            const is_tunneled = circleSegIntersect(c,s);
+            if(is_tunneled){
+                console.log("Tunneled!");
+                seg_dist = distanceCircToSegment(c, s);
+                console.log(seg_dist);
+                if(seg_dist <= smallest_seg_dist){
+                    closest_seg_idx = j;
+                    smallest_seg_dist = seg_dist
+                }
+            }
+
+            const is_collided = detectCircleSegmentCollision(c,s);
+            if(is_collided){
+                circle_segment_collision_pairs.push({c, s});
+            }
+        }
+        if(closest_seg_idx >= 0){
+            circle_segment_tunneled_pairs.push({c: circles[i], s: segments[closest_seg_idx]});
+        }
+    }
+    // resolve
+    for(const pair of circle_segment_collision_pairs){
+        resolveCircleSegment(pair.c, pair.s);
+    }
+    for(const pair of circle_segment_tunneled_pairs){
+        resolveTunneledCircleSegment(pair.c, pair.s);
+    }
+
+    // world bounds
+    for(const c of circles){
+        worldBounds(c);
+    }
+
+    // downforce
+    for(const c of circles){
+        c.acc_new.y += downforce;
+    }
+
+    // intra circle gravity
+    for(let i=0; i<circles.length; i++){
+        for(let j=i+1; j<circles.length; j++){
+            const a=circles[i];
+            const b=circles[j];
+            dx = a.pos.x - b.pos.x;
+            dy = a.pos.y - b.pos.y;
+            r = Math.hypot(dx, dy);
+            nx = dx/r;
+            ny = dy/r;
+
+            if(r > a.r + b.r){
+                force = gravity*a.mass*b.mass/(r*r);
+
+                a.acc_new.x -= (force/a.mass)*nx;
+                a.acc_new.y -= (force/a.mass)*ny;
+
+                b.acc_new.x += (force/b.mass)*nx;
+                b.acc_new.y += (force/b.mass)*ny;
+            }
+        }
+    }
+}
+
+// tracks when we are starting to fade-out trails
+let fade_trigger = false;
+
+// Rendering
+function draw(){
+    if(fade){
+        const alpha = 1.0/alpha_downscale;
+        // if we are letting circle trails fade out...
+
+        // draw canvas as original color if this is the first frame 
+        // that we have fade outs
+        if(!fade_trigger){
+            fade_trigger = true;
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = `rgba(11, 18, 32, 1)`; // last number = alpha (0 transparent, 1 opaque)
+            ctx.fillRect(0, 0, W, H);
+        }
+        if(alpha_downscale != 100){
+            // add partially transparent rectangle matching the canvas color
+            ctx.fillStyle = `rgba(11, 18, 32, ${alpha})`; // last number = alpha (0 transparent, 1 opaque)
+            ctx.fillRect(0, 0, W, H);
+        }
+    } else {
+        // render canvas with no trails by clearing it completely
+        fade_trigger = false;
+        alpha = 1.0;
+        ctx.clearRect(0, 0, W, H);
+
+        ctx.save();
+        ctx.globalAlpha = 0.01 + 0.01*alpha;
+        ctx.strokeStyle = '#fff';
+        for(let x=0;x<W;x+=40){
+            ctx.beginPath();
+            ctx.moveTo(x,0);
+            ctx.lineTo(x,H);
+            ctx.stroke();
+        }
+
+        for(let y=0;y<H;y+=40){
+            ctx.beginPath();
+            ctx.moveTo(0,y);
+            ctx.lineTo(W,y);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    // background grid
+    for(const c of circles){
+        ctx.beginPath();
+        ctx.arc(c.pos.x, c.pos.y, c.r, 0, Math.PI*2);
+        ctx.fillStyle='#4488ff22';
+        ctx.fill();
+        ctx.strokeStyle='#8fb7ff';
+        ctx.lineWidth=1.5;
+        ctx.stroke();
+
+        // velocity arrow
+        if(!hideVelVector){
+            ctx.beginPath();
+            ctx.moveTo(c.pos.x, c.pos.y);
+            ctx.lineTo(c.pos.x + c.vel.x*0.08, c.pos.y + c.vel.y*0.08);
+            ctx.strokeStyle='#ffd166';
+            ctx.stroke();
+        }
+    }
+
+    for(const s of segments){
+        ctx.beginPath();
+        ctx.moveTo(s.start.x, s.start.y);   // start point
+        ctx.lineTo(s.end.x, s.end.y);   // end point
+        ctx.strokeStyle='#8fb7ff';
+        ctx.stroke();
+        }
+    }
+
+// Loop
+function loop(now){
+  requestAnimationFrame(loop);
+  const elapsed = (now - last) / 1000;
+  last = now;
+  if(!paused){
+    step();
+  }
+  draw();
+  // stats
+  const fps = Math.round(1/Math.max(elapsed,1e-6));
+  document.getElementById('stats').textContent = `circles: ${circles.length} | FPS: ${fps}`;
+}
+
+requestAnimationFrame(loop);
+
+// Resize handling
+function resize(){ W = canvas.width = innerWidth - 320; H = canvas.height = innerHeight; }
+addEventListener('resize', resize);
+
+// UI hooks
+document.getElementById('addCircle').onclick = ()=> addCircle(rand(100,W-100), rand(100,H-200), {r:circle_radius});
+document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Show Velocity' : 'Hide Velocity';};
+document.getElementById('clear').onclick = ()=>{ circles.length = 0; segments.length = 0; };
+document.getElementById('copyBtn').addEventListener('click', async () => {
+    try {
+        const blob = await new Promise(res => canvas.toBlob(res));
+        await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+        ]);
+        alert('Canvas image copied to clipboard!');
+    } catch (err) {
+        console.error('Failed to copy image:', err);
+    }
+});
+document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
+document.getElementById('step').onclick = ()=>{ if(paused) step(); };
+
+const gravInput = document.getElementById('grav'); const gravVal = document.getElementById('gravVal');
+gravInput.oninput = ()=>{ gravity = Number(gravInput.value); gravVal.textContent = gravity };
+
+const downforceInput = document.getElementById('downforce'); const downforceVal = document.getElementById('downforceVal');
+downforceInput.oninput = ()=>{ downforce = Number(downforceInput.value); downforceVal.textContent = downforce };
+
+const restInput = document.getElementById('rest'); const restVal = document.getElementById('restVal');
+restInput.oninput = ()=>{ globalRestitution = Number(restInput.value); restVal.textContent = globalRestitution };
+
+const dtInput = document.getElementById('dt'); const dtVal = document.getElementById('dtVal');
+dtInput.oninput = ()=>{ dt = Number(dtInput.value); dtVal.textContent = dt };
+
+const alphaDownscaleInput = document.getElementById('alpha_downscale'); const alphaDownscaleVal = document.getElementById('alphaDownscaleVal');
+alphaDownscaleInput.oninput = ()=>{ alpha_downscale = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = alpha_downscale == 100 ? 'Infinity' : alpha_downscale};
+document.getElementById('fade').onclick = function(){ fade = !fade; this.textContent = fade ? 'No trail 🚫🐌' : 'Trail 🐌'; };
+
+const circleRadiusInput = document.getElementById('circle_radius'); const circleRadiusVal = document.getElementById('circleRadiusVal');
+circleRadiusInput.oninput = ()=>{ circle_radius = Number(circleRadiusInput.value); circleRadiusVal.textContent = circle_radius };
+
+// Mouse interactions: spawn, drag
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+let mouse = {x:0,y:0,down:false,start:null,btn:0};
+canvas.addEventListener('pointerdown', e=>{
+    // left mouse button
+    if(e.button == 0){
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left; 
+        mouse.y = e.clientY - rect.top; 
+        mouse.down=true; 
+        mouse.btn=e.button; 
+        mouse.start = {x:mouse.x,y:mouse.y};
+        // pick body
+        const pick = pickCircle(mouse.x, mouse.y);
+        if(pick){ 
+            pick.dragging = true; 
+            pick.dragOffset = {x: mouse.x - pick.pos.x, y: mouse.y - pick.pos.y}; 
+        }
+        else if(e.shiftKey){ 
+            addCircle(mouse.x, mouse.y, {r:circle_radius});
+        }
+    } else if(e.button == 2){
+        s = addSegment(mouse.x, mouse.y, mouse.x, mouse.y, opts={dragging: true});
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Backspace') {
+    circles.length = 0;
+    segments.length = 0;
+  }
+});
+
+canvas.addEventListener('pointermove', e=>{
+    const rect = canvas.getBoundingClientRect(); 
+    mouse.x = e.clientX - rect.left; 
+    mouse.y = e.clientY - rect.top;
+    // drag if picked
+    const held_circle = circles.find(c=>c.dragging);
+    if(held_circle){ 
+        held_circle.pos.x = mouse.x - held_circle.dragOffset.x; 
+        held_circle.pos.y = mouse.y - held_circle.dragOffset.y; 
+    }
+    
+    const held_segment = segments.find(s=>s.dragging);
+    if(held_segment){
+        held_segment.end.x = mouse.x;
+        held_segment.end.y = mouse.y;
+        held_segment.dx = held_segment.end.x - held_segment.start.x;
+        held_segment.dy = held_segment.end.y - held_segment.start.y;
+        held_segment.dx2 = held_segment.dx * held_segment.dx;
+        held_segment.dy2 = held_segment.dy * held_segment.dy;
+    }
+})
+
+canvas.addEventListener('pointerup', e=>{
+    mouse.down=false;
+    // if dragged start->release with velocity create (spawn) impulse
+    const heldCircleIndex = circles.findIndex(b=>b.dragging);
+    const heldSegmentIndex = segments.findIndex(s=>s.dragging);
+
+    if(heldCircleIndex>=0){ 
+        circles[heldCircleIndex].dragging = false;
+    }
+    if(heldSegmentIndex>=0){ 
+        segments[heldSegmentIndex].dragging = false;
+    }
+    if(mouse.start && !e.shiftKey && heldCircleIndex<0 && heldSegmentIndex<0){
+        const dx = mouse.x - mouse.start.x, dy = mouse.y - mouse.start.y;
+        if(Math.hypot(dx,dy) > 6){ // fling create
+            const c = addCircle(mouse.start.x, mouse.start.y, {r:circle_radius});
+            c.vel.x = 0.1*dx/dt; 
+            c.vel.y = 0.1*dy/dt;
+        }
+    }
+    mouse.start = null;
+});
+
+function pickCircle(x,y){
+  for(let i=circles.length-1; i>=0; i--){ 
+    const c=circles[i];
+    const dx = c.pos.x-x;
+    const dy = c.pos.y-y;
+    if(dx*dx + dy*dy <= c.r2) 
+        return c;
+    }
+  }
+
+let numPoints = 10;
+let r = 40;
+addCircle(W/2, H/2, {r:20, density:1});
+for (let i = 0; i < numPoints; i++) {
+    const angle = (i / numPoints) * 2 * Math.PI;
+    const x = r * Math.cos(angle);
+    const y = r * Math.sin(angle);
+    addCircle(W/2 + x, H/2 + y, {r:10, density:1, vel:{x:5*x,y:5*y}});
+}
+
+// add some default circles
+addSegment(W/20, H/20, W/20, H/20 + H/5);
+addSegment(W/20 + H/5, H/20, W/20 + H/5, H/20 + H/5);
+addSegment(W/20, H/20, W/20 + H/5, H/20);
+addSegment(W/20, H/20 + H/5, W/20 + H/5, H/20 + H/5);
+addCircle(W/20 + H/10, H/20 + H/10, {r:10, density:1, vel:{x:0,y:100}});
+
+addSegment(W - W/20, H - H/20, W - W/20, H - (H/20 + H/5));
+addSegment(W - (W/20 + H/5), H - H/20, W - (W/20 + H/5), H - (H/20 + H/5));
+addSegment(W - W/20, H - H/20, W - (W/20 + H/5), H - H/20);
+addSegment(W - W/20, H - (H/20 + H/5), W - (W/20 + H/5), H - (H/20 + H/5));
+addCircle(W - (W/20 + H/20), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}});
+addCircle(W - (W/20 + H/7), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}});
+addCircle(W - (W/20 + H/10), H - (H/20 + H/10), {r:10, density:1, vel:{x:0,y:100}});
+
+</script>
+</body>
+</html>
