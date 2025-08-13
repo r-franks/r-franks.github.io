@@ -50,33 +50,47 @@
       <canvas id="world"></canvas>
     </div>
     <div id="ui">
-      <h1>⚛️ Physics Tank 🐟</h1>
+    <h1 style="display: flex; justify-content: space-between; align-items: center;">
+        ⚛️ Physics Tank 🐟
+        <button id="copyBtn" style="background-color: #8561D7;">Copy to 📋</button>
+    </h1>
       <div class="row">
         <button id="addCircle">Add Circle</button>
-        <button id="velvector">Hide Velocity</button>
         <button id="clear">Clear Screen</button>
-        <button id="copyBtn">Copy Image</button>
       </div>
 
-      <div style="margin-top:8px">
-        <input id="downforce" type="range" min="0" max="2000" value="0"><label>Downforce: <span id="downforceVal">0</span> px/s²</label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="downforce" type="range" min="0" max="2000" value="0">
+        <label>Downforce: <span id="downforceVal">0</span> px/s²</label>
       </div>
 
-      <div style="margin-top:8px">        
-        <input id="grav" type="range" min="0" max="2000" value="500"><label>Gravity: <span id="gravVal">500 px³/ms²</span></label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="grav" type="range" min="0" max="2000" value="500">
+        <label>Gravity: <span id="gravVal">500 px³/ms²</span></label>
       </div>
 
-      <div style="margin-top:8px">
-        <input id="rest" type="range" min="0" max="1" step="0.01" value="1.0"><label>Coef. of Restitution: <span id="restVal">1.0</span></label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="rest" type="range" min="0" max="1" step="0.01" value="1">
+        <label>Coef. of Restitution: <span id="restVal">1</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="friction" type="range" min="0" max="1" step="0.01" value="0">
+        <label>Friction: <span id="frictionVal">0</span></label>
       </div>
 
       <button id="fade">Trail 🐌</button>  
-      <div style="margin-top:8px">
-        <input id="alpha_downscale" type="range" min="1" max="100" step="1" value="100"><label>Trail Length: <span id="alphaDownscaleVal">Infinity</span></label>
+      <button id="velvector">Hide Velocity</button>
+      <button id="colorPicker">Pick Color</button>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="alpha_downscale" type="range" min="1" max="100" step="1" value="100">
+        <label>Trail Length: <span id="alphaDownscaleVal">Infinity</span></label>
       </div>
 
-      <div style="margin-top:8px">
-        <input id="circle_radius" type="range" min="1" max="100" step="1" value="10"><label>Circle Radius: <span id="circleRadiusVal">20</span></label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="circle_radius" type="range" min="1" max="100" step="1" value="10">
+        <label>Circle Radius: <span id="circleRadiusVal">20</span></label>
       </div>
 
       <div class="row">
@@ -84,8 +98,9 @@
         <button id="step">Step 👣</button>
       </div>
 
-      <div style="margin-top:8px">
-        <input id="dt" type="range" min="0" max="0.1" step="0.001" value="0.02"><label>Δt: <span id="dtVal">0.02</span>s</label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="dt" type="range" min="0" max="0.1" step="0.001" value="0.02">
+        <label>Δt: <span id="dtVal">0.02</span>s</label>
       </div>
 
       Controls 🎮
@@ -118,6 +133,7 @@ let H = canvas.height = innerHeight;
 let gravity = 500; // px/s^2
 let downforce = 0;
 let globalRestitution = 1.0;
+let globalFriction = 0.0;
 let circle_radius = 10;
 let alpha_downscale = 100;
 let fade = false;
@@ -581,7 +597,7 @@ function loop(now){
   draw();
   // stats
   const fps = Math.round(1/Math.max(elapsed,1e-6));
-  document.getElementById('stats').textContent = `circles: ${circles.length} | FPS: ${fps}`;
+  document.getElementById('stats').textContent = `circles: ${circles.length} | segments: ${segments.length} | FPS: ${fps}`;
 }
 
 requestAnimationFrame(loop);
@@ -617,12 +633,15 @@ downforceInput.oninput = ()=>{ downforce = Number(downforceInput.value); downfor
 const restInput = document.getElementById('rest'); const restVal = document.getElementById('restVal');
 restInput.oninput = ()=>{ globalRestitution = Number(restInput.value); restVal.textContent = globalRestitution };
 
+const frictionInput = document.getElementById('friction'); const frictionVal = document.getElementById('frictionVal');
+frictionInput.oninput = ()=>{ globalFriction = Number(frictionInput.value); frictionVal.textContent = globalFriction };
+
 const dtInput = document.getElementById('dt'); const dtVal = document.getElementById('dtVal');
 dtInput.oninput = ()=>{ dt = Number(dtInput.value); dtVal.textContent = dt };
 
 const alphaDownscaleInput = document.getElementById('alpha_downscale'); const alphaDownscaleVal = document.getElementById('alphaDownscaleVal');
 alphaDownscaleInput.oninput = ()=>{ alpha_downscale = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = alpha_downscale == 100 ? 'Infinity' : alpha_downscale};
-document.getElementById('fade').onclick = function(){ fade = !fade; this.textContent = fade ? 'No trail 🚫🐌' : 'Trail 🐌'; };
+document.getElementById('fade').onclick = function(){ fade = !fade; this.textContent = fade ? 'No trail 🚫' : 'Trail 🐌'; };
 
 const circleRadiusInput = document.getElementById('circle_radius'); const circleRadiusVal = document.getElementById('circleRadiusVal');
 circleRadiusInput.oninput = ()=>{ circle_radius = Number(circleRadiusInput.value); circleRadiusVal.textContent = circle_radius };
