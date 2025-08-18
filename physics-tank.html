@@ -56,7 +56,7 @@
     </h1>
       <div class="row">
         <button id="fling">Pour 🫗</button>
-        <button id="addCircle">Add Circle</button>
+        <button id="addCircle">Add Disc</button>
         <button id="clear">Clear Screen</button>
       </div>
 
@@ -90,8 +90,13 @@
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <input id="circle_radius" type="range" min="1" max="100" step="1" value="10">
-        <label>Circle Radius: <span id="circleRadiusVal">20</span></label>
+        <input id="discPersistence" type="range" min="1" max="100" step="1" value="100">
+        <label>Disc Persistence: <span id="discPersistenceVal">Infinity</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="discRadius" type="range" min="1" max="100" step="1" value="10">
+        <label>Disc Radius: <span id="discRadiusVal">20</span></label>
       </div>
 
       <div class="row">
@@ -104,13 +109,10 @@
         <label>Δt: <span id="dtVal">0.02</span>s</label>
       </div>
 
-      Controls 🎮
-      <div class="hint">
-        -Click and drag circles to move them<br>
-        -Click and drag elsewhere to create circles with velocity<br>
-        -Shift+click to spawn circle without velocity<br>
-        -Click right mouse and drag to create boundary walls<br>
+      <div class="row">
+        <button id="controls">Show Controls 🎮</button>
       </div>
+      <br>
       <div class="stat" id="stats">circles: 0 | FPS: 0</div>
     </div>
   </div>
@@ -140,17 +142,18 @@ let gravity = 500; // px/s^2
 let downforce = 0;
 let globalRestitution = 1.0;
 let globalFriction = 0.0;
-let circle_radius = 10;
-let alpha_downscale = 100;
+let discRadius = 10;
+let alphaDownscale = 100;
+let discPersistence = 100;
 let fade = false;
 let dt = 0.02;
 let last = performance.now();
 let paused = false;
 let hideVelVector = false;
-
+let spawnInterval = null;
 
 // Scene
-const circles = [];
+const discs = [];
 const segments = [];
 
 function rand(min,max){return Math.random()*(max-min)+min}
@@ -165,7 +168,7 @@ const v = {
   normalize:(a)=>{const L=Math.hypot(a.x,a.y)||1;return {x:a.x/L,y:a.y/L}},
 }
 
-class Circle {
+class Disc {
     constructor(x, y, opts={}){
         this.pos = {x,y};
         this.pos_old = {x,y}; // used to sweep lines
@@ -175,7 +178,9 @@ class Circle {
         this.r = opts.r ?? 1.0;
         this.r2 = this.r*this.r;
 
-        this.color = opts.color ?? "#4488ff"
+        this.color = opts.color ?? "#4488ff";
+        this.persistence = opts.persistence ?? 100;
+        this.startPersistence = this.persistence;
 
         this.density = opts.density ?? 1.0;
         this.mass = this.density * Math.PI * this.r2;
@@ -200,9 +205,9 @@ class Segment {
 }
 
 // Scene helpers
-function addCircle(x, y, opts={}){ 
-    const c = new Circle(x, y, opts); 
-    circles.push(c); 
+function addDisc(x, y, opts={}){ 
+    const c = new Disc(x, y, opts); 
+    discs.push(c); 
     return c;
 }
 
@@ -478,21 +483,25 @@ function worldBounds(b){
 }
 
 // Main step
-function step(){
-    // integrate
-    for(const c of circles) {
-        if (!c.dragging){
-            integrate(c, dt);
+function step(){    
+    for (let i = discs.length - 1; i >= 0; i--) {
+        const c = discs[i];
+        integrate(c, dt);
+        if (c.persistence < 100){
+            c.persistence -= 1;
+        }
+        if (c.persistence < 1) {
+            discs.splice(i, 1); // ✅ remove it
         }
     }
 
     // handle circles that tunnel through segments
     const circleSegmentTunneledPairs = [];
-    for(let i=0; i<circles.length; i++){
+    for(let i=0; i<discs.length; i++){
         let closestTunneledSegIdx = -1;
         let lowestTunneledSegDist = 1000000;
         for(let j=0; j<segments.length; j++){
-            const c=circles[i];
+            const c=discs[i];
             const s=segments[j];
             if(lineIntersect(c.pos_old, c.pos, s.start, s.end)){
                 segDist = distanceCircToSegment(c, s);
@@ -503,7 +512,7 @@ function step(){
             }
         }
         if(closestTunneledSegIdx >= 0){
-            circleSegmentTunneledPairs.push({c: circles[i], s: segments[closestTunneledSegIdx]});
+            circleSegmentTunneledPairs.push({c: discs[i], s: segments[closestTunneledSegIdx]});
         }
     }
     for(const pair of circleSegmentTunneledPairs){
@@ -512,18 +521,18 @@ function step(){
 
     // handle circles colliding with segments
     const circleSegmentCollisionPairs = [];
-    for(let i=0; i<circles.length; i++){
+    for(let i=0; i<discs.length; i++){
         let closest_seg_idx = -1;
         let smallest_seg_dist = 1000;
         for(let j=0; j<segments.length; j++){
-            const c=circles[i];
+            const c=discs[i];
             const s=segments[j];
             if(detectCircleSegmentCollision(c,s)){
                 circleSegmentCollisionPairs.push({c, s});
             }
         }
         if(closest_seg_idx >= 0){
-            circle_segment_tunneled_pairs.push({c: circles[i], s: segments[closest_seg_idx]});
+            circle_segment_tunneled_pairs.push({c: discs[i], s: segments[closest_seg_idx]});
         }
     }
     // resolve
@@ -534,29 +543,29 @@ function step(){
     // circle circle collisions
     // we resolve all circle collisions in order that we detect them anyway
     // so no point in separating collision detection and resolution (yet)
-    for(let i=0; i<circles.length; i++){
-        for(let j=i+1; j<circles.length; j++){
-            const a=circles[i];
-            const b=circles[j];
+    for(let i=0; i<discs.length; i++){
+        for(let j=i+1; j<discs.length; j++){
+            const a=discs[i];
+            const b=discs[j];
             resolveCircleCircle(a, b);
         }
     }
 
     // world bounds
-    for(const c of circles){
+    for(const c of discs){
         worldBounds(c);
     }
 
     // downforce
-    for(const c of circles){
+    for(const c of discs){
         c.acc_new.y += downforce;
     }
 
     // intra circle gravity
-    for(let i=0; i<circles.length; i++){
-        for(let j=i+1; j<circles.length; j++){
-            const a=circles[i];
-            const b=circles[j];
+    for(let i=0; i<discs.length; i++){
+        for(let j=i+1; j<discs.length; j++){
+            const a=discs[i];
+            const b=discs[j];
             const dx = a.pos.x - b.pos.x;
             const dy = a.pos.y - b.pos.y;
             const r2 = dx*dx + dy*dy;
@@ -590,7 +599,7 @@ let fade_trigger = false;
 // Rendering
 function draw(){
     if(fade){
-        const alpha = 1.0/alpha_downscale;
+        const alpha = 1.0/alphaDownscale;
         // if we are letting circle trails fade out...
 
         // draw canvas as original color if this is the first frame 
@@ -601,7 +610,7 @@ function draw(){
             ctx.fillStyle = `rgba(11, 18, 32, 1)`; // last number = alpha (0 transparent, 1 opaque)
             ctx.fillRect(0, 0, W, H);
         }
-        if(alpha_downscale != 100){
+        if(alphaDownscale != 100){
             // add partially transparent rectangle matching the canvas color
             ctx.fillStyle = `rgba(11, 18, 32, ${alpha})`; // last number = alpha (0 transparent, 1 opaque)
             ctx.fillRect(0, 0, W, H);
@@ -633,12 +642,18 @@ function draw(){
         ctx.restore();
     }
 
-    for(const c of circles){
+    for(const c of discs){
         ctx.beginPath();
         ctx.arc(c.pos.x, c.pos.y, c.r, 0, Math.PI*2);
-        ctx.fillStyle=c.color+"22";
+        
+        fractionFaded = c.persistence/c.startPersistence;
+
+        fillAlpha = Math.round(50*fractionFaded).toString().padStart(2, "0");
+        console.log(fillAlpha);
+        ctx.fillStyle=c.color + fillAlpha;
         ctx.fill();
-        ctx.strokeStyle=c.color;
+        strokeAlpha = Math.round(100*fractionFaded).toString().padStart(2, "0");
+        ctx.strokeStyle=c.color + strokeAlpha;
         ctx.lineWidth=1.5;
         ctx.stroke();
 
@@ -673,7 +688,7 @@ function loop(now){
   draw();
   // stats
   const fps = Math.round(1/Math.max(elapsed,1e-6));
-  document.getElementById('stats').textContent = `circles: ${circles.length} | segments: ${segments.length} | FPS: ${fps}`;
+  document.getElementById('stats').textContent = `circles: ${discs.length} | segments: ${segments.length} | FPS: ${fps}`;
 }
 
 requestAnimationFrame(loop);
@@ -688,9 +703,9 @@ picker.addEventListener("input", (event) => {
     entityColor = color;
 });
 document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾';};
-document.getElementById('addCircle').onclick = ()=> addCircle(rand(100,W-100), rand(100,H-200), {r:circle_radius, color: entityColor});
+document.getElementById('addCircle').onclick = ()=> addDisc(rand(100,W-100), rand(100,H-200), {r:discRadius, color: entityColor, persistence:discPersistence});
 document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Show Velocity' : 'Hide Velocity';};
-document.getElementById('clear').onclick = ()=>{ circles.length = 0; segments.length = 0; };
+document.getElementById('clear').onclick = ()=>{ discs.length = 0; segments.length = 0; };
 document.getElementById('copyBtn').addEventListener('click', async () => {
     try {
         const blob = await new Promise(res => canvas.toBlob(res));
@@ -702,6 +717,10 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
         console.error('Failed to copy image:', err);
     }
 });
+document.getElementById('controls').addEventListener('click', async () => {
+    alert('1. Click+drag disc to move it\n2. Click right mouse and drag to draw walls\n3. In "Fling" mode, click+drag elsewhere to create a moving disc\n4. In "Pour" mode, hold mouse down to continuously add discs\n5. Shift+click to spawn circle without velocity');
+});
+
 document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
 document.getElementById('step').onclick = ()=>{ if(paused) step(); };
 
@@ -721,11 +740,14 @@ const dtInput = document.getElementById('dt'); const dtVal = document.getElement
 dtInput.oninput = ()=>{ dt = Number(dtInput.value); dtVal.textContent = dt };
 
 const alphaDownscaleInput = document.getElementById('alpha_downscale'); const alphaDownscaleVal = document.getElementById('alphaDownscaleVal');
-alphaDownscaleInput.oninput = ()=>{ alpha_downscale = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = alpha_downscale == 100 ? 'Infinity' : alpha_downscale};
+alphaDownscaleInput.oninput = ()=>{ alphaDownscale = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = alphaDownscale == 100 ? 'Infinity' : alphaDownscale};
 document.getElementById('fade').onclick = function(){ fade = !fade; this.textContent = fade ? 'No trail 🚫' : 'Trail 🐌'; };
 
-const circleRadiusInput = document.getElementById('circle_radius'); const circleRadiusVal = document.getElementById('circleRadiusVal');
-circleRadiusInput.oninput = ()=>{ circle_radius = Number(circleRadiusInput.value); circleRadiusVal.textContent = circle_radius };
+const discPersistenceInput = document.getElementById('discPersistence'); const discPersistenceVal = document.getElementById('discPersistenceVal');
+discPersistenceInput.oninput = ()=>{ discPersistence = Number(discPersistenceInput.value); discPersistenceVal.textContent = discPersistence == 100 ? 'Infinity' : discPersistence};
+
+const discRadiusInput = document.getElementById('discRadius'); const discRadiusVal = document.getElementById('discRadiusVal');
+discRadiusInput.oninput = ()=>{ discRadius = Number(discRadiusInput.value); discRadiusVal.textContent = discRadius };
 
 // Mouse interactions: spawn, drag
 canvas.addEventListener('contextmenu', e => e.preventDefault());
@@ -735,7 +757,7 @@ let mouse = {x:0,y:0,down:false,start:null,btn:0};
 // backspace logic
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Backspace') {
-    circles.length = 0;
+    discs.length = 0;
     segments.length = 0;
   }
 });
@@ -769,7 +791,7 @@ canvas.addEventListener('pointerup', e=>{
     }
 });
 
-// circle addition logic
+// disc addition logic
 canvas.addEventListener('pointerdown', e=>{
     // left mouse button
     if(e.button == 0){
@@ -786,13 +808,13 @@ canvas.addEventListener('pointerdown', e=>{
             pick.dragOffset = {x: mouse.x - pick.pos.x, y: mouse.y - pick.pos.y}; 
         }
         else if(e.shiftKey){ 
-            addCircle(mouse.x, mouse.y, {r:circle_radius, color:entityColor});
+            addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
         } else if(!fling){
             mouseDown = true;
-            addCircle(mouse.x, mouse.y, {r:circle_radius, color:entityColor});
+            addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
             spawnInterval = setInterval(() => {
-                if (mouseDown) addCircle(mouse.x, mouse.y, {r:circle_radius, color:entityColor});
-            }, 100); // every 100 ms
+                if (mouseDown) addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
+            }, 20); // every 100 ms
         }
     }
 })
@@ -801,7 +823,7 @@ canvas.addEventListener('pointermove', e=>{
     mouse.x = e.clientX - rect.left; 
     mouse.y = e.clientY - rect.top;
     // drag if picked
-    const held_circle = circles.find(c=>c.dragging);
+    const held_circle = discs.find(c=>c.dragging);
     if(held_circle){ 
         held_circle.pos.x = mouse.x - held_circle.dragOffset.x; 
         held_circle.pos.y = mouse.y - held_circle.dragOffset.y; 
@@ -810,16 +832,16 @@ canvas.addEventListener('pointermove', e=>{
 canvas.addEventListener('pointerup', e=>{
     mouse.down=false;
     // if dragged start->release with velocity create (spawn) impulse
-    const heldCircleIndex = circles.findIndex(b=>b.dragging);
+    const heldCircleIndex = discs.findIndex(b=>b.dragging);
     const heldSegmentIndex = segments.findIndex(s=>s.dragging);
 
     if(heldCircleIndex>=0){ 
-        circles[heldCircleIndex].dragging = false;
+        discs[heldCircleIndex].dragging = false;
     }
     if(mouse.start && !e.shiftKey && heldCircleIndex<0 && heldSegmentIndex<0 && fling){
         const dx = mouse.x - mouse.start.x, dy = mouse.y - mouse.start.y;
         if(Math.hypot(dx,dy) > 6){ // fling create
-            const c = addCircle(mouse.start.x, mouse.start.y, {r:circle_radius, color:entityColor});
+            const c = addDisc(mouse.start.x, mouse.start.y, {r:discRadius, color:entityColor, persistence:discPersistence});
             c.vel.x = 0.1*dx/dt; 
             c.vel.y = 0.1*dy/dt;
         }
@@ -836,8 +858,8 @@ canvas.addEventListener("mouseleave", () => {
 });
 
 function pickCircle(x,y){
-  for(let i=circles.length-1; i>=0; i--){ 
-    const c=circles[i];
+  for(let i=discs.length-1; i>=0; i--){ 
+    const c=discs[i];
     const dx = c.pos.x-x;
     const dy = c.pos.y-y;
     if(dx*dx + dy*dy <= c.r2) 
@@ -847,12 +869,12 @@ function pickCircle(x,y){
 
 let numPoints = 10;
 let r = 40;
-addCircle(W/2, H/2, {r:20, density:1, color:entityColor});
+addDisc(W/2, H/2, {r:20, density:1, color:entityColor, persistence:discPersistence});
 for (let i = 0; i < numPoints; i++) {
     const angle = (i / numPoints) * 2 * Math.PI;
     const x = r * Math.cos(angle);
     const y = r * Math.sin(angle);
-    addCircle(W/2 + x, H/2 + y, {r:10, density:1, vel:{x:5*x,y:5*y}, color:entityColor});
+    addDisc(W/2 + x, H/2 + y, {r:10, density:1, vel:{x:5*x,y:5*y}, color:entityColor, persistence:discPersistence});
 }
 
 // add some default circles
@@ -860,15 +882,15 @@ addSegment(W/20, H/20, W/20, H/20 + H/5, {color: entityColor});
 addSegment(W/20 + H/5, H/20, W/20 + H/5, H/20 + H/5, {color: entityColor});
 addSegment(W/20, H/20, W/20 + H/5, H/20, {color: entityColor});
 addSegment(W/20, H/20 + H/5, W/20 + H/5, H/20 + H/5, {color: entityColor});
-addCircle(W/20 + H/10, H/20 + H/10, {r:10, density:1, vel:{x:0,y:100}, color:entityColor});
+addDisc(W/20 + H/10, H/20 + H/10, {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
 
 addSegment(W - W/20, H - H/20, W - W/20, H - (H/20 + H/5), {color: entityColor});
 addSegment(W - (W/20 + H/5), H - H/20, W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
 addSegment(W - W/20, H - H/20, W - (W/20 + H/5), H - H/20, {color: entityColor});
 addSegment(W - W/20, H - (H/20 + H/5), W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
-addCircle(W - (W/20 + H/20), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:entityColor});
-addCircle(W - (W/20 + H/7), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:entityColor});
-addCircle(W - (W/20 + H/10), H - (H/20 + H/10), {r:10, density:1, vel:{x:0,y:100}, color:entityColor});
+addDisc(W - (W/20 + H/20), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
+addDisc(W - (W/20 + H/7), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
+addDisc(W - (W/20 + H/10), H - (H/20 + H/10), {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
 
 </script>
 </body>
