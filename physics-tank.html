@@ -55,7 +55,7 @@
         <button id="copyBtn" style="background-color: #8561D7;">Copy to 📋</button>
     </h1>
       <div class="row">
-        <button id="fling">Pour 🫗</button>
+        <button id="fling">Fling 🤾</button>
         <button id="addCircle">Add Disc</button>
         <button id="clear">Clear Screen</button>
       </div>
@@ -80,9 +80,12 @@
         <label>Friction: <span id="frictionVal">0</span></label>
       </div>
 
-      <button id="fade">Trail 🐌</button>  
-      <button id="velvector">Hide Velocity</button>
-      <input type="color" id="colorPicker" value="#4488ff">
+      <div class="row">
+        <button id="fade">No trail 🚫</button>  
+        <button id="velvector">No Velocity</button>
+        <input type="color" id="colorPicker" value="#4488ff">
+        <input type="color" id="velColorPicker" value="#ffd166">
+      </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
         <input id="alpha_downscale" type="range" min="1" max="100" step="1" value="100">
@@ -102,6 +105,7 @@
       <div class="row">
         <button id="pause">Pause ⏸️</button>
         <button id="step">Step 👣</button>
+        <button id="fill">Fill 🎨</button>
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
@@ -112,7 +116,6 @@
       <div class="row">
         <button id="controls">Show Controls 🎮</button>
       </div>
-      <br>
       <div class="stat" id="stats">circles: 0 | FPS: 0</div>
     </div>
   </div>
@@ -130,14 +133,16 @@
 const canvas = document.getElementById('world');
 const ctx = canvas.getContext('2d');
 const picker = document.getElementById("colorPicker");
+const velPicker = document.getElementById("velColorPicker");
 let entityColor = "#4488ff";
+let velColor = "#ffd166"
 
 let W = canvas.width = innerWidth - 320; // leave room for UI
 let H = canvas.height = innerHeight;
 
 // Engine 
 let mouseDown = false;
-let fling = true;
+let fling = false;
 let gravity = 500; // px/s^2
 let downforce = 0;
 let globalRestitution = 1.0;
@@ -145,11 +150,12 @@ let globalFriction = 0.0;
 let discRadius = 10;
 let alphaDownscale = 100;
 let discPersistence = 100;
-let fade = false;
+let fade = true;
 let dt = 0.02;
 let last = performance.now();
 let paused = false;
 let hideVelVector = false;
+let fill = false;
 let spawnInterval = null;
 
 // Scene
@@ -643,17 +649,19 @@ function draw(){
     }
 
     for(const c of discs){
+        fractionFaded = c.persistence/c.startPersistence;
+        fillAlpha = Math.round(50*fractionFaded).toString().padStart(2, "0");
+        strokeAlpha = Math.round(99*fractionFaded).toString().padStart(2, "0");
+        if(fill){
+            ctx.fillStyle = c.color + fillAlpha;
+        } else {
+            ctx.fillStyle = `rgba(11, 18, 32, 1)`;
+        }
+        ctx.strokeStyle = c.color + strokeAlpha;
+
         ctx.beginPath();
         ctx.arc(c.pos.x, c.pos.y, c.r, 0, Math.PI*2);
-        
-        fractionFaded = c.persistence/c.startPersistence;
-
-        fillAlpha = Math.round(50*fractionFaded).toString().padStart(2, "0");
-        console.log(fillAlpha);
-        ctx.fillStyle=c.color + fillAlpha;
         ctx.fill();
-        strokeAlpha = Math.round(100*fractionFaded).toString().padStart(2, "0");
-        ctx.strokeStyle=c.color + strokeAlpha;
         ctx.lineWidth=1.5;
         ctx.stroke();
 
@@ -662,10 +670,9 @@ function draw(){
             ctx.beginPath();
             ctx.moveTo(c.pos.x, c.pos.y);
             ctx.lineTo(c.pos.x + c.vel.x*0.08, c.pos.y + c.vel.y*0.08);
-            ctx.strokeStyle='#ffd166';
+            ctx.strokeStyle=velColor;
             ctx.stroke();
         }
-        ctx.fillStyle="#4488ff";
     }
 
     for(const s of segments){
@@ -702,9 +709,13 @@ picker.addEventListener("input", (event) => {
     const color = event.target.value; // hex string like "#1e90ff"
     entityColor = color;
 });
+velPicker.addEventListener("input", (event) => {
+    const color = event.target.value; // hex string like "#1e90ff"
+    velColor = color;
+});
 document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾';};
 document.getElementById('addCircle').onclick = ()=> addDisc(rand(100,W-100), rand(100,H-200), {r:discRadius, color: entityColor, persistence:discPersistence});
-document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Show Velocity' : 'Hide Velocity';};
+document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Velocity 🚀' : 'No Velocity';};
 document.getElementById('clear').onclick = ()=>{ discs.length = 0; segments.length = 0; };
 document.getElementById('copyBtn').addEventListener('click', async () => {
     try {
@@ -723,6 +734,7 @@ document.getElementById('controls').addEventListener('click', async () => {
 
 document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
 document.getElementById('step').onclick = ()=>{ if(paused) step(); };
+document.getElementById('fill').onclick = function(){ fill = !fill; this.textContent = fill ? 'No Fill 🪹' : 'Fill 🎨';};
 
 const gravInput = document.getElementById('grav'); const gravVal = document.getElementById('gravVal');
 gravInput.oninput = ()=>{ gravity = Number(gravInput.value); gravVal.textContent = gravity };
@@ -874,7 +886,8 @@ for (let i = 0; i < numPoints; i++) {
     const angle = (i / numPoints) * 2 * Math.PI;
     const x = r * Math.cos(angle);
     const y = r * Math.sin(angle);
-    addDisc(W/2 + x, H/2 + y, {r:10, density:1, vel:{x:5*x,y:5*y}, color:entityColor, persistence:discPersistence});
+    color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+    addDisc(W/2 + x, H/2 + y, {r:10, density:1, vel:{x:5*x,y:5*y}, color:color, persistence:discPersistence});
 }
 
 // add some default circles
@@ -882,15 +895,15 @@ addSegment(W/20, H/20, W/20, H/20 + H/5, {color: entityColor});
 addSegment(W/20 + H/5, H/20, W/20 + H/5, H/20 + H/5, {color: entityColor});
 addSegment(W/20, H/20, W/20 + H/5, H/20, {color: entityColor});
 addSegment(W/20, H/20 + H/5, W/20 + H/5, H/20 + H/5, {color: entityColor});
-addDisc(W/20 + H/10, H/20 + H/10, {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
+addDisc(W/20 + H/10, H/20 + H/10, {r:10, density:1, vel:{x:0,y:100}, color: "#" + [200, 50, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
 
 addSegment(W - W/20, H - H/20, W - W/20, H - (H/20 + H/5), {color: entityColor});
 addSegment(W - (W/20 + H/5), H - H/20, W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
 addSegment(W - W/20, H - H/20, W - (W/20 + H/5), H - H/20, {color: entityColor});
 addSegment(W - W/20, H - (H/20 + H/5), W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
-addDisc(W - (W/20 + H/20), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
-addDisc(W - (W/20 + H/7), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
-addDisc(W - (W/20 + H/10), H - (H/20 + H/10), {r:10, density:1, vel:{x:0,y:100}, color:entityColor, persistence:discPersistence});
+addDisc(W - (W/20 + H/20), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:"#" + [50, 200, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+addDisc(W - (W/20 + H/7), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:"#" + [50, 50, 200].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+addDisc(W - (W/20 + H/10), H - (H/20 + H/10), {r:10, density:1, vel:{x:0,y:100}, color:"#" + [100, 50, 100].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
 
 </script>
 </body>
