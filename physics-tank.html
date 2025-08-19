@@ -56,7 +56,7 @@
     </h1>
       <div class="row">
         <button id="fling">Fling 🤾</button>
-        <button id="addCircle">Add Disc</button>
+        <button id="addDisc">Add Disc</button>
         <button id="clear">Clear Screen</button>
       </div>
 
@@ -116,7 +116,7 @@
       <div class="row">
         <button id="controls">Show Controls 🎮</button>
       </div>
-      <div class="stat" id="stats">circles: 0 | FPS: 0</div>
+      <div class="stat" id="stats">discs: 0 | FPS: 0</div>
     </div>
   </div>
 
@@ -223,7 +223,7 @@ function addSegment(x1, y1, x2, y2, opts={}){
     return s;
 }
 
-function detectCircleSegmentCollision(c, s) {
+function detectDiscSegmentCollision(c, s) {
     // Precompute vector from start to circle center
     const vx = c.pos.x - s.start.x;
     const vy = c.pos.y - s.start.y;
@@ -243,7 +243,7 @@ function detectCircleSegmentCollision(c, s) {
     return dx*dx + dy*dy <= c.r2;
 }
 
-function resolveCircleCircle(a, b) {
+function resolveDiscDisc(a, b) {
     // Vector between centers
     const dx = b.pos.x - a.pos.x;
     const dy = b.pos.y - a.pos.y;
@@ -302,7 +302,7 @@ function resolveCircleCircle(a, b) {
     b.vel.y += impulseY * b.invMass;
 }
 
-function resolveCircleSegment(c, s) {
+function resolveDiscSegment(c, s) {
     // Projection factor (clamped 0..1)
     const t = Math.max(0, Math.min(1, ((c.pos.x - s.start.x) * s.dx + (c.pos.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
 
@@ -353,7 +353,7 @@ function resolveCircleSegment(c, s) {
     c.vel.y += impulseY;
 }
 
-function resolveTunneledCircleSegment(c, s){
+function resolveTunneledDiscSegment(c, s){
     // Projection factor (clamped 0..1)
     const t = Math.max(0, Math.min(1, ((c.pos_old.x - s.start.x) * s.dx + (c.pos_old.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
 
@@ -417,23 +417,23 @@ function distanceCircToSegment(c, s) {
     return Math.hypot(distVector.x, distVector.y);
 }
 
-function integrate(circle, dt){
+function integrate(disc, dt){
     // velocity verlet
 
     // update position
-    circle.pos_old.x = circle.pos.x;
-    circle.pos_old.y = circle.pos.y;
-    circle.pos.x += circle.vel.x * dt + 0.5 * circle.acc.x * dt * dt;
-    circle.pos.y += circle.vel.y * dt + 0.5 * circle.acc.y * dt * dt;
+    disc.pos_old.x = disc.pos.x;
+    disc.pos_old.y = disc.pos.y;
+    disc.pos.x += disc.vel.x * dt + 0.5 * disc.acc.x * dt * dt;
+    disc.pos.y += disc.vel.y * dt + 0.5 * disc.acc.y * dt * dt;
 
     // update velocity
-    circle.vel.x += 0.5*(circle.acc.x + circle.acc_new.x)*dt;
-    circle.vel.y += 0.5*(circle.acc.y + circle.acc_new.y)*dt;
+    disc.vel.x += 0.5*(disc.acc.x + disc.acc_new.x)*dt;
+    disc.vel.y += 0.5*(disc.acc.y + disc.acc_new.y)*dt;
 
     // update acceleration
-    circle.acc = circle.acc_new
-    circle.acc_new.x = 0.0; // to be updated on next step
-    circle.acc_new.y = 0.0; // to be updated on next step
+    disc.acc = disc.acc_new
+    disc.acc_new.x = 0.0; // to be updated on next step
+    disc.acc_new.y = 0.0; // to be updated on next step
 }
 
 // World bounds collision
@@ -492,17 +492,19 @@ function worldBounds(b){
 function step(){    
     for (let i = discs.length - 1; i >= 0; i--) {
         const c = discs[i];
-        integrate(c, dt);
-        if (c.persistence < 100){
-            c.persistence -= 1;
-        }
-        if (c.persistence < 1) {
-            discs.splice(i, 1); // ✅ remove it
+        if(!c.dragging){
+            integrate(c, dt);
+            if (c.persistence < 100){
+                c.persistence -= 1;
+            }
+            if (c.persistence < 1) {
+                discs.splice(i, 1); // ✅ remove it
+            }
         }
     }
 
     // handle circles that tunnel through segments
-    const circleSegmentTunneledPairs = [];
+    const discSegmentTunneledPairs = [];
     for(let i=0; i<discs.length; i++){
         let closestTunneledSegIdx = -1;
         let lowestTunneledSegDist = 1000000;
@@ -511,39 +513,34 @@ function step(){
             const s=segments[j];
             if(lineIntersect(c.pos_old, c.pos, s.start, s.end)){
                 segDist = distanceCircToSegment(c, s);
-                if(segDist <= lowestTunneledSegDist){
+                if(segDist <= lowestTunneledSegDist && !c.dragging){
                     closestTunneledSegIdx = j;
                     lowestTunneledSegDist = segDist;
                 }
             }
         }
         if(closestTunneledSegIdx >= 0){
-            circleSegmentTunneledPairs.push({c: discs[i], s: segments[closestTunneledSegIdx]});
+            discSegmentTunneledPairs.push({c: discs[i], s: segments[closestTunneledSegIdx]});
         }
     }
-    for(const pair of circleSegmentTunneledPairs){
-        resolveTunneledCircleSegment(pair.c, pair.s);
+    for(const pair of discSegmentTunneledPairs){
+        resolveTunneledDiscSegment(pair.c, pair.s);
     }
 
     // handle circles colliding with segments
-    const circleSegmentCollisionPairs = [];
+    const discSegmentCollisionPairs = [];
     for(let i=0; i<discs.length; i++){
-        let closest_seg_idx = -1;
-        let smallest_seg_dist = 1000;
         for(let j=0; j<segments.length; j++){
             const c=discs[i];
             const s=segments[j];
-            if(detectCircleSegmentCollision(c,s)){
-                circleSegmentCollisionPairs.push({c, s});
+            if(detectDiscSegmentCollision(c,s)){
+                discSegmentCollisionPairs.push({c, s});
             }
-        }
-        if(closest_seg_idx >= 0){
-            circle_segment_tunneled_pairs.push({c: discs[i], s: segments[closest_seg_idx]});
         }
     }
     // resolve
-    for(const pair of circleSegmentCollisionPairs){
-        resolveCircleSegment(pair.c, pair.s);
+    for(const pair of discSegmentCollisionPairs){
+        resolveDiscSegment(pair.c, pair.s);
     }
 
     // circle circle collisions
@@ -553,7 +550,7 @@ function step(){
         for(let j=i+1; j<discs.length; j++){
             const a=discs[i];
             const b=discs[j];
-            resolveCircleCircle(a, b);
+            resolveDiscDisc(a, b);
         }
     }
 
@@ -695,7 +692,7 @@ function loop(now){
   draw();
   // stats
   const fps = Math.round(1/Math.max(elapsed,1e-6));
-  document.getElementById('stats').textContent = `circles: ${discs.length} | segments: ${segments.length} | FPS: ${fps}`;
+  document.getElementById('stats').textContent = `discs: ${discs.length} | segments: ${segments.length} | FPS: ${fps}`;
 }
 
 requestAnimationFrame(loop);
@@ -714,7 +711,7 @@ velPicker.addEventListener("input", (event) => {
     velColor = color;
 });
 document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾';};
-document.getElementById('addCircle').onclick = ()=> addDisc(rand(100,W-100), rand(100,H-200), {r:discRadius, color: entityColor, persistence:discPersistence});
+document.getElementById('addDisc').onclick = ()=> addDisc(rand(100,W-100), rand(100,H-200), {r:discRadius, color: entityColor, persistence:discPersistence});
 document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Velocity 🚀' : 'No Velocity';};
 document.getElementById('clear').onclick = ()=>{ discs.length = 0; segments.length = 0; };
 document.getElementById('copyBtn').addEventListener('click', async () => {
@@ -729,7 +726,7 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
     }
 });
 document.getElementById('controls').addEventListener('click', async () => {
-    alert('1. Click+drag disc to move it\n2. Click right mouse and drag to draw walls\n3. In "Fling" mode, click+drag elsewhere to create a moving disc\n4. In "Pour" mode, hold mouse down to continuously add discs\n5. Shift+click to spawn circle without velocity');
+    alert('1. Click+drag disc to move it\n2. Click right mouse and drag to draw walls\n3. In "Fling" mode, click+drag elsewhere to create a moving disc\n4. In "Pour" mode, hold mouse down to continuously add discs\n5. Shift+click to spawn disc without velocity');
 });
 
 document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
@@ -814,7 +811,7 @@ canvas.addEventListener('pointerdown', e=>{
         mouse.btn=e.button; 
         mouse.start = {x:mouse.x,y:mouse.y};
         // pick body
-        const pick = pickCircle(mouse.x, mouse.y);
+        const pick = pickDisc(mouse.x, mouse.y);
         if(pick){ 
             pick.dragging = true; 
             pick.dragOffset = {x: mouse.x - pick.pos.x, y: mouse.y - pick.pos.y}; 
@@ -835,22 +832,22 @@ canvas.addEventListener('pointermove', e=>{
     mouse.x = e.clientX - rect.left; 
     mouse.y = e.clientY - rect.top;
     // drag if picked
-    const held_circle = discs.find(c=>c.dragging);
-    if(held_circle){ 
-        held_circle.pos.x = mouse.x - held_circle.dragOffset.x; 
-        held_circle.pos.y = mouse.y - held_circle.dragOffset.y; 
+    const heldDisc = discs.find(c=>c.dragging);
+    if(heldDisc){ 
+        heldDisc.pos.x = mouse.x - heldDisc.dragOffset.x; 
+        heldDisc.pos.y = mouse.y - heldDisc.dragOffset.y; 
     }
 })
 canvas.addEventListener('pointerup', e=>{
     mouse.down=false;
     // if dragged start->release with velocity create (spawn) impulse
-    const heldCircleIndex = discs.findIndex(b=>b.dragging);
+    const heldDiscIndex = discs.findIndex(b=>b.dragging);
     const heldSegmentIndex = segments.findIndex(s=>s.dragging);
 
-    if(heldCircleIndex>=0){ 
-        discs[heldCircleIndex].dragging = false;
+    if(heldDiscIndex>=0){ 
+        discs[heldDiscIndex].dragging = false;
     }
-    if(mouse.start && !e.shiftKey && heldCircleIndex<0 && heldSegmentIndex<0 && fling){
+    if(mouse.start && !e.shiftKey && heldDiscIndex<0 && heldSegmentIndex<0 && fling){
         const dx = mouse.x - mouse.start.x, dy = mouse.y - mouse.start.y;
         if(Math.hypot(dx,dy) > 6){ // fling create
             const c = addDisc(mouse.start.x, mouse.start.y, {r:discRadius, color:entityColor, persistence:discPersistence});
@@ -869,7 +866,7 @@ canvas.addEventListener("mouseleave", () => {
   clearInterval(spawnInterval);
 });
 
-function pickCircle(x,y){
+function pickDisc(x,y){
   for(let i=discs.length-1; i>=0; i--){ 
     const c=discs[i];
     const dx = c.pos.x-x;
