@@ -57,7 +57,7 @@
     border: 1px solid rgba(255,255,255,0.12); /* slightly brighter border */
     font-family: monospace;                   /* optional, more "key" feel */
     font-size: 14px;
-    padding: 6px 10px;
+    padding: 6px 6px;
     box-shadow: 0 4px 0 #0b1220;              /* "stem" under the key */
     transition: transform 0.05s, box-shadow 0.05s;
     }
@@ -146,6 +146,7 @@
         <button id="Preset #2" class="keyBtn">2</button>
         <button id="Preset #3" class="keyBtn">3</button>
         <button id="Preset #4" class="keyBtn">4</button>
+        <button id="Preset #5" class="keyBtn">5</button>
       </div>
       <div class="stat" id="stats">discs: 0 | FPS: 0</div>
     </div>
@@ -782,10 +783,12 @@ preset1 = document.getElementById('Preset #1')
 preset2 = document.getElementById('Preset #2')
 preset3 = document.getElementById('Preset #3')
 preset4 = document.getElementById('Preset #4')
+preset5 = document.getElementById('Preset #5')
 preset1.onclick = ()=>{ if(!runningPreset) defaultStart() };
 preset2.onclick = ()=>{ if(!runningPreset) tubes() };
 preset3.onclick = ()=>{ if(!runningPreset) cascade() };
 preset4.onclick = ()=>{ if(!runningPreset) vortex() };
+preset5.onclick = ()=>{ if(!runningPreset) pattern() };
 
 document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
 document.getElementById('step').onclick = ()=>{ if(paused) step(); };
@@ -835,6 +838,8 @@ document.addEventListener('keydown', (e) => {
     if(!runningPreset) cascade();
   } else if (e.key == '4') {
     if(!runningPreset) vortex();
+  } else if (e.key == '5') {
+    if(!runningPreset) pattern();
   }
 });
 
@@ -995,6 +1000,7 @@ function defaultStart(){
     preset2.classList.toggle("pressed");
     preset3.classList.toggle("pressed");
     preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
 }
 
 function sleep(ms) {
@@ -1008,6 +1014,7 @@ function startPreset(){
     preset2.classList.toggle("pressed");
     preset3.classList.toggle("pressed");
     preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
 
     discs.length = 0;
     segments.length = 0;
@@ -1070,6 +1077,7 @@ function endPreset(){
     preset2.classList.toggle("pressed");
     preset3.classList.toggle("pressed");
     preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
 }
 
 // tubes
@@ -1223,35 +1231,28 @@ function vortex(){
 function pattern(){
     startPreset()
 
-    gravity = 100;
-    discPersistence = 100;
-    globalRestitution = 0.1;
-    globalFriction = 0.1;
+    globalRestitution = 0.8;
+    restInput.value = globalRestitution;
+    restVal.textContent = globalRestitution;
 
-    dt = 0.01;
-    dtInput.value = dt;
-    dtVal.textContent = dt;
+    globalFriction = 0.25;
+    frictionInput.value = globalFriction;
+    frictionVal.textContent = globalFriction;
+
+    gravity = 500;
+    gravInput.value = gravity;
+    gravVal.textContent = gravity;
 
     discRadius = W/10;
     discRadiusInput.value = discRadius;
     discRadiusVal.textContent = discRadius;
-    addDisc(W/2, H/2, {r:discRadius, color:entityColor, persistence:discPersistence});
+    addDisc(W/2, H/2, {r:discRadius, color:entityColor, persistence:discPersistence, dragging:true});
 
     discRadius = W/1000;
     discRadiusInput.value = discRadius;
     discRadiusVal.textContent = discRadius;
 
-    // hideVelVector = false;
-    // document.getElementById('velvector').textContent = 'No Velocity';
-
-    // gravity = 500;
-    // gravInput.value = gravity;
-    // gravVal.textContent = gravity;
-
-    numPoints = 1000;
-    // addDisc(W/10, 6*H/10, {r:discRadius, vel:{x:50,y:0}, persistence:discPersistence});
-    // addDisc(W/10, 4*H/10, {r:discRadius, vel:{x:50,y:0}, persistence:discPersistence});
-
+    numPoints = 500;
     for (let i = 0; i < numPoints; i++) {
         x = W/10;
         y = (i+1)/(numPoints+2)*H,
@@ -1260,18 +1261,13 @@ function pattern(){
         b = Math.floor(255-255*(y/H))
         addDisc(x, y, {r:discRadius, vel:{x:50,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
     }
-    // r = W/10 + W/100;
-    // numPoints = 100
-    // for (let i = 0; i < numPoints; i++) {
-    //     const angle = (i / numPoints) * 2 * Math.PI;
-    //     const x = r * Math.cos(angle);
-    //     const y = r * Math.sin(angle);
-    //     centerX = W/2;
-    //     centerY = H/2;
-    //     color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
-    //     addDisc(centerX + x, centerY + y, {r:discRadius, color:entityColor, persistence:discPersistence});
-    // }
-    endPreset();
+
+    runningPreset = false;    
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
 }
 defaultStart();
 
