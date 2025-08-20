@@ -263,13 +263,20 @@ function resolveDiscDisc(a, b) {
 
     // --- 1. Positional correction ---
     const totalInvMass = a.invMass + b.invMass;
-    const correction = penetration / totalInvMass;
     
-    a.pos.x -= nx * correction * a.invMass;
-    a.pos.y -= ny * correction * a.invMass;
-    
-    b.pos.x += nx * correction * b.invMass;
-    b.pos.y += ny * correction * b.invMass;
+    if(!a.dragging && !b.dragging){
+        const correction = penetration / totalInvMass;
+        a.pos.x -= nx * correction * a.invMass;
+        a.pos.y -= ny * correction * a.invMass;
+        b.pos.x += nx * correction * b.invMass;
+        b.pos.y += ny * correction * b.invMass;
+    } else if(a.dragging){
+        b.pos.x += nx * penetration;
+        b.pos.y += ny * penetration;  
+    } else {
+        a.pos.x -= nx * penetration;
+        a.pos.y -= ny * penetration;
+    }
 
     // --- 2. Relative velocity ---
     const rvx = b.vel.x - a.vel.x;
@@ -295,11 +302,20 @@ function resolveDiscDisc(a, b) {
     const impulseX = j * nx + jt * tx;
     const impulseY = j * ny + jt * ty;
 
-    a.vel.x -= impulseX * a.invMass;
-    a.vel.y -= impulseY * a.invMass;
+    if(!a.dragging && !b.dragging){
+        a.vel.x -= impulseX * a.invMass;
+        a.vel.y -= impulseY * a.invMass;
 
-    b.vel.x += impulseX * b.invMass;
-    b.vel.y += impulseY * b.invMass;
+        b.vel.x += impulseX * b.invMass;
+        b.vel.y += impulseY * b.invMass;
+    } else if(a.dragging){
+        b.vel.x += impulseX * totalInvMass;
+        b.vel.y += impulseY * totalInvMass;
+    } else {
+        a.vel.x -= impulseX * totalInvMass;
+        a.vel.y -= impulseY * totalInvMass;
+    }
+
 }
 
 function resolveDiscSegment(c, s) {
