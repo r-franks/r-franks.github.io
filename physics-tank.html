@@ -29,6 +29,13 @@
     .row{display:flex;
          gap:8px;
          margin-bottom:8px}
+    button:active,
+    button.pressed {
+    background: #1e2a46;           /* slightly lighter or darker */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    transform: translateY(1px);    /* gives a “pressed-in” feel */
+    border-color: rgba(255,255,255,0.12);
+    }
     button, 
     input[type=range]{padding:8px;
                       border-radius:8px;
@@ -42,6 +49,26 @@
     .hint{font-size:12px;
           opacity:.8;
           margin-top:6px}
+
+    /* Keyboard-style button */
+    .keyBtn {
+    border-radius: 4px;                       /* sharper edges, key-like */
+    background: #1a2335;                      /* a bit flatter background */
+    border: 1px solid rgba(255,255,255,0.12); /* slightly brighter border */
+    font-family: monospace;                   /* optional, more "key" feel */
+    font-size: 14px;
+    padding: 6px 10px;
+    box-shadow: 0 4px 0 #0b1220;              /* "stem" under the key */
+    transition: transform 0.05s, box-shadow 0.05s;
+    }
+
+    /* Press effect */
+    .keyBtn:active,
+    .keyBtn.pressed {
+    transform: translateY(2px);               /* pushes down */
+    box-shadow: 1 1 1 #0b1220;                /* stem disappears */
+    background: #202c46;
+    }
   </style>
 </head>
 <body>
@@ -115,6 +142,10 @@
 
       <div class="row">
         <button id="controls">Show Controls 🎮</button>
+        <button id="Preset #1" class="keyBtn">1</button>
+        <button id="Preset #2" class="keyBtn">2</button>
+        <button id="Preset #3" class="keyBtn">3</button>
+        <button id="Preset #4" class="keyBtn">4</button>
       </div>
       <div class="stat" id="stats">discs: 0 | FPS: 0</div>
     </div>
@@ -134,6 +165,7 @@ const canvas = document.getElementById('world');
 const ctx = canvas.getContext('2d');
 const picker = document.getElementById("colorPicker");
 const velPicker = document.getElementById("velColorPicker");
+let runningPreset = false;
 let entityColor = "#4488ff";
 let velColor = "#ffd166"
 
@@ -149,8 +181,9 @@ let globalRestitution = 1.0;
 let globalFriction = 0.0;
 let discRadius = 10;
 let alphaDownscale = 100;
+let globalFadeOut = 1;
 let discPersistence = 100;
-let fade = true;
+let trail = true;
 let dt = 0.02;
 let last = performance.now();
 let paused = false;
@@ -192,7 +225,7 @@ class Disc {
         this.mass = this.density * Math.PI * this.r2;
         this.invMass = 1/this.mass;
 
-        this.dragging = false;
+        this.dragging = opts.dragging ?? false;
     }
 }
 
@@ -511,9 +544,9 @@ function step(){
         if(!c.dragging){
             integrate(c, dt);
             if (c.persistence < 100){
-                c.persistence -= 1;
+                c.persistence -= globalFadeOut;
             }
-            if (c.persistence < 1) {
+            if (c.persistence <= 0) {
                 discs.splice(i, 1); // ✅ remove it
             }
         }
@@ -617,7 +650,7 @@ let fade_trigger = false;
 
 // Rendering
 function draw(){
-    if(fade){
+    if(trail){
         const alpha = 1.0/alphaDownscale;
         // if we are letting circle trails fade out...
 
@@ -745,6 +778,15 @@ document.getElementById('controls').addEventListener('click', async () => {
     alert('1. Click+drag disc to move it\n2. Click right mouse and drag to draw walls\n3. In "Fling" mode, click+drag elsewhere to create a moving disc\n4. In "Pour" mode, hold mouse down to continuously add discs\n5. Shift+click to spawn disc without velocity');
 });
 
+preset1 = document.getElementById('Preset #1')
+preset2 = document.getElementById('Preset #2')
+preset3 = document.getElementById('Preset #3')
+preset4 = document.getElementById('Preset #4')
+preset1.onclick = ()=>{ if(!runningPreset) defaultStart() };
+preset2.onclick = ()=>{ if(!runningPreset) tubes() };
+preset3.onclick = ()=>{ if(!runningPreset) cascade() };
+preset4.onclick = ()=>{ if(!runningPreset) vortex() };
+
 document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
 document.getElementById('step').onclick = ()=>{ if(paused) step(); };
 document.getElementById('fill').onclick = function(){ fill = !fill; this.textContent = fill ? 'No Fill 🪹' : 'Fill 🎨';};
@@ -766,7 +808,7 @@ dtInput.oninput = ()=>{ dt = Number(dtInput.value); dtVal.textContent = dt };
 
 const alphaDownscaleInput = document.getElementById('alpha_downscale'); const alphaDownscaleVal = document.getElementById('alphaDownscaleVal');
 alphaDownscaleInput.oninput = ()=>{ alphaDownscale = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = alphaDownscale == 100 ? 'Infinity' : alphaDownscale};
-document.getElementById('fade').onclick = function(){ fade = !fade; this.textContent = fade ? 'No trail 🚫' : 'Trail 🐌'; };
+document.getElementById('fade').onclick = function(){ trail = !trail; this.textContent = trail ? 'No trail 🚫' : 'Trail 🐌'; };
 
 const discPersistenceInput = document.getElementById('discPersistence'); const discPersistenceVal = document.getElementById('discPersistenceVal');
 discPersistenceInput.oninput = ()=>{ discPersistence = Number(discPersistenceInput.value); discPersistenceVal.textContent = discPersistence == 100 ? 'Infinity' : discPersistence};
@@ -784,6 +826,15 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Backspace') {
     discs.length = 0;
     segments.length = 0;
+  }
+  else if (e.key == '1'){
+    if(!runningPreset) defaultStart();
+  } else if (e.key == '2'){
+    if(!runningPreset) tubes();
+  } else if (e.key == '3'){
+    if(!runningPreset) cascade();
+  } else if (e.key == '4') {
+    if(!runningPreset) vortex();
   }
 });
 
@@ -892,32 +943,340 @@ function pickDisc(x,y){
     }
   }
 
-let numPoints = 10;
-let r = 40;
-addDisc(W/2, H/2, {r:20, density:1, color:entityColor, persistence:discPersistence});
-for (let i = 0; i < numPoints; i++) {
-    const angle = (i / numPoints) * 2 * Math.PI;
-    const x = r * Math.cos(angle);
-    const y = r * Math.sin(angle);
-    color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
-    addDisc(W/2 + x, H/2 + y, {r:10, density:1, vel:{x:5*x,y:5*y}, color:color, persistence:discPersistence});
+// default starting arrangement
+////////////////////////////////////////////////////////////////////////////////////////////////
+function defaultStart(){
+    startPreset();
+
+    dt = 0.02;
+    dtInput.value = dt;
+    dtVal.textContent = dt;
+
+    gravity = 500;
+    gravInput.value = gravity;
+    gravVal.textContent = gravity;
+
+    let numPoints = 10;
+    let r = W/20;
+
+    discRadius = W/40;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+    addDisc(W/2, H/2, {r:discRadius, color:entityColor, persistence:discPersistence});
+
+    discRadius = W/100;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+    for (let i = 0; i < numPoints; i++) {
+        const angle = (i / numPoints) * 2 * Math.PI;
+        const x = r * Math.cos(angle);
+        const y = r * Math.sin(angle);
+        color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+        addDisc(W/2 + x, H/2 + y, {r:discRadius, vel:{x:200*x/r,y:200*y/r}, color:color, persistence:discPersistence});
+    }
+
+    // add some default circles
+    addSegment(W/20, H/20, W/20, H/20 + H/5, {color: entityColor});
+    addSegment(W/20 + H/5, H/20, W/20 + H/5, H/20 + H/5, {color: entityColor});
+    addSegment(W/20, H/20, W/20 + H/5, H/20, {color: entityColor});
+    addSegment(W/20, H/20 + H/5, W/20 + H/5, H/20 + H/5, {color: entityColor});
+    addDisc(W/20 + H/10, H/20 + H/10, {r:discRadius, density:1, vel:{x:0,y:W/100}, color: "#" + [200, 50, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+
+    addSegment(W - W/20, H - H/20, W - W/20, H - (H/20 + H/5), {color: entityColor});
+    addSegment(W - (W/20 + H/5), H - H/20, W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
+    addSegment(W - W/20, H - H/20, W - (W/20 + H/5), H - H/20, {color: entityColor});
+    addSegment(W - W/20, H - (H/20 + H/5), W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
+    addDisc(W - (W/20 + H/20), H - (H/20 + H/20), {r:discRadius, vel:{x:0,y:W/100}, color:"#" + [50, 200, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    addDisc(W - (W/20 + H/7), H - (H/20 + H/20), {r:discRadius, vel:{x:0,y:W/100}, color:"#" + [50, 50, 200].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    addDisc(W - (W/20 + H/10), H - (H/20 + H/10), {r:discRadius, vel:{x:0,y:W/100}, color:"#" + [100, 50, 100].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+
+    runningPreset = false;    
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
 }
 
-// add some default circles
-addSegment(W/20, H/20, W/20, H/20 + H/5, {color: entityColor});
-addSegment(W/20 + H/5, H/20, W/20 + H/5, H/20 + H/5, {color: entityColor});
-addSegment(W/20, H/20, W/20 + H/5, H/20, {color: entityColor});
-addSegment(W/20, H/20 + H/5, W/20 + H/5, H/20 + H/5, {color: entityColor});
-addDisc(W/20 + H/10, H/20 + H/10, {r:10, density:1, vel:{x:0,y:100}, color: "#" + [200, 50, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+// standard preset
+////////////////////////////////////////////////////////////////////////////////////////////////
+function startPreset(){
+    runningPreset = true;
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
 
-addSegment(W - W/20, H - H/20, W - W/20, H - (H/20 + H/5), {color: entityColor});
-addSegment(W - (W/20 + H/5), H - H/20, W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
-addSegment(W - W/20, H - H/20, W - (W/20 + H/5), H - H/20, {color: entityColor});
-addSegment(W - W/20, H - (H/20 + H/5), W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
-addDisc(W - (W/20 + H/20), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:"#" + [50, 200, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
-addDisc(W - (W/20 + H/7), H - (H/20 + H/20), {r:10, density:1, vel:{x:0,y:100}, color:"#" + [50, 50, 200].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
-addDisc(W - (W/20 + H/10), H - (H/20 + H/10), {r:10, density:1, vel:{x:0,y:100}, color:"#" + [100, 50, 100].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    discs.length = 0;
+    segments.length = 0;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = `rgba(11, 18, 32, 1)`; // last number = alpha (0 transparent, 1 opaque)
+    ctx.fillRect(0, 0, W, H);
 
+    gravity = 0;
+    gravInput.value = gravity;
+    gravVal.textContent = gravity;
+
+    dt = 0.01;
+    dtInput.value = dt;
+    dtVal.textContent = dt;
+
+    discRadius = W/50;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+
+    downforce = 0;
+    downforceInput.value = downforce;
+    downforceVal.textContent = downforce;
+
+    globalRestitution = 1;
+    restInput.value = globalRestitution;
+    restVal.textContent = globalRestitution;
+
+    globalFriction = 0;
+    frictionInput.value = globalFriction;
+    frictionVal.textContent = globalFriction;
+
+    hideVelVector = true;
+    document.getElementById('velvector').textContent = 'Velocity 🚀';
+
+    trail = true;
+    document.getElementById('fade').textContent = 'No trail 🚫';
+
+
+    alphaDownscale = 100;
+    alphaDownscaleInput.value = alphaDownscale;
+    alphaDownscaleVal.textContent = alphaDownscale;
+
+    discPersistence = 100;
+    discPersistenceInput.value = discPersistence;
+    discPersistenceVal.textContent = discPersistence;
+
+    fill = false;
+    document.getElementById('fill').textContent = 'Fill 🎨';
+
+    paused = false;
+    document.getElementById('pause').textContent = 'Pause ⏸️';
+}
+
+function endPreset(){
+    runningPreset = false;
+    discs.length = 0;
+    segments.length = 0;
+    
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
+}
+
+// tubes
+////////////////////////////////////////////////////////////////////////////////////////////////
+function tubes(){
+    startPreset()
+
+    fill = true;
+    document.getElementById('fill').textContent = 'No Fill 🪹';
+
+    addDisc(W/10, H/9, {r:discRadius, vel:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    addDisc(W/10, 2*H/9, {r:discRadius, vel:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    addDisc(W/10, 3*H/9, {r:discRadius, vel:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    addDisc(W/10, 4*H/9, {r:discRadius, vel:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    sleep(1500).then(() => {
+        discs.length = 0;
+
+        fill = false;
+        document.getElementById('fill').textContent = 'Fill 🎨';
+
+        addDisc(W/10, 5*H/9, {r:discRadius, vel:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        addDisc(W/10, 6*H/9, {r:discRadius, vel:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        addDisc(W/10, 7*H/9, {r:discRadius, vel:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        addDisc(W/10, 8*H/9, {r:discRadius, vel:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        sleep(1500).then(() => {
+            discs.length = 0;
+            endPreset();
+        });
+    });
+}
+
+
+// cascade
+////////////////////////////////////////////////////////////////////////////////////////////////
+function cascade(){
+    startPreset()
+
+    discRadius = W/100;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+
+    downforce = 1000;
+    downforceInput.value = downforce;
+    downforceVal.textContent = downforce;
+
+    globalRestitution = 0.25;
+    restInput.value = globalRestitution;
+    restVal.textContent = globalRestitution;
+
+    globalFriction = 0.25;
+    frictionInput.value = globalFriction;
+    frictionVal.textContent = globalFriction;
+
+    discPersistence = 99;
+    discPersistenceInput.value = discPersistence;
+    discPersistenceVal.textContent = discPersistence;
+
+    let numPoints = 10;
+    let numCascades = 20;
+    let r = W/100;
+
+    for (let j = 0; j < numCascades; j++){
+        for (let i = 0; i < numPoints; i++) {
+            const angle = (i / numPoints) * 2 * Math.PI;
+            const x = r * Math.cos(angle);
+            const y = r * Math.sin(angle);
+            centerX = W*j/numCascades;
+            centerY = 0.5*H + (j/numCascades)*0.5*H*Math.cos(4*Math.PI*j/numCascades);
+            color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+            addDisc(centerX + x, centerY + y, {r:discRadius, vel:{x:0.0001*(W/dt)*x,y:0.0001*(W/dt)*y}, color:entityColor, persistence:discPersistence});
+        }
+    }
+
+    sleep(2000).then(() => {
+        numPoints = 10;
+        numCascades = 50;
+
+        discRadius = W/200;
+        discRadiusInput.value = discRadius;
+        discRadiusVal.textContent = discRadius;
+
+        discPersistence = 65;
+        discPersistenceInput.value = discPersistence;
+        discPersistenceVal.textContent = discPersistence;
+
+        r = 5*W/200;
+        for (let j = 0; j < numCascades; j++){
+            for (let i = 0; i < numPoints; i++) {
+                const angle = (i / numPoints) * 2 * Math.PI;
+                const x = r * Math.cos(angle);
+                const y = r * Math.sin(angle);
+                centerX = W - W*j/numCascades;
+                centerY = H - 0.2*H - 0.1*(j/numCascades)*H*Math.sin(8*Math.PI*j/numCascades);
+                color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+                addDisc(centerX + x, centerY + y, {r:discRadius, vel:{x:0.00005*(W/dt)*x,y:0.00005*(W/dt)*y}, color:entityColor, persistence:discPersistence});
+            }
+        }
+        sleep(1500).then(() => {
+            endPreset()
+        });
+    });
+}
+
+
+// vortex
+////////////////////////////////////////////////////////////////////////////////////////////////
+function vortex(){
+    startPreset()
+
+    dt = 0.02;
+    dtInput.value = dt;
+    dtVal.textContent = dt;
+
+    discRadius = W/100;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+
+    gravity = 500;
+    gravInput.value = gravity;
+    gravVal.textContent = gravity;
+
+    globalRestitution = 0.5;
+    restInput.value = globalRestitution;
+    restVal.textContent = globalRestitution;
+
+    discPersistence = 100;
+    discPersistenceInput.value = discPersistence;
+    discPersistenceVal.textContent = discPersistence;
+
+    let numPoints = 25;
+    let r = 30*W/200;
+
+    for (let i = 0; i < numPoints; i++) {
+        const angle = (i / numPoints) * 2 * Math.PI;
+        const x = r * Math.cos(angle);
+        const y = r * Math.sin(angle);
+        centerX = W/2;
+        centerY = H/2;
+        color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+        addDisc(centerX + x, centerY + y, {r:discRadius, color:entityColor, persistence:discPersistence});
+    }
+
+    sleep(12000).then(() => {
+        endPreset();
+    });
+}
+
+
+// pattern
+////////////////////////////////////////////////////////////////////////////////////////////////
+function pattern(){
+    startPreset()
+
+    gravity = 100;
+    discPersistence = 100;
+    globalRestitution = 0.1;
+    globalFriction = 0.1;
+
+    dt = 0.01;
+    dtInput.value = dt;
+    dtVal.textContent = dt;
+
+    discRadius = W/10;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+    addDisc(W/2, H/2, {r:discRadius, color:entityColor, persistence:discPersistence});
+
+    discRadius = W/1000;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+
+    // hideVelVector = false;
+    // document.getElementById('velvector').textContent = 'No Velocity';
+
+    // gravity = 500;
+    // gravInput.value = gravity;
+    // gravVal.textContent = gravity;
+
+    numPoints = 1000;
+    // addDisc(W/10, 6*H/10, {r:discRadius, vel:{x:50,y:0}, persistence:discPersistence});
+    // addDisc(W/10, 4*H/10, {r:discRadius, vel:{x:50,y:0}, persistence:discPersistence});
+
+    for (let i = 0; i < numPoints; i++) {
+        x = W/10;
+        y = (i+1)/(numPoints+2)*H,
+        r = Math.floor(255*(y/H))
+        g = Math.floor(255*(y/H))
+        b = Math.floor(255-255*(y/H))
+        addDisc(x, y, {r:discRadius, vel:{x:50,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    }
+    // r = W/10 + W/100;
+    // numPoints = 100
+    // for (let i = 0; i < numPoints; i++) {
+    //     const angle = (i / numPoints) * 2 * Math.PI;
+    //     const x = r * Math.cos(angle);
+    //     const y = r * Math.sin(angle);
+    //     centerX = W/2;
+    //     centerY = H/2;
+    //     color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+    //     addDisc(centerX + x, centerY + y, {r:discRadius, color:entityColor, persistence:discPersistence});
+    // }
+    endPreset();
+}
+defaultStart();
+
+// tubes();
+//vortex();
 </script>
 </body>
 </html>
