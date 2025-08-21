@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<head>
+    <link rel="shortcut icon" type="image/png" href="favicon.png"> 
+    <link rel="stylesheet" href="styles.css">
+    <title>Ryan Franks | Drawing with Physics</title>
+</head>
+<body>
+    <div class="overlay">
+        <div id="header">
+            <h1>Ryan Franks | Drawing with Physics</h1>
+        </div>
+        <div id="menu">
+            <a href="index.html">Home</a>
+            <a href="art.html">Art</a>
+            <a href="science.html">Science</a>
+            <a href="people.html">People</a>
+            <a href="interesting.html">Things of Interest</a>
+        </div>
+        <br>
+    </div>
+    <content>
+        <div class="overlay">
+            <p>
+                <i>
+                    For the physics simulation itself, see <a href="https://r-franks.github.io/physics-tank.html">here</a>!
+                </i>
+            </p>
+            <h1>Drawing with Physics</h1>
+            <br>
+            <p>
+                Physical laws may cause objects to interact in visually interesting ways.
+                By combining these interactions with a more conventional digital paintbrush style approach, one can create interesting art.
+            </p>
+            <p>
+                An artist typically needs some control over their work, and if objects in the picture are capable of freely interacting in any physically correct way at any time, they can take over the drawing.
+                Below are some parameters inroduces in <a href="https://r-franks.github.io/physics-tank.html">physics-tank</a> to provide control.
+            </p>
+            <ul>
+                <li>Disc Persistence: Gradually fades discs out of existence, so they can't cause trouble</li>
+                <li>Coefficient of Restitution: Reduces speed in the direction of collision</li>
+                <li>Friction: Reduces speed tangent to the direction of collision</li>
+                <li>Gravity: Traps close-together discs in local gravity wells, but may send some discs <a href="https://en.wikipedia.org/wiki/Gravity_assist">flying</a> so use with caution for the purpose of control.</li>
+            </ul>
+            <p>
+                We can now go over some of the interesting visual effects we can produce with physics. 
+            </p>
+            <h1>Tubes</h1>
+            <br>
+            <em>[Preset #2]</em>
+            <p>
+                When one shape is drawn on top of another in two-dimensions, the viewer may infer that the former is closer to them than the latter.
+                When a shape is drawn on top of a shape drawn on top of a shape, it appears closer stil, conveying depth.
+            </p>
+            <p>
+                By letting a traveling shape leave a trail in the form of afterimages of itself at previous locations, one can create the impression of three-dimensional tubes.
+            </p>
+            <div class="aligned">
+                <img class="rescaling" src="drawing_with_physics/tubes.png" alt="Tubes">
+            </div>
+            <p>
+                This occurs when the border of the shape can be visually distinguished from its interior. 
+                If the shape is moving too slowly or the contrast between the border and interior are too low, the trajectory of the shape will appear as a solid line.
+            </p>
+            <p>
+                In <a href="https://r-franks.github.io/physics-tank.html">physics-tank</a>, such behavior occurs as long as discs are moving and leaving trails.
+            </p>
+            <h1>Cascades</h1>
+            <br>
+            <em>[Preset #3]</em>
+            <p>
+                When shapes move, their after-images are drawn at a constant rate.
+                This means that they appear to be getting closer at a constant rate.
+                However, the shapes themselves may  move up, down, left, and right at all sorts of speeds.                
+            </p>
+            <p>
+                When a shape moves down quickly, its trajectory has the appearance of a tube with a steep downward incline.
+                By drawing the trajectories of many shapes traveling downward (e.g. due to downward gravity) from similar starting points, one can create the impression of hills and cliffs.
+            </p>
+            <div class="aligned">
+                <img class="rescaling" src="drawing_with_physics/cascade.png" alt="Cascades">
+            </div>
+            <p>
+                When the trajectories of shapes are drawn on top of the trajectories of other shapes, the structures conveyed by the former are implied to be in front of the structures conveyed by the latter.
+            </p>
+            <p>
+                In <a href="https://r-franks.github.io/physics-tank.html">physics-tank</a>, such behavior occurs when downforce is reasonably high.
+            </p>
+            <h1>Vortices</h1>
+            <br>
+            <em>[Preset #4]</em>
+            <p>
+                If a shape is orbiting around a moving target, its trajectory will appear as a helix. 
+                If many shapes are orbiting around each other while drifting in a shared direction, their trajectories will together form a multi-helix.
+            </p>
+            <div class="aligned">
+                <img class="rescaling" src="drawing_with_physics/vortex.png" alt="Vortex">
+            </div>
+            <p>
+                When a shape escapes orbit around another, it will spiral outward. When many shapes spiral outward, their trajectories will appear as vortices viewed from above.
+            </p>
+            <p>
+                In <a href="https://r-franks.github.io/physics-tank.html">physics-tank</a>, such behavior occurs when gravity is fairly high and coefficient of restitution is relatively low.
+                When these properties are set, discs will appear to become trapped in each others' orbits after losing energy to collisions.
+                However, errors due to positional corrections etc. will introduce speed in the direction of orbit which a low coefficient of restitution will not reduce.
+                As a result, discs stuck to each other by gravity will accumulate tangential speed and eventually resume orbits or spiralling escape trajectories.
+            </p>
+            <p>
+                If friction is also high, discs will become trapped together by gravity and may even form "planets" composed of multiple discs.
+            </p>
+        </div>
+    </content>
+</body>
+</html>

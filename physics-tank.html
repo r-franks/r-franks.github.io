@@ -164,14 +164,29 @@
 
 const canvas = document.getElementById('world');
 const ctx = canvas.getContext('2d');
+const rect = canvas.getBoundingClientRect();
+const dpr = window.devicePixelRatio || 1;
+// let innerWidth = rect.width * dpr;
+// let innerHeight = rect.height * dpr;
+// let W = canvas.width;
+// let H = canvas.height;
+// canvas.width = W;
+// canvas.height = H;
+
+let W = canvas.width = (innerWidth - 320)*dpr; // leave room for UI
+let H = canvas.height = innerHeight*dpr;
+
+console.log(dpr);
+console.log(W);
+console.log(H);
+console.log(W/dpr)
+console.log(H/dpr);
+
 const picker = document.getElementById("colorPicker");
 const velPicker = document.getElementById("velColorPicker");
 let runningPreset = false;
 let entityColor = "#4488ff";
 let velColor = "#ffd166"
-
-let W = canvas.width = innerWidth - 320; // leave room for UI
-let H = canvas.height = innerHeight;
 
 // Engine 
 let mouseDown = false;
@@ -747,11 +762,13 @@ function loop(now){
 
 requestAnimationFrame(loop);
 
+// UI hooks
 // Resize handling
-function resize(){ W = canvas.width = innerWidth - 320; H = canvas.height = innerHeight; }
+function resize(){
+    W = canvas.width = (innerWidth - 320)*dpr; 
+    H = canvas.height = innerHeight*dpr; }
 addEventListener('resize', resize);
 
-// UI hooks
 picker.addEventListener("input", (event) => {
     const color = event.target.value; // hex string like "#1e90ff"
     entityColor = color;
@@ -776,7 +793,7 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
     }
 });
 document.getElementById('controls').addEventListener('click', async () => {
-    alert('1. Click+drag disc to move it\n2. Click right mouse and drag to draw walls\n3. In "Fling" mode, click+drag elsewhere to create a moving disc\n4. In "Pour" mode, hold mouse down to continuously add discs\n5. Shift+click to spawn disc without velocity');
+    alert('1. In "Fling" mode, click+drag elsewhere to create a moving disc\n2. In "Pour" mode, hold mouse down to continuously add discs\n3. Shift+click to spawn disc without velocity\n4. Click+drag disc to move it\n5. Click right mouse and drag to draw walls\n6. Backspace or "Clear Screen" to delete all entities\n7. Tap keys 1-5 or press numbered buttons to activate presets');
 });
 
 preset1 = document.getElementById('Preset #1')
@@ -851,8 +868,8 @@ canvas.addEventListener('pointerdown', e=>{
 })
 canvas.addEventListener('pointermove', e=>{
     const rect = canvas.getBoundingClientRect(); 
-    mouse.x = e.clientX - rect.left; 
-    mouse.y = e.clientY - rect.top;    
+    mouse.x = (e.clientX - rect.left)*dpr; 
+    mouse.y = (e.clientY - rect.top)*dpr;    
     const held_segment = segments.find(s=>s.dragging);
     if(held_segment){
         held_segment.end.x = mouse.x;
@@ -877,8 +894,8 @@ canvas.addEventListener('pointerdown', e=>{
     // left mouse button
     if(e.button == 0){
         const rect = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left; 
-        mouse.y = e.clientY - rect.top; 
+        mouse.x = (e.clientX - rect.left)*dpr; 
+        mouse.y = (e.clientY - rect.top)*dpr; 
         mouse.down=true; 
         mouse.btn=e.button; 
         mouse.start = {x:mouse.x,y:mouse.y};
@@ -901,8 +918,8 @@ canvas.addEventListener('pointerdown', e=>{
 })
 canvas.addEventListener('pointermove', e=>{
     const rect = canvas.getBoundingClientRect(); 
-    mouse.x = e.clientX - rect.left; 
-    mouse.y = e.clientY - rect.top;
+    mouse.x = (e.clientX - rect.left)*dpr; 
+    mouse.y = (e.clientY - rect.top)*dpr;
     // drag if picked
     const heldDisc = discs.find(c=>c.dragging);
     if(heldDisc){ 
@@ -1019,8 +1036,8 @@ function startPreset(){
     discs.length = 0;
     segments.length = 0;
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = `rgba(11, 18, 32, 1)`; // last number = alpha (0 transparent, 1 opaque)
-    ctx.fillRect(0, 0, W, H);
+    // ctx.fillStyle = `rgba(11, 18, 32, 1)`; // last number = alpha (0 transparent, 1 opaque)
+    // ctx.fillRect(0, 0, W, H);
 
     gravity = 0;
     gravInput.value = gravity;
@@ -1135,7 +1152,7 @@ function cascade(){
     discPersistenceInput.value = discPersistence;
     discPersistenceVal.textContent = discPersistence;
 
-    let numPoints = 10;
+    let numPoints = 20;
     let numCascades = 20;
     let r = W/100;
 
@@ -1144,8 +1161,9 @@ function cascade(){
             const angle = (i / numPoints) * 2 * Math.PI;
             const x = r * Math.cos(angle);
             const y = r * Math.sin(angle);
-            centerX = W*j/numCascades;
-            centerY = 0.5*H + (j/numCascades)*0.5*H*Math.cos(4*Math.PI*j/numCascades);
+            ratio = 0.25 + 0.5*(j + 1)/(numCascades + 1)
+            centerX = W*ratio;
+            centerY = 0.5*H + ratio*0.5*H*Math.cos(4*Math.PI*ratio);
             color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
             addDisc(centerX + x, centerY + y, {r:discRadius, vel:{x:0.0001*(W/dt)*x,y:0.0001*(W/dt)*y}, color:entityColor, persistence:discPersistence});
         }
@@ -1159,18 +1177,15 @@ function cascade(){
         discRadiusInput.value = discRadius;
         discRadiusVal.textContent = discRadius;
 
-        discPersistence = 65;
-        discPersistenceInput.value = discPersistence;
-        discPersistenceVal.textContent = discPersistence;
-
         r = 5*W/200;
         for (let j = 0; j < numCascades; j++){
             for (let i = 0; i < numPoints; i++) {
                 const angle = (i / numPoints) * 2 * Math.PI;
                 const x = r * Math.cos(angle);
                 const y = r * Math.sin(angle);
-                centerX = W - W*j/numCascades;
-                centerY = H - 0.2*H - 0.1*(j/numCascades)*H*Math.sin(8*Math.PI*j/numCascades);
+                ratio = 0.25 + 0.5*(j + 1)/(numCascades + 1);
+                centerX = W*ratio;
+                centerY = H - 0.2*H - 0.1*ratio*H*Math.sin(8*Math.PI*ratio);
                 color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
                 addDisc(centerX + x, centerY + y, {r:discRadius, vel:{x:0.00005*(W/dt)*x,y:0.00005*(W/dt)*y}, color:entityColor, persistence:discPersistence});
             }
