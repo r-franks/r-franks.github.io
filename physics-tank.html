@@ -619,6 +619,31 @@ function step(){
         }
     }
 
+    // handle discs that tunnel through segments
+    // (in case resolveDiscDisc pushed them through)
+    discSegmentTunneledPairs.length = 0;
+    for(let i=0; i<discs.length; i++){
+        let closestTunneledSegIdx = -1;
+        let lowestTunneledSegDist = 1000000;
+        for(let j=0; j<segments.length; j++){
+            const c=discs[i];
+            const s=segments[j];
+            if(lineIntersect(c.pos_old, c.pos, s.start, s.end)){
+                segDist = distanceCircToSegment(c, s);
+                if(segDist <= lowestTunneledSegDist && !c.dragging){
+                    closestTunneledSegIdx = j;
+                    lowestTunneledSegDist = segDist;
+                }
+            }
+        }
+        if(closestTunneledSegIdx >= 0){
+            discSegmentTunneledPairs.push({c: discs[i], s: segments[closestTunneledSegIdx]});
+        }
+    }
+    for(const pair of discSegmentTunneledPairs){
+        resolveTunneledDiscSegment(pair.c, pair.s);
+    }
+
     // world bounds
     for(const c of discs){
         worldBounds(c);
