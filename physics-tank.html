@@ -176,12 +176,6 @@ const dpr = window.devicePixelRatio || 1;
 let W = canvas.width = (innerWidth - 320)*dpr; // leave room for UI
 let H = canvas.height = innerHeight*dpr;
 
-console.log(dpr);
-console.log(W);
-console.log(H);
-console.log(W/dpr)
-console.log(H/dpr);
-
 const picker = document.getElementById("colorPicker");
 const velPicker = document.getElementById("velColorPicker");
 let runningPreset = false;
@@ -698,7 +692,6 @@ let fade_trigger = false;
 // Rendering
 function draw(){
     if(trail){
-        const alpha = 1.0/alphaDownscale;
         // if we are letting circle trails fade out...
 
         // draw canvas as original color if this is the first frame 
@@ -706,13 +699,18 @@ function draw(){
         if(!fade_trigger){
             fade_trigger = true;
             ctx.clearRect(0, 0, W, H);
-            ctx.fillStyle = `rgba(11, 18, 32, 1)`; // last number = alpha (0 transparent, 1 opaque)
-            ctx.fillRect(0, 0, W, H);
         }
         if(alphaDownscale != 100){
-            // add partially transparent rectangle matching the canvas color
-            ctx.fillStyle = `rgba(11, 18, 32, ${alpha})`; // last number = alpha (0 transparent, 1 opaque)
-            ctx.fillRect(0, 0, W, H);
+            imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            data = imageData.data;
+
+            fade = 0.05*(100 - alphaDownscale)
+            for (let i = 0; i < data.length; i += 4) {
+                data[i + 3] = Math.max(data[i + 3] - fade, 0); // scale alpha
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.putImageData(imageData, 0, 0);
         }
     } else {
         // render canvas with no trails by clearing it completely
