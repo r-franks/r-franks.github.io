@@ -190,7 +190,8 @@ let downforce = 0;
 let globalRestitution = 1.0;
 let globalFriction = 0.0;
 let discRadius = 10;
-let alphaDownscale = 100;
+let globalFadeRate = 100;
+let fadeCounter = 1;
 let globalFadeOut = 1;
 let discPersistence = 100;
 let trail = true;
@@ -700,17 +701,34 @@ function draw(){
             fade_trigger = true;
             ctx.clearRect(0, 0, W, H);
         }
-        if(alphaDownscale != 100){
-            imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            data = imageData.data;
-
-            fade = 0.05*(100 - alphaDownscale)
-            for (let i = 0; i < data.length; i += 4) {
-                data[i + 3] = Math.max(data[i + 3] - fade, 0); // scale alpha
+        if(globalFadeRate != 100){
+            // handle sub-point fading
+            trueFadeOut = 0.1 * (100 - globalFadeRate);
+            if (trueFadeOut > 1){
+                // if trueFadeOut above 1, reduce alpha every frame
+                fadeFreq = 1;
+            } else {
+                // if trueFadeOut below 1, don't reduce alpha every frame
+                fadeFreq = 1/trueFadeOut;
+                trueFadeOut = 1;
             }
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.putImageData(imageData, 0, 0);
+            if (fadeCounter % fadeFreq == 0){
+                imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                data = imageData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i + 3] = Math.max(data[i + 3] - trueFadeOut, 0); // scale alpha
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.putImageData(imageData, 0, 0);
+
+                // update fadeCounter
+                fadeCounter = 1
+            } else {
+                fadeCounter += 1;
+            }
         }
     } else {
         // render canvas with no trails by clearing it completely
@@ -856,7 +874,7 @@ const dtInput = document.getElementById('dt'); const dtVal = document.getElement
 dtInput.oninput = ()=>{ dt = Number(dtInput.value); dtVal.textContent = dt };
 
 const alphaDownscaleInput = document.getElementById('alpha_downscale'); const alphaDownscaleVal = document.getElementById('alphaDownscaleVal');
-alphaDownscaleInput.oninput = ()=>{ alphaDownscale = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = alphaDownscale == 100 ? 'Infinity' : alphaDownscale};
+alphaDownscaleInput.oninput = ()=>{ globalFadeRate = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = globalFadeRate == 100 ? 'Infinity' : globalFadeRate};
 document.getElementById('fade').onclick = function(){ trail = !trail; this.textContent = trail ? 'No trail 🚫' : 'Trail 🐌'; };
 
 const discPersistenceInput = document.getElementById('discPersistence'); const discPersistenceVal = document.getElementById('discPersistenceVal');
@@ -1099,9 +1117,9 @@ function startPreset(){
     document.getElementById('fade').textContent = 'No trail 🚫';
 
 
-    alphaDownscale = 100;
-    alphaDownscaleInput.value = alphaDownscale;
-    alphaDownscaleVal.textContent = alphaDownscale;
+    globalFadeRate = 100;
+    alphaDownscaleInput.value = globalFadeRate;
+    alphaDownscaleVal.textContent = globalFadeRate;
 
     discPersistence = 100;
     discPersistenceInput.value = discPersistence;
