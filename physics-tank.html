@@ -1231,6 +1231,10 @@ function vortex(){
 function pattern(){
     startPreset()
 
+    dt = 0.01;
+    dtInput.value = dt;
+    dtVal.textContent = dt;
+
     globalRestitution = 0.8;
     restInput.value = globalRestitution;
     restVal.textContent = globalRestitution;
@@ -1239,7 +1243,7 @@ function pattern(){
     frictionInput.value = globalFriction;
     frictionVal.textContent = globalFriction;
 
-    gravity = 500;
+    gravity = 1000;
     gravInput.value = gravity;
     gravVal.textContent = gravity;
 
@@ -1259,7 +1263,7 @@ function pattern(){
         r = Math.floor(255*(y/H))
         g = Math.floor(255*(y/H))
         b = Math.floor(255-255*(y/H))
-        addDisc(x, y, {r:discRadius, vel:{x:(W/dt)/1000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+        addDisc(x, y, {r:discRadius, vel:{x:(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
     }
     for (let i = 0; i < numPoints; i++) {
         x = 9*W/10;
@@ -1267,7 +1271,7 @@ function pattern(){
         r = Math.floor(255*(y/H))
         g = Math.floor(255 - 255*(y/H))
         b = Math.floor(255*(y/H))
-        addDisc(x, y, {r:discRadius, vel:{x:-(W/dt)/1000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+        addDisc(x, y, {r:discRadius, vel:{x:-(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
     }
     runningPreset = false;    
     preset1.classList.toggle("pressed");
