@@ -163,7 +163,7 @@
  ****************************************************************/
 
 const canvas = document.getElementById('world');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', { willReadFrequently: true});
 const rect = canvas.getBoundingClientRect();
 const dpr = window.devicePixelRatio || 1;
 // let innerWidth = rect.width * dpr;
