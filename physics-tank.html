@@ -651,7 +651,9 @@ function step(){
 
     // downforce
     for(const c of discs){
-        c.acc_new.y += downforce;
+        if(!c.dragging){
+            c.acc_new.y += downforce;
+        }
     }
 
     // intra circle gravity
@@ -677,14 +679,18 @@ function step(){
             const gma = gravity*a.mass;
             const gmb = gravity*b.mass
 
-            a.acc_new.x -= gmb*dx*invr3;
-            a.acc_new.y -= gmb*dy*invr3;
+            if(!a.dragging){
+                a.acc_new.x -= gmb*dx*invr3;
+                a.acc_new.y -= gmb*dy*invr3;
+            }
 
-            b.acc_new.x += gma*dx*invr3;
-            b.acc_new.y += gma*dy*invr3;
+            if(!b.dragging){
+                b.acc_new.x += gma*dx*invr3;
+                b.acc_new.y += gma*dy*invr3;
             }
         }
     }
+}
 
 // tracks when we are starting to fade-out trails
 let fade_trigger = false;
