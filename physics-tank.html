@@ -969,7 +969,7 @@ canvas.addEventListener('pointermove', e=>{
     mouse.y = (e.clientY - rect.top)*dpr;
     // drag if picked
     const heldDisc = discs.find(c=>c.dragging);
-    if(heldDisc){ 
+    if(heldDisc && heldDisc.dragOffset){ 
         heldDisc.pos.x = mouse.x - heldDisc.dragOffset.x; 
         heldDisc.pos.y = mouse.y - heldDisc.dragOffset.y; 
     }
@@ -1067,8 +1067,16 @@ function defaultStart(){
     preset5.classList.toggle("pressed");
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+
+function runAfterFrames(frames, callback) {
+  function step() {
+    if (--frames <= 0) {
+      callback();
+    } else {
+      requestAnimationFrame(step);
+    }
+  }
+  requestAnimationFrame(step);
 }
 // standard preset
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1156,7 +1164,8 @@ function tubes(){
     addDisc(W/10, 2*H/9, {r:discRadius, vel:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
     addDisc(W/10, 3*H/9, {r:discRadius, vel:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
     addDisc(W/10, 4*H/9, {r:discRadius, vel:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-    sleep(1500).then(() => {
+   
+    runAfterFrames(100, () => {
         discs.length = 0;
 
         fill = false;
@@ -1166,10 +1175,8 @@ function tubes(){
         addDisc(W/10, 6*H/9, {r:discRadius, vel:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
         addDisc(W/10, 7*H/9, {r:discRadius, vel:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
         addDisc(W/10, 8*H/9, {r:discRadius, vel:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-        sleep(1500).then(() => {
-            discs.length = 0;
-            endPreset();
-        });
+
+        runAfterFrames(100, endPreset);
     });
 }
 
@@ -1216,7 +1223,7 @@ function cascade(){
         }
     }
 
-    sleep(2000).then(() => {
+    runAfterFrames(100, () => {
         numPoints = 10;
         numCascades = 50;
 
@@ -1237,9 +1244,8 @@ function cascade(){
                 addDisc(centerX + x, centerY + y, {r:discRadius, vel:{x:0.00005*(W/dt)*x,y:0.00005*(W/dt)*y}, color:entityColor, persistence:discPersistence});
             }
         }
-        sleep(1500).then(() => {
-            endPreset()
-        });
+
+        runAfterFrames(100, endPreset);
     });
 }
 
@@ -1282,9 +1288,7 @@ function vortex(){
         addDisc(centerX + x, centerY + y, {r:discRadius, color:entityColor, persistence:discPersistence});
     }
 
-    sleep(12000).then(() => {
-        endPreset();
-    });
+    runAfterFrames(750, endPreset);
 }
 
 
