@@ -220,11 +220,14 @@ const v = {
 
 class Disc {
     constructor(x, y, opts={}){
-        this.pos = {x,y};
-        this.pos_old = {x,y}; // used to sweep lines
-        this.vel = opts.vel || {x:0.0, y:0.0};
-        this.acc = opts.acc || {x:0.0, y:0.0};
-        this.acc_new = opts.acc_new || {x:0.0, y:0.0};
+        this.posCurr = {x,y}; // used to sweep lines
+        this.velCurr = opts.velCurr || {x:0.0, y:0.0};
+        this.accCurr = opts.accCurr || {x:0.0, y:0.0};
+
+        this.posNext = {x: this.posCurr.x, y:this.posCurr.y};
+        this.velNext = {x: this.velCurr.x, y:this.velCurr.y};
+        this.accNext = {x: this.accCurr.x, y:this.accCurr.y};
+
         this.r = opts.r ?? 1.0;
         this.r2 = this.r*this.r;
 
@@ -269,8 +272,8 @@ function addSegment(x1, y1, x2, y2, opts={}){
 
 function detectDiscSegmentCollision(c, s) {
     // Precompute vector from start to circle center
-    const vx = c.pos.x - s.start.x;
-    const vy = c.pos.y - s.start.y;
+    const vx = c.posNext.x - s.start.x;
+    const vy = c.posNext.y - s.start.y;
 
     // Project onto segment (normalized to [0,1])
     let t = (vx * s.dx + vy * s.dy) / s.len2; // s.len2 = dx*dx + dy*dy (precomputed)
@@ -282,15 +285,15 @@ function detectDiscSegmentCollision(c, s) {
     const py = s.start.y + t * s.dy;
 
     // Squared distance check (avoids sqrt)
-    const dx = c.pos.x - px;
-    const dy = c.pos.y - py;
+    const dx = c.posNext.x - px;
+    const dy = c.posNext.y - py;
     return dx*dx + dy*dy <= c.r2;
 }
 
 function resolveDiscDisc(a, b) {
     // Vector between centers
-    const dx = b.pos.x - a.pos.x;
-    const dy = b.pos.y - a.pos.y;
+    const dx = b.posNext.x - a.posNext.x;
+    const dy = b.posNext.y - a.posNext.y;
 
     const minDist = a.r + b.r;
     const dist2 = dx*dx + dy*dy;
@@ -310,21 +313,21 @@ function resolveDiscDisc(a, b) {
     
     if(!a.dragging && !b.dragging){
         const correction = penetration / totalInvMass;
-        a.pos.x -= nx * correction * a.invMass;
-        a.pos.y -= ny * correction * a.invMass;
-        b.pos.x += nx * correction * b.invMass;
-        b.pos.y += ny * correction * b.invMass;
+        a.posNext.x -= nx * correction * a.invMass;
+        a.posNext.y -= ny * correction * a.invMass;
+        b.posNext.x += nx * correction * b.invMass;
+        b.posNext.y += ny * correction * b.invMass;
     } else if(a.dragging){
-        b.pos.x += nx * penetration;
-        b.pos.y += ny * penetration;  
+        b.posNext.x += nx * penetration;
+        b.posNext.y += ny * penetration;  
     } else {
-        a.pos.x -= nx * penetration;
-        a.pos.y -= ny * penetration;
+        a.posNext.x -= nx * penetration;
+        a.posNext.y -= ny * penetration;
     }
 
     // --- 2. Relative velocity ---
-    const rvx = b.vel.x - a.vel.x;
-    const rvy = b.vel.y - a.vel.y;
+    const rvx = b.velNext.x - a.velNext.x;
+    const rvy = b.velNext.y - a.velNext.y;
     const velAlongNormal = rvx * nx + rvy * ny;
     const velAlongTang = rvx * tx + rvy * ty;
 
@@ -347,32 +350,32 @@ function resolveDiscDisc(a, b) {
     const impulseY = j * ny + jt * ty;
 
     if(!a.dragging && !b.dragging){
-        a.vel.x -= impulseX * a.invMass;
-        a.vel.y -= impulseY * a.invMass;
+        a.velNext.x -= impulseX * a.invMass;
+        a.velNext.y -= impulseY * a.invMass;
 
-        b.vel.x += impulseX * b.invMass;
-        b.vel.y += impulseY * b.invMass;
+        b.velNext.x += impulseX * b.invMass;
+        b.velNext.y += impulseY * b.invMass;
     } else if(a.dragging){
-        b.vel.x += impulseX * totalInvMass;
-        b.vel.y += impulseY * totalInvMass;
+        b.velNext.x += impulseX * totalInvMass;
+        b.velNext.y += impulseY * totalInvMass;
     } else {
-        a.vel.x -= impulseX * totalInvMass;
-        a.vel.y -= impulseY * totalInvMass;
+        a.velNext.x -= impulseX * totalInvMass;
+        a.velNext.y -= impulseY * totalInvMass;
     }
 
 }
 
 function resolveDiscSegment(c, s) {
     // Projection factor (clamped 0..1)
-    const t = Math.max(0, Math.min(1, ((c.pos.x - s.start.x) * s.dx + (c.pos.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
+    const t = Math.max(0, Math.min(1, ((c.posNext.x - s.start.x) * s.dx + (c.posNext.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
 
     // Closest point on segment
     const closestX = s.start.x + t * s.dx;
     const closestY = s.start.y + t * s.dy;
 
     // Vector from closest point to circle center
-    let nx = c.pos.x - closestX;
-    let ny = c.pos.y - closestY;
+    let nx = c.posNext.x - closestX;
+    let ny = c.posNext.y - closestY;
     const distSq = nx*nx + ny*ny;
     const radiusSq = c.r2;
 
@@ -389,12 +392,12 @@ function resolveDiscSegment(c, s) {
 
     // Push circle out of wall
     const penetration = c.r - dist;
-    c.pos.x += nx * penetration;
-    c.pos.y += ny * penetration;
+    c.posNext.x += nx * penetration;
+    c.posNext.y += ny * penetration;
 
     // Reflect velocity: v' = v - (1 + e)*(v·n) n
-    const velAlongNormal = c.vel.x * nx + c.vel.y * ny;
-    const velAlongTang = c.vel.x * tx + c.vel.y * ty;
+    const velAlongNormal = c.velNext.x * nx + c.velNext.y * ny;
+    const velAlongTang = c.velNext.x * tx + c.velNext.y * ty;
 
     const j = -(1 + globalRestitution) * velAlongNormal;
     // Tangential impulse
@@ -409,35 +412,35 @@ function resolveDiscSegment(c, s) {
     const impulseX = j * nx + jt * tx;
     const impulseY = j * ny + jt * ty;
 
-    c.vel.x += impulseX;
-    c.vel.y += impulseY;
+    c.velNext.x += impulseX;
+    c.velNext.y += impulseY;
 }
 
 function resolveTunneledDiscSegment(c, s){
     // Projection factor (clamped 0..1)
-    const t = Math.max(0, Math.min(1, ((c.pos_old.x - s.start.x) * s.dx + (c.pos_old.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
+    const t = Math.max(0, Math.min(1, ((c.posNext.x - s.start.x) * s.dx + (c.posNext.y - s.start.y) * s.dy) / (s.dx2 + s.dy2)));
 
     // Closest point on segment
     const closestX = s.start.x + t * s.dx;
     const closestY = s.start.y + t * s.dy;
 
     // Vector from closest point to circle center
-    const dx = c.pos_old.x - closestX;
-    const dy = c.pos_old.y - closestY;
+    const dx = c.posNext.x - closestX;
+    const dy = c.posNext.y - closestY;
     const distSq = dx*dx + dy*dy;
     const radiusSq = c.r2;
 
     const invDistSq = 1/(distSq || 0.0001);
 
-    // Push circle toward wall
+    // set next pos to current pos
     // TODO: Compute intersection point, update to intersection
-    c.pos.x = c.pos_old.x;
-    c.pos.y = c.pos_old.y;
+    c.posNext.x = c.posCurr.x;
+    c.posNext.y = c.posCurr.y;
 
     // Reflect velocity: v' = v - (1 + e)*(v·n) n
-    const weightedDot = (1 + globalRestitution) * (c.vel.x * dx + c.vel.y * dy) * invDistSq;
-    c.vel.x = c.vel.x - weightedDot * dx;
-    c.vel.y = c.vel.y - weightedDot * dy;
+    const weightedDot = (1 + globalRestitution) * (c.velNext.x * dx + c.velNext.y * dy) * invDistSq;
+    c.velNext.x = c.velNext.x - weightedDot * dx;
+    c.velNext.y = c.velNext.y - weightedDot * dy;
 }
 
 function lineIntersect(A,B,C,D){
@@ -452,8 +455,8 @@ function lineIntersect(A,B,C,D){
            ((Dy - Ay)*(Bx - Ax) > (By - Ay)*(Dx - Ax));
 }
 
-function distanceCircToSegment(c, s) {
-    const seg_start_to_c = {x: c.pos.x - s.start.x, y: c.pos.y - s.start.y};
+function distancePointToSegment(p, s) {
+    const seg_start_to_c = {x: p.x - s.start.x, y: p.y - s.start.y};
     const AB = {x: s.dx, y: s.dy};
 
     const s2 = s.dx2 + s.dy2;
@@ -473,97 +476,81 @@ function distanceCircToSegment(c, s) {
         closest = {x: s.start.x + t * s.dx, y: s.start.y + t * s.dy};
     }
 
-    const distVector = {x: c.pos.x - closest.x, y: c.pos.y - closest.y};
+    const distVector = {x: p.x - closest.x, y: p.y - closest.y};
     return Math.hypot(distVector.x, distVector.y);
 }
 
-function integrate(disc, dt){
-    // velocity verlet
-
-    // update position
-    disc.pos_old.x = disc.pos.x;
-    disc.pos_old.y = disc.pos.y;
-    disc.pos.x += disc.vel.x * dt + 0.5 * disc.acc.x * dt * dt;
-    disc.pos.y += disc.vel.y * dt + 0.5 * disc.acc.y * dt * dt;
-
-    // update velocity
-    disc.vel.x += 0.5*(disc.acc.x + disc.acc_new.x)*dt;
-    disc.vel.y += 0.5*(disc.acc.y + disc.acc_new.y)*dt;
-
-    // update acceleration
-    disc.acc = disc.acc_new
-    disc.acc_new.x = 0.0; // to be updated on next step
-    disc.acc_new.y = 0.0; // to be updated on next step
-}
 
 // World bounds collision
 function worldBounds(b){
-    if(b.pos.x - b.r < 0){
-        b.pos.x = b.r; 
+    if(b.posNext.x - b.r < 0){
+        b.posNext.x = b.r; 
 
-        const j = -(1 + globalRestitution) * b.vel.x;
-        let jt = -b.vel.y;
+        const j = -(1 + globalRestitution) * b.velNext.x;
+        let jt = -b.velNext.y;
         const maxFriction = globalFriction * Math.abs(j);
         if (Math.abs(jt) > maxFriction) {
             jt = jt > 0 ? maxFriction : -maxFriction;
         }
-        b.vel.x += j;
-        b.vel.y += jt;
+        b.velNext.x += j;
+        b.velNext.y += jt;
     }
-    if(b.pos.x + b.r > W){
-        b.pos.x = W - b.r;
+    if(b.posNext.x + b.r > W){
+        b.posNext.x = W - b.r;
 
-        const j = -(1 + globalRestitution) * b.vel.x;
-        let jt = -b.vel.y;
+        const j = -(1 + globalRestitution) * b.velNext.x;
+        let jt = -b.velNext.y;
         const maxFriction = globalFriction * Math.abs(j);
         if (Math.abs(jt) > maxFriction) {
             jt = jt > 0 ? maxFriction : -maxFriction;
         }
-        b.vel.x += j;
-        b.vel.y += jt;
+        b.velNext.x += j;
+        b.velNext.y += jt;
     }
-    if(b.pos.y - b.r < 0){
-        b.pos.y = b.r; 
+    if(b.posNext.y - b.r < 0){
+        b.posNext.y = b.r; 
 
-        const j = -(1 + globalRestitution) * b.vel.y;
-        let jt = -b.vel.x;
+        const j = -(1 + globalRestitution) * b.velNext.y;
+        let jt = -b.velNext.x;
         const maxFriction = globalFriction * Math.abs(j);
         if (Math.abs(jt) > maxFriction) {
             jt = jt > 0 ? maxFriction : -maxFriction;
         }
-        b.vel.y += j;
-        b.vel.x += jt;
+        b.velNext.y += j;
+        b.velNext.x += jt;
     }
-    if(b.pos.y + b.r > H){ 
-        b.pos.y = H - b.r;
+    if(b.posNext.y + b.r > H){ 
+        b.posNext.y = H - b.r;
 
-        const j = -(1 + globalRestitution) * b.vel.y;
-        let jt = -b.vel.x;
+        const j = -(1 + globalRestitution) * b.velNext.y;
+        let jt = -b.velNext.x;
         const maxFriction = globalFriction * Math.abs(j);
         if (Math.abs(jt) > maxFriction) {
             jt = jt > 0 ? maxFriction : -maxFriction;
         }
-        b.vel.y += j;
-        b.vel.x += jt;
+        b.velNext.y += j;
+        b.velNext.x += jt;
     }
 }
 
 // Main step
-function step(){    
+function step(){  
+    // update persistence value  
     for (let i = discs.length - 1; i >= 0; i--) {
         const c = discs[i];
         if(!c.dragging){
-            integrate(c, dt);
             if (c.persistence < 100){
                 c.persistence -= globalFadeOut;
             }
             if (c.persistence <= 0) {
-                discs.splice(i, 1); // ✅ remove it
+                discs.splice(i, 1);
             }
         }
     }
 
-    // handle circles that tunnel through segments
+    // correct next position (apply boundaries)
+    ///////////////////////////////////////////
+    // handle discs that tunnel through segments
     const discSegmentTunneledPairs = [];
     for(let i=0; i<discs.length; i++){
         let closestTunneledSegIdx = -1;
@@ -571,8 +558,8 @@ function step(){
         for(let j=0; j<segments.length; j++){
             const c=discs[i];
             const s=segments[j];
-            if(lineIntersect(c.pos_old, c.pos, s.start, s.end)){
-                segDist = distanceCircToSegment(c, s);
+            if(lineIntersect(c.posCurr, c.posNext, s.start, s.end)){
+                segDist = distancePointToSegment(c.posCurr, s);
                 if(segDist <= lowestTunneledSegDist && !c.dragging){
                     closestTunneledSegIdx = j;
                     lowestTunneledSegDist = segDist;
@@ -603,9 +590,9 @@ function step(){
         resolveDiscSegment(pair.c, pair.s);
     }
 
-    // circle circle collisions
-    // we resolve all circle collisions in order that we detect them anyway
-    // so no point in separating collision detection and resolution (yet)
+    // disc disc collisions
+    // resolve disc-disc collisions after handling segment-disc collisions
+    //  - don't want discs colliding with each other by tunneling through segments
     for(let i=0; i<discs.length; i++){
         for(let j=i+1; j<discs.length; j++){
             const a=discs[i];
@@ -614,8 +601,9 @@ function step(){
         }
     }
 
-    // handle discs that tunnel through segments
-    // (in case resolveDiscDisc pushed them through)
+    // check again for tunneling
+    // - resolveDiscDisc can reposition discs
+    // - we want to avoid cases where discs are repositions through a segment
     discSegmentTunneledPairs.length = 0;
     for(let i=0; i<discs.length; i++){
         let closestTunneledSegIdx = -1;
@@ -623,8 +611,8 @@ function step(){
         for(let j=0; j<segments.length; j++){
             const c=discs[i];
             const s=segments[j];
-            if(lineIntersect(c.pos_old, c.pos, s.start, s.end)){
-                segDist = distanceCircToSegment(c, s);
+            if(lineIntersect(c.posCurr, c.posNext, s.start, s.end)){
+                segDist = distancePointToSegment(c.posCurr, s);
                 if(segDist <= lowestTunneledSegDist && !c.dragging){
                     closestTunneledSegIdx = j;
                     lowestTunneledSegDist = segDist;
@@ -644,20 +632,55 @@ function step(){
         worldBounds(c);
     }
 
-    // downforce
-    for(const c of discs){
+    // integrate
+    ///////////////////////////////////////
+
+    // update position (velocity verlet)
+    // pos_old = pos
+    // pos = pos + vel*dt + 0.5*acc_new*dt^2
+    // x(t+dt) = x(t) + v(t)dt + 0.5*a(t)*dt^2
+    for (let i = discs.length - 1; i >= 0; i--) {
+        const c = discs[i];
         if(!c.dragging){
-            c.acc_new.y += downforce;
+            // posCurr becomes posNext
+            c.posCurr.x = c.posNext.x;
+            c.posCurr.y = c.posNext.y;
+
+            // velCurr becomes velNext
+            c.velCurr.x = c.velNext.x;
+            c.velCurr.y = c.velNext.y;
+
+            // accCurr becomes accNext
+            c.accCurr.x = c.accNext.x;
+            c.accCurr.y = c.accNext.y;
+
+            // compute new next position (posNext)
+            c.posNext.x = c.posCurr.x + c.velCurr.x * dt + 0.5 * c.accCurr.x * dt * dt;
+            c.posNext.y = c.posCurr.y + c.velCurr.y * dt + 0.5 * c.accCurr.y * dt * dt;
+
+            // reset accNext, velNext
+            // (must be updated to reflect new posNext)
+            c.velNext = {x: 0, y:0};
+            c.accNext = {x: 0, y:0};
         }
     }
 
-    // intra circle gravity
+    // update acceleration
+    // downforce to accNext
+    for(const c of discs){
+        if(!c.dragging){
+            c.accNext.y += downforce;
+        }
+    }
+
+    // update acceleration
+    // intra disc gravity at next positions
     for(let i=0; i<discs.length; i++){
         for(let j=i+1; j<discs.length; j++){
             const a=discs[i];
             const b=discs[j];
-            const dx = a.pos.x - b.pos.x;
-            const dy = a.pos.y - b.pos.y;
+            const dx = a.posNext.x - b.posNext.x;
+            const dy = a.posNext.y - b.posNext.y;
             const r2 = dx*dx + dy*dy;
 
             const minDist = a.r + b.r;
@@ -675,14 +698,25 @@ function step(){
             const gmb = gravity*b.mass
 
             if(!a.dragging){
-                a.acc_new.x -= gmb*dx*invr3;
-                a.acc_new.y -= gmb*dy*invr3;
+                a.accNext.x -= gmb*dx*invr3;
+                a.accNext.y -= gmb*dy*invr3;
             }
 
             if(!b.dragging){
-                b.acc_new.x += gma*dx*invr3;
-                b.acc_new.y += gma*dy*invr3;
+                b.accNext.x += gma*dx*invr3;
+                b.accNext.y += gma*dy*invr3;
             }
+        }
+    }
+
+    // update velocity (velocity verlet)
+    // vel = vel + 0.5*(acc + acc_new)*dt
+    // x(t+dt) = x(t) + v(t)dt + 0.5*a(t)*dt^2
+    for (let i = discs.length - 1; i >= 0; i--) {
+        const c = discs[i];
+        if(!c.dragging){
+            c.velNext.x = c.velCurr.x + 0.5*(c.accCurr.x + c.accNext.x)*dt;
+            c.velNext.y = c.velCurr.y + 0.5*(c.accCurr.y + c.accNext.y)*dt;
         }
     }
 }
@@ -769,7 +803,7 @@ function draw(){
         ctx.strokeStyle = c.color + strokeAlpha;
 
         ctx.beginPath();
-        ctx.arc(c.pos.x, c.pos.y, c.r, 0, Math.PI*2);
+        ctx.arc(c.posCurr.x, c.posCurr.y, c.r, 0, Math.PI*2);
         ctx.fill();
         ctx.lineWidth=1.5;
         ctx.stroke();
@@ -777,8 +811,8 @@ function draw(){
         // velocity arrow
         if(!hideVelVector){
             ctx.beginPath();
-            ctx.moveTo(c.pos.x, c.pos.y);
-            ctx.lineTo(c.pos.x + c.vel.x*0.08, c.pos.y + c.vel.y*0.08);
+            ctx.moveTo(c.posCurr.x, c.posCurr.y);
+            ctx.lineTo(c.posCurr.x + c.velCurr.x*0.08, c.posCurr.y + c.velCurr.y*0.08);
             ctx.strokeStyle=velColor;
             ctx.stroke();
         }
@@ -950,7 +984,7 @@ canvas.addEventListener('pointerdown', e=>{
         const pick = pickDisc(mouse.x, mouse.y);
         if(pick){ 
             pick.dragging = true; 
-            pick.dragOffset = {x: mouse.x - pick.pos.x, y: mouse.y - pick.pos.y}; 
+            pick.dragOffset = {x: mouse.x - pick.posCurr.x, y: mouse.y - pick.posCurr.y}; 
         }
         else if(e.shiftKey){ 
             addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
@@ -970,8 +1004,10 @@ canvas.addEventListener('pointermove', e=>{
     // drag if picked
     const heldDisc = discs.find(c=>c.dragging);
     if(heldDisc && heldDisc.dragOffset){ 
-        heldDisc.pos.x = mouse.x - heldDisc.dragOffset.x; 
-        heldDisc.pos.y = mouse.y - heldDisc.dragOffset.y; 
+        heldDisc.posCurr.x = mouse.x - heldDisc.dragOffset.x; 
+        heldDisc.posCurr.y = mouse.y - heldDisc.dragOffset.y;
+        heldDisc.posNext.x = heldDisc.posCurr.x;
+        heldDisc.posNext.y = heldDisc.posCurr.y;
     }
 })
 canvas.addEventListener('pointerup', e=>{
@@ -984,11 +1020,14 @@ canvas.addEventListener('pointerup', e=>{
         discs[heldDiscIndex].dragging = false;
     }
     if(mouse.start && !e.shiftKey && heldDiscIndex<0 && heldSegmentIndex<0 && fling){
-        const dx = mouse.x - mouse.start.x, dy = mouse.y - mouse.start.y;
-        if(Math.hypot(dx,dy) > 6){ // fling create
+        const dx = mouse.x - mouse.start.x;
+        const dy = mouse.y - mouse.start.y;
+        if(Math.hypot(dx, dy) > 6){ // fling create
             const c = addDisc(mouse.start.x, mouse.start.y, {r:discRadius, color:entityColor, persistence:discPersistence});
-            c.vel.x = 0.1*dx/dt; 
-            c.vel.y = 0.1*dy/dt;
+            c.velCurr.x = 0.1*dx/dt; 
+            c.velCurr.y = 0.1*dy/dt;
+            c.velNext.x = 0.1*dx/dt; 
+            c.velNext.y = 0.1*dy/dt;
         }
     } else if(!fling){
         mouseDown = false;
@@ -1005,8 +1044,8 @@ canvas.addEventListener("mouseleave", () => {
 function pickDisc(x,y){
   for(let i=discs.length-1; i>=0; i--){ 
     const c=discs[i];
-    const dx = c.pos.x-x;
-    const dy = c.pos.y-y;
+    const dx = c.posCurr.x-x;
+    const dy = c.posCurr.y-y;
     if(dx*dx + dy*dy <= c.r2) 
         return c;
     }
@@ -1041,7 +1080,7 @@ function defaultStart(){
         const x = r * Math.cos(angle);
         const y = r * Math.sin(angle);
         color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
-        addDisc(W/2 + x, H/2 + y, {r:discRadius, vel:{x:200*x/r,y:200*y/r}, color:color, persistence:discPersistence});
+        addDisc(W/2 + x, H/2 + y, {r:discRadius, velCurr:{x:200*x/r,y:200*y/r}, color:color, persistence:discPersistence});
     }
 
     // add some default circles
@@ -1049,15 +1088,15 @@ function defaultStart(){
     addSegment(W/20 + H/5, H/20, W/20 + H/5, H/20 + H/5, {color: entityColor});
     addSegment(W/20, H/20, W/20 + H/5, H/20, {color: entityColor});
     addSegment(W/20, H/20 + H/5, W/20 + H/5, H/20 + H/5, {color: entityColor});
-    addDisc(W/20 + H/10, H/20 + H/10, {r:discRadius, density:1, vel:{x:0,y:W/100}, color: "#" + [200, 50, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    addDisc(W/20 + H/10, H/20 + H/10, {r:discRadius, density:1, velCurr:{x:0,y:W/100}, color: "#" + [200, 50, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
 
     addSegment(W - W/20, H - H/20, W - W/20, H - (H/20 + H/5), {color: entityColor});
     addSegment(W - (W/20 + H/5), H - H/20, W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
     addSegment(W - W/20, H - H/20, W - (W/20 + H/5), H - H/20, {color: entityColor});
     addSegment(W - W/20, H - (H/20 + H/5), W - (W/20 + H/5), H - (H/20 + H/5), {color: entityColor});
-    addDisc(W - (W/20 + H/20), H - (H/20 + H/20), {r:discRadius, vel:{x:0,y:W/100}, color:"#" + [50, 200, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
-    addDisc(W - (W/20 + H/7), H - (H/20 + H/20), {r:discRadius, vel:{x:0,y:W/100}, color:"#" + [50, 50, 200].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
-    addDisc(W - (W/20 + H/10), H - (H/20 + H/10), {r:discRadius, vel:{x:0,y:W/100}, color:"#" + [100, 50, 100].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    addDisc(W - (W/20 + H/20), H - (H/20 + H/20), {r:discRadius, velCurr:{x:0,y:W/100}, color:"#" + [50, 200, 50].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    addDisc(W - (W/20 + H/7), H - (H/20 + H/20), {r:discRadius, velCurr:{x:0,y:W/100}, color:"#" + [50, 50, 200].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    addDisc(W - (W/20 + H/10), H - (H/20 + H/10), {r:discRadius, velCurr:{x:0,y:W/100}, color:"#" + [100, 50, 100].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
 
     runningPreset = false;    
     preset1.classList.toggle("pressed");
@@ -1160,10 +1199,10 @@ function tubes(){
     fill = true;
     document.getElementById('fill').textContent = 'No Fill 🪹';
 
-    addDisc(W/10, H/9, {r:discRadius, vel:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-    addDisc(W/10, 2*H/9, {r:discRadius, vel:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-    addDisc(W/10, 3*H/9, {r:discRadius, vel:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-    addDisc(W/10, 4*H/9, {r:discRadius, vel:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    addDisc(W/10, H/9, {r:discRadius, velCurr:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    addDisc(W/10, 2*H/9, {r:discRadius, velCurr:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    addDisc(W/10, 3*H/9, {r:discRadius, velCurr:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+    addDisc(W/10, 4*H/9, {r:discRadius, velCurr:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
    
     runAfterFrames(100, () => {
         discs.length = 0;
@@ -1171,10 +1210,10 @@ function tubes(){
         fill = false;
         document.getElementById('fill').textContent = 'Fill 🎨';
 
-        addDisc(W/10, 5*H/9, {r:discRadius, vel:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-        addDisc(W/10, 6*H/9, {r:discRadius, vel:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-        addDisc(W/10, 7*H/9, {r:discRadius, vel:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
-        addDisc(W/10, 8*H/9, {r:discRadius, vel:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        addDisc(W/10, 5*H/9, {r:discRadius, velCurr:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        addDisc(W/10, 6*H/9, {r:discRadius, velCurr:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        addDisc(W/10, 7*H/9, {r:discRadius, velCurr:{x:(1/4)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
+        addDisc(W/10, 8*H/9, {r:discRadius, velCurr:{x:(1/2)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
 
         runAfterFrames(100, endPreset);
     });
@@ -1219,7 +1258,7 @@ function cascade(){
             centerX = W*ratio;
             centerY = 0.5*H + ratio*0.5*H*Math.cos(4*Math.PI*ratio);
             color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
-            addDisc(centerX + x, centerY + y, {r:discRadius, vel:{x:0.0001*(W/dt)*x,y:0.0001*(W/dt)*y}, color:entityColor, persistence:discPersistence});
+            addDisc(centerX + x, centerY + y, {r:discRadius, velCurr:{x:0.0001*(W/dt)*x,y:0.0001*(W/dt)*y}, color:entityColor, persistence:discPersistence});
         }
     }
 
@@ -1241,7 +1280,7 @@ function cascade(){
                 centerX = W*ratio;
                 centerY = H - 0.2*H - 0.1*ratio*H*Math.sin(8*Math.PI*ratio);
                 color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
-                addDisc(centerX + x, centerY + y, {r:discRadius, vel:{x:0.00005*(W/dt)*x,y:0.00005*(W/dt)*y}, color:entityColor, persistence:discPersistence});
+                addDisc(centerX + x, centerY + y, {r:discRadius, velCurr:{x:0.00005*(W/dt)*x,y:0.00005*(W/dt)*y}, color:entityColor, persistence:discPersistence});
             }
         }
 
@@ -1329,7 +1368,7 @@ function pattern(){
         r = Math.floor(255*(y/H))
         g = Math.floor(255*(y/H))
         b = Math.floor(255-255*(y/H))
-        addDisc(x, y, {r:discRadius, vel:{x:(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+        addDisc(x, y, {r:discRadius, velCurr:{x:(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
     }
     for (let i = 0; i < numPoints; i++) {
         x = 9*W/10;
@@ -1337,7 +1376,7 @@ function pattern(){
         r = Math.floor(255*(y/H))
         g = Math.floor(255 - 255*(y/H))
         b = Math.floor(255*(y/H))
-        addDisc(x, y, {r:discRadius, vel:{x:-(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+        addDisc(x, y, {r:discRadius, velCurr:{x:-(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
     }
     runningPreset = false;    
     preset1.classList.toggle("pressed");
