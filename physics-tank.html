@@ -1298,17 +1298,17 @@ function vortex(){
     dtInput.value = dt;
     dtVal.textContent = dt;
 
-    discRadius = W/100;
-    discRadiusInput.value = discRadius;
-    discRadiusVal.textContent = discRadius;
-
     gravity = 500;
     gravInput.value = gravity;
     gravVal.textContent = gravity;
 
-    globalRestitution = 0.5;
+    globalRestitution = 0.1;
     restInput.value = globalRestitution;
     restVal.textContent = globalRestitution;
+
+    globalFriction = 0.1;
+    frictionInput.value = globalFriction;
+    frictionVal.textContent = globalFriction;
 
     discPersistence = 100;
     discPersistenceInput.value = discPersistence;
@@ -1317,17 +1317,32 @@ function vortex(){
     let numPoints = 25;
     let r = 30*W/200;
 
+    discRadius = r/10;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
+
+    centerX = W/2;
+    centerY = H/2;
+    addDisc(centerX, centerY, {r:discRadius, color:entityColor, persistence:discPersistence, dragging:true});
+
+    discRadius = W/200;
+    discRadiusInput.value = discRadius;
+    discRadiusVal.textContent = discRadius;
     for (let i = 0; i < numPoints; i++) {
         const angle = (i / numPoints) * 2 * Math.PI;
         const x = r * Math.cos(angle);
         const y = r * Math.sin(angle);
-        centerX = W/2;
-        centerY = H/2;
         color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
         addDisc(centerX + x, centerY + y, {r:discRadius, color:entityColor, persistence:discPersistence});
     }
 
-    runAfterFrames(1000, endPreset);
+    // runAfterFrames(400, endPreset);
+    runningPreset = false;    
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
 }
 
 
