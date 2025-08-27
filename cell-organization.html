@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cell Organization</title>
+  <style>
+    html,
+    body{height:100%;
+         background:#0f1724;
+         margin:0;
+         font-family:Inter,system-ui,Arial}
+    #app{display:flex;
+         height:100vh}
+    #canvasWrap{flex:1;
+                background:#0b1220;
+                display:flex;
+                align-items:stretch}
+    canvas{width:100%;
+           height:100%;
+           display:block}
+    #ui{width:320px;
+        background:#0f1724;
+        color:#e6eef8;
+        padding:14px;
+        box-sizing:border-box}
+    h1{font-size:16px;
+       margin:4px 0 10px}
+    .row{display:flex;
+         gap:8px;
+         margin-bottom:8px}
+    button.active,
+    button:active {
+    background: #1e2a46;           /* slightly lighter or darker */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    transform: translateY(1px);    /* gives a “pressed-in” feel */
+    border-color: rgba(255,255,255,0.12);
+    }
+    button.pressed {
+    background: #1e2a46;           /* slightly lighter or darker */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    transform: translateY(1px);    /* gives a “pressed-in” feel */
+    border-color: rgba(255,255,255,0.12);
+    }
+    button, 
+    input[type=range]{padding:8px;
+                      border-radius:8px;
+                      border:1px solid rgba(255,255,255,0.06);
+                      background:#172034;color:inherit}
+    .small{font-size:13px}
+    label{font-size:12px;
+          opacity:.9}
+    .stat{font-family:monospace;
+          font-size:13px;margin-top:8px}
+    .hint{font-size:12px;
+          opacity:.8;
+          margin-top:6px}
+
+    /* Keyboard-style button */
+    .keyBtn {
+    border-radius: 4px;                       /* sharper edges, key-like */
+    background: #1a2335;                      /* a bit flatter background */
+    border: 1px solid rgba(255,255,255,0.12); /* slightly brighter border */
+    font-family: monospace;                   /* optional, more "key" feel */
+    font-size: 14px;
+    padding: 6px 6px;
+    box-shadow: 0 4px 0 #0b1220;              /* "stem" under the key */
+    transition: transform 0.05s, box-shadow 0.05s;
+    }
+
+    /* Press effect */
+    .keyBtn:active,
+    .keyBtn.pressed {
+    transform: translateY(2px);               /* pushes down */
+    box-shadow: 1 1 1 #0b1220;                /* stem disappears */
+    background: #202c46;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="canvasWrap">
+      <canvas id="world"></canvas>
+    </div>
+    <div id="ui">
+    <h1 style="display: flex; justify-content: space-between; align-items: center;">
+        🦠 Cell Organization 🌀
+        <button id="copyBtn" style="background-color: #8561D7;">Copy to 📋</button>
+    </h1>
+      <div class="row">
+        <button id="fling">Fling 🤾</button>
+        <button id="addDisc">Add Disc</button>
+        <button id="clear">Clear Screen</button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="attractionStrength" type="range" min="0" max="10" step="0.1" value="1">
+        <label><em>C<sub>a</sub></em> :  <span id="attractionStrengthVal">1</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="attrLen" type="range" min="0.1" max="10" step="0.1" value="1">
+        <label><em>L<sub>a</sub></em> :  <span id="attrLenVal">1</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="repulseRatio" type="range" min="0" max="5" step="0.1" value="1">
+        <label><em>C<sub>r</sub>/C<sub>a</sub></em> :  <span id="repulseRatioVal">1</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="repLenRatio" type="range" min="0.1" max="5" step="0.1" value="1">
+        <label><em>L<sub>r</sub>/L<sub>a</sub></em> :  <span id="repLenRatioVal">1</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="dragStrength" type="range" min="0" max="20" step="0.01" value="0">
+        <label>drag :  <span id="dragStrengthVal">0</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="vtarget" type="range" min="0" max="2" step="0.01" value="0">
+        <label><em>v<sub>target</sub></em> :  <span id="vtargetVal">0</span></label>
+      </div>
+
+      <div class="row">
+        <button id="fade">Trail 🐌</button>  
+        <button id="velvector">No Velocity</button>
+        <input type="color" id="velColorPicker" value="#ffd166">
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="alphaDownscale" type="range" min="1" max="100" step="1" value="100">
+        <label>Trail Length: <span id="alphaDownscaleVal">Infinity</span></label>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="discPersistence" type="range" min="1" max="100" step="1" value="100">
+        <label>Disc Persistence: <span id="discPersistenceVal">Infinity</span></label>
+      </div>
+
+      <div class="row">
+        <button id="pause">Pause ⏸️</button>
+        <button id="step">Step 👣</button>
+        <button id="fill">Show Forces ⚛️</button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input id="dt" type="range" min="0" max="1" step="0.01" value="0.02">
+        <label>Δt: <span id="dtVal">0.02</span>s</label>
+      </div>
+
+      <div class="row">
+        <button id="controls">About 🎮</button>
+        <button id="Preset #1" class="keyBtn" title="+50 Discs">1</button>
+        <button id="Preset #2" class="keyBtn" title="Clumps">2</button>
+        <button id="Preset #3" class="keyBtn" title="Ring Clumping">3</button>
+        <button id="Preset #4" class="keyBtn" title="Rings">4</button>
+        <button id="Preset #5" class="keyBtn" title="Swarms">5</button>
+      </div>
+      <div class="stat" id="stats">discs: 0 | FPS: 0</div>
+    </div>
+  </div>
+
+<script>
+/****************************************************************
+ * Mini Rigid Body Engine
+ * - Shapes: Circle and Box (AABB with orientation)
+ * - Integrator: Semi-implicit Euler
+ * - Collision: Circle-Circle, AABB-AABB (oriented rect), Circle-AABB
+ * - Resolution: Impulse-based with positional correction
+ * - Simple constraints: world bounds
+ ****************************************************************/
+
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d', { willReadFrequently: true});
+const rect = canvas.getBoundingClientRect();
+const dpr = window.devicePixelRatio || 1;
+// let innerWidth = rect.width * dpr;
+// let innerHeight = rect.height * dpr;
+// let W = canvas.width;
+// let H = canvas.height;
+// canvas.width = W;
+// canvas.height = H;
+
+let W = canvas.width = (innerWidth - 320)*dpr; // leave room for UI
+let H = canvas.height = innerHeight*dpr;
+let unitToMinWHRatio = 20;
+
+let minWH = Math.min(W, H);
+let Wunit = (W/minWH)*unitToMinWHRatio;
+let Hunit = (H/minWH)*unitToMinWHRatio;
+let pixelToUnitRatio = minWH/unitToMinWHRatio;
+let unitToPixelRatio = 1/pixelToUnitRatio
+
+const picker = document.getElementById("colorPicker");
+const velPicker = document.getElementById("velColorPicker");
+let runningPreset = false;
+let entityColor = "#4488ff";
+let velColor = "#ffd166"
+
+// Engine 
+let mouseDown = false;
+let fling = false;
+let repulseRatio = 1.0;
+let attrLen = 0;
+let attractionStrength = 1;
+let repLenRatio = 0;
+let vtarget = 0;
+let v2target = 0;
+let dragStrength = 0;
+let discMass = 1;
+let globalFadeRate = 100;
+let fadeCounter = 1;
+let globalFadeOut = 1;
+let discPersistence = 100;
+let trail = false;
+let dt = 0.02;
+let last = performance.now();
+let paused = false;
+let hideVelVector = false;
+let fill = false;
+let spawnInterval = null;
+
+// Scene
+const discs = [];
+
+function rand(min,max){return Math.random()*(max-min)+min}
+
+// Vector helpers
+const v = {
+  add:(a,b)=>({x:a.x+b.x,y:a.y+b.y}),
+  sub:(a,b)=>({x:a.x-b.x,y:a.y-b.y}),
+  mul:(a,s)=>({x:a.x*s,y:a.y*s}),
+  dot:(a,b)=>a.x*b.x+a.y*b.y,
+  len:(a)=>Math.hypot(a.x,a.y),
+  normalize:(a)=>{const L=Math.hypot(a.x,a.y)||1;return {x:a.x/L,y:a.y/L}},
+}
+
+class Disc {
+    constructor(x, y, opts={}){
+        this.posCurr = {x,y}; // used to sweep lines
+        this.velCurr = opts.velCurr || {x:0.0, y:0.0};
+        this.accCurr = opts.accCurr || {x:0.0, y:0.0};
+
+        this.posNext = {x: this.posCurr.x, y:this.posCurr.y};
+        this.velNext = {x: this.velCurr.x, y:this.velCurr.y};
+        this.accNext = {x: this.accCurr.x, y:this.accCurr.y};
+
+        this.color = opts.color ?? "#4488ff";
+        this.persistence = opts.persistence ?? 100;
+        this.startPersistence = this.persistence;
+
+        this.mass = opts.mass || 1;
+        this.invMass = 1/this.mass;
+
+        this.dragging = opts.dragging ?? false;
+    }
+}
+
+// Scene helpers
+function addDisc(x, y, opts={}){ 
+    const c = new Disc(x, y, opts); 
+    discs.push(c); 
+    return c;
+}
+
+// World bounds collision
+function wrapToroid(disc) {
+    if (disc.posNext.x < 0) {
+        disc.posCurr.x += Wunit;
+        disc.posNext.x += Wunit;
+    }
+    if (disc.posNext.x >= Wunit){
+        disc.posCurr.x -= Wunit;
+        disc.posNext.x -= Wunit;
+    }
+
+    if (disc.posNext.y < 0){
+        disc.posCurr.y += Hunit;
+        disc.posNext.y += Hunit;
+    }
+    if (disc.posNext.y >= Hunit){
+        disc.posCurr.y -= Hunit;
+        disc.posNext.y -= Hunit;
+    }
+}
+
+// Main step
+function step(){  
+    // update persistence value  
+    for (let i = discs.length - 1; i >= 0; i--) {
+        const c = discs[i];
+        if(!c.dragging){
+            if (c.persistence < 100){
+                c.persistence -= globalFadeOut;
+            }
+            if (c.persistence <= 0) {
+                discs.splice(i, 1);
+            }
+        }
+    }
+
+    // world bounds
+    for(const c of discs){
+        wrapToroid(c);
+    }
+
+    // integrate
+    ///////////////////////////////////////
+    // TODO: Update integration method to more appropriate approach
+    // update position (velocity verlet)
+    // pos_old = pos
+    // pos = pos + vel*dt + 0.5*acc_new*dt^2
+    // x(t+dt) = x(t) + v(t)dt + 0.5*a(t)*dt^2
+    for (let i = discs.length - 1; i >= 0; i--) {
+        const c = discs[i];
+        if(!c.dragging){
+            // posCurr becomes posNext
+            c.posCurr.x = c.posNext.x;
+            c.posCurr.y = c.posNext.y;
+
+            // velCurr becomes velNext
+            c.velCurr.x = c.velNext.x;
+            c.velCurr.y = c.velNext.y;
+
+            // accCurr becomes accNext
+            c.accCurr.x = c.accNext.x;
+            c.accCurr.y = c.accNext.y;
+
+            // compute new next position (posNext)
+            c.posNext.x = c.posCurr.x + c.velCurr.x * dt + 0.5 * c.accCurr.x * dt * dt;
+            c.posNext.y = c.posCurr.y + c.velCurr.y * dt + 0.5 * c.accCurr.y * dt * dt;
+
+            // reset accNext, velNext
+            // (must be updated to reflect new posNext)
+            c.velNext = {x: 0, y:0};
+            c.accNext = {x: 0, y:0};
+        }
+    }
+
+    // Morse acceleration
+    const repLen = repLenRatio * attrLen;
+    const repLenInv = 1/repLen;
+    const attrLenInv = 1/attrLen;
+    const C1 = attractionStrength*attrLenInv;
+    const C2 = repulseRatio*attractionStrength*repLenInv
+
+    wUnitInv = 1/Wunit;
+    hUnitInv = 1/Hunit;
+    for(let i=0; i<discs.length; i++){
+        for(let j=i+1; j<discs.length; j++){
+            const a=discs[i];
+            const b=discs[j];
+
+            let dx = a.posNext.x - b.posNext.x;
+            dx -= Math.round(dx * wUnitInv) * Wunit;
+
+            let dy = a.posNext.y - b.posNext.y;
+            dy -= Math.round(dy * hUnitInv) * Hunit;
+
+            const r = Math.sqrt(dx*dx + dy*dy);
+            if (r > 0){
+                const invr = 1/r;
+
+                const F = C1*Math.exp(-r*attrLenInv) - C2*Math.exp(-r*repLenInv)
+
+                const Fx = F*(dx*invr);
+                const Fy = F*(dy*invr);
+
+                if(!a.dragging){
+                    a.accNext.x -= Fx*a.invMass;
+                    a.accNext.y -= Fy*a.invMass;
+                }
+
+                if(!b.dragging){
+                    b.accNext.x += Fx*b.invMass;
+                    b.accNext.y += Fy*b.invMass;
+                }
+            }
+        }
+    }
+
+    // drag
+    for(let i=0; i<discs.length; i++){
+        const a=discs[i];
+        if(!a.dragging){
+            vx = a.velCurr.x;
+            vy = a.velCurr.y;
+            v2 = vx*vx + vy*vy;
+            F = dragStrength*(v2target - v2);
+            a.accNext.x += F*vx;
+            a.accNext.y += F*vy;
+        }
+    }
+
+
+    // update velocity (velocity verlet)
+    // vel = vel + 0.5*(acc + acc_new)*dt
+    // x(t+dt) = x(t) + v(t)dt + 0.5*a(t)*dt^2
+    for (let i = discs.length - 1; i >= 0; i--) {
+        const c = discs[i];
+        if(!c.dragging){
+            c.velNext.x = c.velCurr.x + 0.5*(c.accCurr.x + c.accNext.x)*dt;
+            c.velNext.y = c.velCurr.y + 0.5*(c.accCurr.y + c.accNext.y)*dt;
+        }
+    }
+}
+
+// tracks when we are starting to fade-out trails
+let fade_trigger = false;
+
+// Rendering
+function draw(){
+    if(trail){
+        // if we are letting circle trails fade out...
+
+        // draw canvas as original color if this is the first frame 
+        // that we have fade outs
+        if(!fade_trigger){
+            fade_trigger = true;
+            ctx.clearRect(0, 0, W, H);
+        }
+        if(globalFadeRate != 100){
+            // handle sub-point fading
+            trueFadeOut = 0.1 * (100 - globalFadeRate);
+            if (trueFadeOut > 1){
+                // if trueFadeOut above 1, reduce alpha every frame
+                fadeFreq = 1;
+            } else {
+                // if trueFadeOut below 1, don't reduce alpha every frame
+                fadeFreq = 1/trueFadeOut;
+                trueFadeOut = 1;
+            }
+
+            if (fadeCounter % fadeFreq == 0){
+                imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                data = imageData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i + 3] = Math.max(data[i + 3] - trueFadeOut, 0); // scale alpha
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.putImageData(imageData, 0, 0);
+
+                // update fadeCounter
+                fadeCounter = 1
+            } else {
+                fadeCounter += 1;
+            }
+        }
+    } else {
+        // render canvas with no trails by clearing it completely
+        fade_trigger = false;
+        ctx.clearRect(0, 0, W, H);
+
+        ctx.save();
+
+        // background grid
+        ctx.globalAlpha = 0.1;
+        ctx.strokeStyle = '#fff';
+        for(let x=0;x<W;x+=40){
+            ctx.beginPath();
+            ctx.moveTo(x,0);
+            ctx.lineTo(x,H);
+            ctx.stroke();
+        }
+
+        for(let y=0;y<H;y+=40){
+            ctx.beginPath();
+            ctx.moveTo(0,y);
+            ctx.lineTo(W,y);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    for(const c of discs){
+        for(sgn1 of [-1, 0, 1]){
+            for(sgn2 of [-1, 0, 1]){
+                fractionFaded = c.persistence/c.startPersistence;
+                fillAlpha = Math.round(50*fractionFaded).toString().padStart(2, "0");
+                strokeAlpha = Math.round(99*fractionFaded).toString().padStart(2, "0");
+                ctx.fillStyle = c.color + fillAlpha;
+                ctx.strokeStyle = c.color + strokeAlpha;
+
+                ghostPosX = c.posCurr.x + Wunit*sgn1;
+                ghostPosY = c.posCurr.y + Hunit*sgn2;
+
+                ghostPixelPosX = pixelToUnitRatio * ghostPosX;
+                ghostPixelPosY = pixelToUnitRatio * ghostPosY;
+
+                if(fill){
+                    repLen = attrLen * repLenRatio;
+                    if (repLen > attrLen){
+                        ctx.fillStyle = `rgba(255, 100, 100, 0.1)`
+                        ctx.strokeStyle = `rgba(255, 100, 100, 0.5)`
+
+                        ctx.beginPath();
+                        ctx.arc(ghostPixelPosX, ghostPixelPosY, pixelToUnitRatio*repLen, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.stroke();
+
+                        ctx.fillStyle = `rgba(100, 255, 100, 0.1)`
+                        ctx.strokeStyle = `rgba(100, 255, 100, 0.5)`
+                        ctx.beginPath();
+                        ctx.arc(ghostPixelPosX, ghostPixelPosY, pixelToUnitRatio*attrLen, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.stroke()
+                    } else {
+                        ctx.fillStyle = `rgba(100, 255, 100, 0.1)`
+                        ctx.strokeStyle = `rgba(100, 255, 100, 0.5)`
+                        ctx.beginPath();
+                        ctx.arc(ghostPixelPosX, ghostPixelPosY, pixelToUnitRatio*attrLen, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.stroke();
+
+                        ctx.fillStyle = `rgba(255, 100, 100, 0.1)`
+                        ctx.strokeStyle = `rgba(255, 100, 100, 0.5)`
+                        ctx.beginPath();
+                        ctx.arc(ghostPixelPosX, ghostPixelPosY, pixelToUnitRatio*repLen, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                }
+
+
+                ctx.fillStyle = `rgba(255, 255, 255, 1)`
+                ctx.strokeStyle = `rgba(0, 0, 0, 1)`
+                ctx.beginPath();
+                ctx.arc(ghostPixelPosX, ghostPixelPosY, 2, 0, Math.PI*2);
+                ctx.fill();
+                ctx.stroke();
+
+                // velocity arrow
+                pixelVelX = pixelToUnitRatio * c.velCurr.x;
+                pixelVelY = pixelToUnitRatio * c.velCurr.y;
+                if(!hideVelVector){
+                    ctx.beginPath();
+                    ctx.moveTo(ghostPixelPosX, ghostPixelPosY);
+                    ctx.lineTo(ghostPixelPosX + pixelVelX, ghostPixelPosY + pixelVelY);
+                    ctx.strokeStyle=velColor;
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+}
+
+// Loop
+function loop(now){
+  requestAnimationFrame(loop);
+  const elapsed = (now - last) / 1000;
+  last = now;
+  if(!paused){
+    step();
+  }
+  draw();
+  // stats
+  const fps = Math.round(1/Math.max(elapsed,1e-6));
+  document.getElementById('stats').textContent = `discs: ${discs.length} | FPS: ${fps}`;
+}
+
+requestAnimationFrame(loop);
+
+// UI hooks
+// Resize handling
+function resize(){
+    W = canvas.width = (innerWidth - 320)*dpr; 
+    H = canvas.height = innerHeight*dpr; 
+    minWH = Math.min(W, H);
+    Wunit = (W/minWH)*unitToMinWHRatio;
+    Hunit = (H/minWH)*unitToMinWHRatio;
+    pixelToUnitRatio = 5*minWH/unitToMinWHRatio;
+    unitToPixelRatio = 1/pixelToUnitRatio
+}
+addEventListener('resize', resize);
+
+velPicker.addEventListener("input", (event) => {
+    const color = event.target.value; // hex string like "#1e90ff"
+    velColor = color;
+});
+document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾';};
+document.getElementById('addDisc').onclick = ()=> addDisc(rand(100,W-100), rand(100,H-200), {mass: discMass, color: entityColor, persistence:discPersistence});
+document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Velocity 🚀' : 'No Velocity';};
+document.getElementById('fill').onclick = function(){ fill = !fill; this.textContent = fill ? 'Hide Forces ∘' : 'Show Forces ⚛️';};
+document.getElementById('clear').onclick = ()=>{ discs.length = 0;};
+document.getElementById('copyBtn').addEventListener('click', async () => {
+    try {
+        const blob = await new Promise(res => canvas.toBlob(res));
+        await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+        ]);
+        alert('Canvas image copied to clipboard!');
+    } catch (err) {
+        console.error('Failed to copy image:', err);
+    }
+});
+document.getElementById('controls').addEventListener('click', async () => {
+    alert("Cell dynamics and preset parameters are taken from \n\n D' Orsogna, M. R., Chuang, Y. L., Bertozzi, A. L., & Chayes, L. S. (2006). Self-propelled particles with soft-core interactions: patterns, stability, and collapse. Physical review letters, 96(10), 104302. https://doi.org/10.1103/PhysRevLett.96.104302.\n\n1. In 'Fling' mode, click+drag elsewhere to create a moving disc\n2. In 'Pour' mode, hold mouse down to continuously add discs\n3. Shift+click to spawn disc without velocity\n4. Click+drag disc to move it\n5. Backspace or 'Clear Screen' to delete all entities\n6. Tap keys 1-5 or press numbered buttons to activate presets");
+});
+
+preset1 = document.getElementById('Preset #1')
+preset2 = document.getElementById('Preset #2')
+preset3 = document.getElementById('Preset #3')
+preset4 = document.getElementById('Preset #4')
+preset5 = document.getElementById('Preset #5')
+preset1.onclick = ()=>{ if(!runningPreset) randomPoints() };
+preset2.onclick = ()=>{ if(!runningPreset) clumps() };
+preset3.onclick = ()=>{ if(!runningPreset) ringClumps() };
+preset4.onclick = ()=>{ if(!runningPreset) rings() };
+preset5.onclick = ()=>{ if(!runningPreset) vortex() };
+
+document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
+document.getElementById('step').onclick = ()=>{ if(paused) step(); };
+
+const repulseRatioInput = document.getElementById('repulseRatio'); 
+const repulseRatioVal = document.getElementById('repulseRatioVal');
+repulseRatioInput.oninput = ()=>{ repulseRatio = Number(repulseRatioInput.value);
+                                  repulseRatioVal.textContent = repulseRatio };
+
+const attrLenInput = document.getElementById('attrLen'); 
+const attrLenVal = document.getElementById('attrLenVal');
+attrLenInput.oninput = ()=>{ attrLen = Number(attrLenInput.value);
+                             attrLenVal.textContent = attrLen };
+
+const attractionStrengthInput = document.getElementById('attractionStrength'); 
+const attractionStrengthVal = document.getElementById('attractionStrengthVal');
+attractionStrengthInput.oninput = ()=>{ attractionStrength = Number(attractionStrengthInput.value);
+                                        attractionStrengthVal.textContent = attractionStrength };
+
+const repLenRatioInput = document.getElementById('repLenRatio'); 
+const repLenRatioVal = document.getElementById('repLenRatioVal');
+repLenRatioInput.oninput = ()=>{ repLenRatio = Number(repLenRatioInput.value);
+                                 repLenRatioVal.textContent = repLenRatio };
+
+const vtargetInput = document.getElementById('vtarget'); 
+const vtargetVal = document.getElementById('vtargetVal');
+vtargetInput.oninput = ()=>{ vtarget = Number(vtargetInput.value);
+                             v2target = vtarget*vtarget;
+                             vtargetVal.textContent = vtargetInput.value };
+
+const dragStrengthInput = document.getElementById('dragStrength'); 
+const dragStrengthVal = document.getElementById('dragStrengthVal');
+dragStrengthInput.oninput = ()=>{ dragStrength = Number(dragStrengthInput.value);
+                                  dragStrengthVal.textContent = dragStrength };
+
+const dtInput = document.getElementById('dt'); const dtVal = document.getElementById('dtVal');
+dtInput.oninput = ()=>{ dt = Number(dtInput.value); dtVal.textContent = dt };
+
+const alphaDownscaleInput = document.getElementById('alphaDownscale'); const alphaDownscaleVal = document.getElementById('alphaDownscaleVal');
+alphaDownscaleInput.oninput = ()=>{ globalFadeRate = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = globalFadeRate == 100 ? 'Infinity' : globalFadeRate};
+document.getElementById('fade').onclick = function(){ trail = !trail; this.textContent = trail ? 'No trail 🚫' : 'Trail 🐌'; };
+
+const discPersistenceInput = document.getElementById('discPersistence'); const discPersistenceVal = document.getElementById('discPersistenceVal');
+discPersistenceInput.oninput = ()=>{ discPersistence = Number(discPersistenceInput.value); discPersistenceVal.textContent = discPersistence == 100 ? 'Infinity' : discPersistence};
+
+// Mouse interactions: spawn, drag
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+let mouse = {x:0,y:0,down:false,start:null,btn:0};
+
+// backspace logic
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Backspace') {
+    discs.length = 0;
+  }
+  else if (e.key == '1'){
+    if(!runningPreset) {randomPoints(); preset1.classList.add("active");}
+  } else if (e.key == '2'){
+    if(!runningPreset) {clumps(); preset2.classList.add("active");}
+  } else if (e.key == '3'){
+    if(!runningPreset) {ringClumps(); preset3.classList.add("active");}
+  } else if (e.key == '4') {
+    if(!runningPreset) {rings(); preset4.classList.add("active");}
+  } else if (e.key == '5') {
+    if(!runningPreset) {vortex(); preset5.classList.add("active");}
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  if (e.key == '1'){
+    preset1.classList.remove("active");
+  } else if (e.key == '2'){
+    preset2.classList.remove("active");
+  } else if (e.key == '3'){
+    preset3.classList.remove("active");
+  } else if (e.key == '4') {
+    preset4.classList.remove("active");
+  } else if (e.key == '5') {
+    preset5.classList.remove("active");
+  }
+});
+    
+canvas.addEventListener('pointermove', e=>{
+    const rect = canvas.getBoundingClientRect(); 
+    mouse.x = (e.clientX - rect.left)*dpr; 
+    mouse.y = (e.clientY - rect.top)*dpr;    
+})
+canvas.addEventListener('pointerup', e=>{
+    mouse.down=false;
+});
+
+// disc addition logic
+canvas.addEventListener('pointerdown', e=>{
+    trueX = unitToPixelRatio * mouse.x;
+    trueY = unitToPixelRatio * mouse.y;
+    mouse.start = {x: trueX, y:trueY};
+
+    // left mouse button
+    if(e.button == 0){
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = (e.clientX - rect.left)*dpr; 
+        mouse.y = (e.clientY - rect.top)*dpr; 
+
+        trueX = unitToPixelRatio * mouse.x;
+        trueY = unitToPixelRatio * mouse.y;
+
+        mouse.down=true; 
+        mouse.btn = e.button; 
+        mouse.start = {x: trueX, y:trueY};
+        // pick body
+        const pick = pickDisc(trueX, trueY);
+        if(pick){
+            pick.dragging = true; 
+            pick.dragOffset = {x: trueX - pick.posCurr.x, y: trueY - pick.posCurr.y}; 
+        }
+        else if(e.shiftKey){ 
+            addDisc(trueX, trueY, {mass: discMass, persistence:discPersistence});
+        } else if(!fling){
+            mouseDown = true;
+            addDisc(trueX, trueY, {mass: discMass, persistence:discPersistence});
+            spawnInterval = setInterval(() => {
+                jitter = unitToPixelRatio;
+                if (mouseDown) addDisc(trueX + rand(-jitter, jitter), trueY + rand(-jitter, jitter), {mass: discMass, persistence:discPersistence});
+            }, 20); // every 100 ms
+        }
+    }
+})
+canvas.addEventListener('pointermove', e=>{
+    const rect = canvas.getBoundingClientRect(); 
+    mouse.x = (e.clientX - rect.left)*dpr; 
+    mouse.y = (e.clientY - rect.top)*dpr;
+
+    trueX = unitToPixelRatio * mouse.x;
+    trueY = unitToPixelRatio * mouse.y;
+
+    // drag if picked
+    const heldDisc = discs.find(c=>c.dragging);
+    if(heldDisc && heldDisc.dragOffset){ 
+        heldDisc.posCurr.x = trueX - heldDisc.dragOffset.x; 
+        heldDisc.posCurr.y = trueY - heldDisc.dragOffset.y;
+        heldDisc.posNext.x = heldDisc.posCurr.x;
+        heldDisc.posNext.y = heldDisc.posCurr.y;
+    }
+})
+canvas.addEventListener('pointerup', e=>{
+    mouse.down=false;
+    // if dragged start->release with velocity create (spawn) impulse
+    const heldDiscIndex = discs.findIndex(b=>b.dragging);
+    if(heldDiscIndex>=0){ 
+        discs[heldDiscIndex].dragging = false;
+    }
+    if(mouse.start && !e.shiftKey && heldDiscIndex<0 && fling){
+        trueX = unitToPixelRatio * mouse.x;
+        trueY = unitToPixelRatio * mouse.y;
+        const dx = trueX - mouse.start.x;
+        const dy = trueY - mouse.start.y;
+        if(Math.hypot(dx, dy) > 6/unitToPixelRatio){ // fling create
+            console.log("fling");
+            const c = addDisc(mouse.start.x, mouse.start.y, {mass: discMass, persistence:discPersistence});
+            console.log(dx, dy);
+            c.velCurr.x = dx; 
+            c.velCurr.y = dy;
+            c.velNext.x = dx; 
+            c.velNext.y = dy;
+        }
+    } else if(!fling){
+        mouseDown = false;
+        clearInterval(spawnInterval);
+    }
+    mouse.start = null;
+});
+
+canvas.addEventListener("mouseleave", () => {
+  mouseDown = false;
+  clearInterval(spawnInterval);
+});
+
+function pickDisc(x,y){
+  for(let i=discs.length-1; i>=0; i--){ 
+    const c=discs[i];
+    const dx = c.posCurr.x - x;
+    const dy = c.posCurr.y - y;
+    if(dx*dx + dy*dy <= attrLen*attrLen*repLenRatio*repLenRatio){
+        return c;
+    }
+  }
+}
+
+// default starting arrangement
+////////////////////////////////////////////////////////////////////////////////////////////////
+function randomPoints(){
+    let numPoints = 50;
+    for (let i = 0; i < numPoints; i++) {
+        x = rand(0, Wunit);
+        y = rand(0, Hunit);
+        addDisc(x, y, {mass: discMass, velCurr: {x:0, y:0}, persistence:discPersistence});
+    }
+}
+
+
+function runAfterFrames(frames, callback) {
+  function step() {
+    if (--frames <= 0) {
+      callback();
+    } else {
+      requestAnimationFrame(step);
+    }
+  }
+  requestAnimationFrame(step);
+}
+// standard preset
+////////////////////////////////////////////////////////////////////////////////////////////////
+function startPreset(){
+    runningPreset = true;
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
+
+    discs.length = 0;
+    ctx.clearRect(0, 0, W, H);
+
+    dt = 0.01;
+    dtInput.value = dt;
+    dtVal.textContent = dt;
+
+    repulseRatio = 1.0;
+    repulseRatioInput.value = repulseRatio;
+    repulseRatioVal.textContent = repulseRatio;
+
+    attrLen = 1;
+    attrLenInput.value = repLenRatio;
+    attrLenVal.textContent = attrLen;
+
+    attractionStrength = 1;
+    attractionStrengthInput.value = attractionStrength;
+    attractionStrengthVal.textContent = attractionStrength;
+
+    repLenRatio = 1;
+    repLenRatioInput.value = repLenRatio;
+    repLenRatioVal.textContent = repLenRatio;
+
+    hideVelVector = true;
+    document.getElementById('velvector').textContent = 'Velocity 🚀';
+
+    trail = false;
+    document.getElementById('fade').textContent = 'Trail 🐌';
+
+    globalFadeRate = 100;
+    alphaDownscaleInput.value = globalFadeRate;
+    alphaDownscaleVal.textContent = globalFadeRate;
+
+    discPersistence = 100;
+    discPersistenceInput.value = discPersistence;
+    discPersistenceVal.textContent = discPersistence;
+
+    paused = false;
+    document.getElementById('pause').textContent = 'Pause ⏸️';
+}
+
+function endPreset(){
+    runningPreset = false;
+    discs.length = 0;
+    
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
+}
+
+// clumps setting
+////////////////////////////////////////////////////////////////////////////////////////////////
+function clumps(){
+    attrLen = 1;
+    attrLenInput.value = repLenRatio;
+    attrLenVal.textContent = attrLen;
+
+    attractionStrength = 1;
+    attractionStrengthInput.value = attractionStrength;
+    attractionStrengthVal.textContent = attractionStrength;
+
+    repulseRatio = 0.6;
+    repulseRatioInput.value = repulseRatio;
+    repulseRatioVal.textContent = repulseRatio;
+
+    repLenRatio = 0.5;
+    repLenRatioInput.value = repLenRatio;
+    repLenRatioVal.textContent = repLenRatio;
+
+    dragStrength = 0.5;
+    dragStrengthInput.value = dragStrength;
+    dragStrengthVal.textContent = dragStrength;
+
+    vtarget = Math.sqrt(1/dragStrength);
+    v2target = vtarget*vtarget;
+    vtargetInput.value = vtarget;
+    vtargetVal.textContent = Math.round(100*vtarget)/100;
+}
+
+
+function clumps2(){
+    attrLen = 0.5;
+    attrLenInput.value = repLenRatio;
+    attrLenVal.textContent = attrLen;
+
+    attractionStrength = 10;
+    attractionStrengthInput.value = attractionStrength;
+    attractionStrengthVal.textContent = attractionStrength;
+
+    repulseRatio = 1.3;
+    repulseRatioInput.value = repulseRatio;
+    repulseRatioVal.textContent = repulseRatio;
+
+    repLenRatio = 0.9;
+    repLenRatioInput.value = repLenRatio;
+    repLenRatioVal.textContent = repLenRatio;
+
+    dragStrength = 10;
+    dragStrengthInput.value = dragStrength;
+    dragStrengthVal.textContent = dragStrength;
+
+    vtarget = 0.2;
+    v2target = vtarget*vtarget;
+    vtargetInput.value = vtarget;
+    vtargetVal.textContent = Math.round(100*vtarget)/100;
+}
+
+// ring clumping setting
+////////////////////////////////////////////////////////////////////////////////////////////////
+function ringClumps(){
+    attrLen = 1;
+    attrLenInput.value = repLenRatio;
+    attrLenVal.textContent = attrLen;
+
+    attractionStrength = 1;
+    attractionStrengthInput.value = attractionStrength;
+    attractionStrengthVal.textContent = attractionStrength;
+
+    repulseRatio = 0.6;
+    repulseRatioInput.value = repulseRatio;
+    repulseRatioVal.textContent = repulseRatio;
+
+    repLenRatio = 1.2;
+    repLenRatioInput.value = repLenRatio;
+    repLenRatioVal.textContent = repLenRatio;
+
+    dragStrength = 0.5;
+    dragStrengthInput.value = dragStrength;
+    dragStrengthVal.textContent = dragStrength;
+
+    vtarget = Math.sqrt(1/dragStrength);
+    v2target = vtarget*vtarget;
+    vtargetInput.value = vtarget;
+    vtargetVal.textContent = Math.round(100*vtarget)/100;
+}
+
+// rings setting
+////////////////////////////////////////////////////////////////////////////////////////////////
+function rings(){
+    attrLen = 1;
+    attrLenInput.value = repLenRatio;
+    attrLenVal.textContent = attrLen;
+
+    attractionStrength = 1;
+    attractionStrengthInput.value = attractionStrength;
+    attractionStrengthVal.textContent = attractionStrength;
+
+    repulseRatio = 0.5;
+    repulseRatioInput.value = repulseRatio;
+    repulseRatioVal.textContent = repulseRatio;
+
+    repLenRatio = 0.5;
+    repLenRatioInput.value = repLenRatio;
+    repLenRatioVal.textContent = repLenRatio;
+
+    dragStrength = 0.5;
+    dragStrengthInput.value = dragStrength;
+    dragStrengthVal.textContent = dragStrength;
+
+    vtarget = Math.sqrt(1/dragStrength);
+    v2target = vtarget*vtarget;
+    vtargetInput.value = vtarget;
+    vtargetVal.textContent = Math.round(100*vtarget)/100;
+
+    // attrLen = 10;
+    // attrLenInput.value = repLenRatio;
+    // attrLenVal.textContent = attrLen;
+
+    // attractionStrength = 3.5;
+    // attractionStrengthInput.value = attractionStrength;
+    // attractionStrengthVal.textContent = attractionStrength;
+
+    // repulseRatio = 0.9;
+    // repulseRatioInput.value = repulseRatio;
+    // repulseRatioVal.textContent = repulseRatio;
+
+    // repLenRatio = 0.9;
+    // repLenRatioInput.value = repLenRatio;
+    // repLenRatioVal.textContent = repLenRatio;
+
+    // dragStrength = 10;
+    // dragStrengthInput.value = dragStrength;
+    // dragStrengthVal.textContent = dragStrength;
+
+    // vtarget = 2;
+    // v2target = vtarget*vtarget;
+    // vtargetInput.value = vtarget;
+    // vtargetVal.textContent = Math.round(100*vtarget)/100;
+}
+
+
+function vortex(){
+    attrLen = 2;
+    attrLenInput.value = repLenRatio;
+    attrLenVal.textContent = attrLen;
+
+    attractionStrength = 0.5;
+    attractionStrengthInput.value = attractionStrength;
+    attractionStrengthVal.textContent = attractionStrength;
+
+    repulseRatio = 2;
+    repulseRatioInput.value = repulseRatio;
+    repulseRatioVal.textContent = repulseRatio;
+
+    repLenRatio = 0.25;
+    repLenRatioInput.value = repLenRatio;
+    repLenRatioVal.textContent = repLenRatio;
+
+    dragStrength = 0.5;
+    dragStrengthInput.value = dragStrength;
+    dragStrengthVal.textContent = dragStrength;
+
+    vtarget = Math.sqrt(1.6/dragStrength);
+    v2target = vtarget*vtarget;
+    vtargetInput.value = vtarget;
+    vtargetVal.textContent = Math.round(100*vtarget)/100;
+
+    // attrLen = 10;
+    // attrLenInput.value = repLenRatio;
+    // attrLenVal.textContent = attrLen;
+
+    // attractionStrength = 0.5;
+    // attractionStrengthInput.value = attractionStrength;
+    // attractionStrengthVal.textContent = attractionStrength;
+
+    // repulseRatio = 2;
+    // repulseRatioInput.value = repulseRatio;
+    // repulseRatioVal.textContent = repulseRatio;
+
+    // repLenRatio = 0.3;
+    // repLenRatioInput.value = repLenRatio;
+    // repLenRatioVal.textContent = repLenRatio;
+
+    // dragStrength = 20;
+    // dragStrengthInput.value = dragStrength;
+    // dragStrengthVal.textContent = dragStrength;
+
+    // vtarget = 1.5;
+    // v2target = vtarget*vtarget;
+    // vtargetInput.value = vtarget;
+    // vtargetVal.textContent = Math.round(100*vtarget)/100;
+}
+
+// cascade
+////////////////////////////////////////////////////////////////////////////////////////////////
+function cascade(){
+    startPreset()
+
+    downforce = 1000;
+    downforceInput.value = downforce;
+    downforceVal.textContent = downforce;
+
+    globalFriction = 0.25;
+    frictionInput.value = globalFriction;
+    frictionVal.textContent = globalFriction;
+
+    discPersistence = 99;
+    discPersistenceInput.value = discPersistence;
+    discPersistenceVal.textContent = discPersistence;
+
+    let numPoints = 20;
+    let numCascades = 20;
+    let r = W/100;
+
+    for (let j = 0; j < numCascades; j++){
+        for (let i = 0; i < numPoints; i++) {
+            const angle = (i / numPoints) * 2 * Math.PI;
+            const x = r * Math.cos(angle);
+            const y = r * Math.sin(angle);
+            ratio = 0.25 + 0.5*(j + 1)/(numCascades + 1)
+            centerX = W*ratio;
+            centerY = 0.5*H + ratio*0.5*H*Math.cos(4*Math.PI*ratio);
+            color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+            addDisc(centerX + x, centerY + y, {velCurr:{x:0.0001*(W/dt)*x,y:0.0001*(W/dt)*y}, persistence:discPersistence});
+        }
+    }
+
+    runAfterFrames(100, () => {
+        numPoints = 10;
+        numCascades = 50;
+
+        r = 5*W/200;
+        for (let j = 0; j < numCascades; j++){
+            for (let i = 0; i < numPoints; i++) {
+                const angle = (i / numPoints) * 2 * Math.PI;
+                const x = r * Math.cos(angle);
+                const y = r * Math.sin(angle);
+                ratio = 0.25 + 0.5*(j + 1)/(numCascades + 1);
+                centerX = W*ratio;
+                centerY = H - 0.2*H - 0.1*ratio*H*Math.sin(8*Math.PI*ratio);
+                color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
+                addDisc(centerX + x, centerY + y, {velCurr:{x:0.00005*(W/dt)*x,y:0.00005*(W/dt)*y}, persistence:discPersistence});
+            }
+        }
+
+        runAfterFrames(100, endPreset);
+    });
+}
+
+
+// pattern
+////////////////////////////////////////////////////////////////////////////////////////////////
+function pattern(){
+    startPreset()
+
+    dt = 0.01;
+    dtInput.value = dt;
+    dtVal.textContent = dt;
+
+    addDisc(W/2, H/2, {persistence:discPersistence, dragging:true});
+
+    numPoints = 500;
+    for (let i = 0; i < numPoints; i++) {
+        x = W/10;
+        y = (i+1)/(numPoints+2)*H,
+        r = Math.floor(255*(y/H))
+        g = Math.floor(255*(y/H))
+        b = Math.floor(255-255*(y/H))
+        addDisc(x, y, {velCurr:{x:(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    }
+    for (let i = 0; i < numPoints; i++) {
+        x = 9*W/10;
+        y = (i+1)/(numPoints+2)*H,
+        r = Math.floor(255*(y/H))
+        g = Math.floor(255 - 255*(y/H))
+        b = Math.floor(255*(y/H))
+        addDisc(x, y, {velCurr:{x:-(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
+    }
+    runningPreset = false;    
+    preset1.classList.toggle("pressed");
+    preset2.classList.toggle("pressed");
+    preset3.classList.toggle("pressed");
+    preset4.classList.toggle("pressed");
+    preset5.classList.toggle("pressed");
+}
+
+clumps();
+randomPoints();
+
+// tubes();
+//vortex();
+</script>
+</body>
+</html>
