@@ -29,7 +29,12 @@
     .row{display:flex;
          gap:8px;
          margin-bottom:8px}
-    button:active,
+    button:active {
+    background: #1e2a46;           /* slightly lighter or darker */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    transform: translateY(1px);    /* gives a “pressed-in” feel */
+    border-color: rgba(255,255,255,0.12);
+    }
     button.pressed {
     background: #1e2a46;           /* slightly lighter or darker */
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
@@ -992,7 +997,7 @@ canvas.addEventListener('pointerdown', e=>{
             mouseDown = true;
             addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
             spawnInterval = setInterval(() => {
-                if (mouseDown) addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
+                if (mouseDown) addDisc(mouse.x +  rand(-1, 1), mouse.y +  rand(-1, 1), {r:discRadius, color:entityColor, persistence:discPersistence});
             }, 20); // every 100 ms
         }
     }
