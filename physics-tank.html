@@ -843,7 +843,11 @@ function loop(now){
   }
   draw();
   // stats
-  fps = (59/60)*fps + (1/60)*1/Math.max(elapsed,1e-6);
+  if(elapsed > 0){
+    fps = (59/60)*fps + (1/60)*1/Math.max(elapsed,1e-6);
+  } else {
+    fps = 60;
+  }
   document.getElementById('stats').textContent = `discs: ${discs.length} | segments: ${segments.length} | FPS: ${Math.round(fps)}`;
 }
 
