@@ -203,7 +203,7 @@ let velColor = "#ffd166"
 let mouseDown = false;
 let fling = false;
 let repulseRatio = 1.0;
-let attrLen = 0;
+let attrLen = 1;
 let attractionStrength = 1;
 let repLenRatio = 0;
 let vtarget = 0;
@@ -887,7 +887,7 @@ function endPreset(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function clumps(){
     attrLen = 1;
-    attrLenInput.value = repLenRatio;
+    attrLenInput.value = attrLen;
     attrLenVal.textContent = attrLen;
 
     attractionStrength = 1;
@@ -915,7 +915,7 @@ function clumps(){
 
 function clumps2(){
     attrLen = 0.5;
-    attrLenInput.value = repLenRatio;
+    attrLenInput.value = attrLen;
     attrLenVal.textContent = attrLen;
 
     attractionStrength = 10;
@@ -944,7 +944,7 @@ function clumps2(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function ringClumps(){
     attrLen = 1;
-    attrLenInput.value = repLenRatio;
+    attrLenInput.value = attrLen;
     attrLenVal.textContent = attrLen;
 
     attractionStrength = 1;
@@ -973,7 +973,7 @@ function ringClumps(){
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function rings(){
     attrLen = 1;
-    attrLenInput.value = repLenRatio;
+    attrLenInput.value = attrLen;
     attrLenVal.textContent = attrLen;
 
     attractionStrength = 1;
@@ -1026,7 +1026,7 @@ function rings(){
 
 function vortex(){
     attrLen = 2;
-    attrLenInput.value = repLenRatio;
+    attrLenInput.value = attrLen;
     attrLenVal.textContent = attrLen;
 
     attractionStrength = 0.5;
@@ -1074,99 +1074,6 @@ function vortex(){
     // v2target = vtarget*vtarget;
     // vtargetInput.value = vtarget;
     // vtargetVal.textContent = Math.round(100*vtarget)/100;
-}
-
-// cascade
-////////////////////////////////////////////////////////////////////////////////////////////////
-function cascade(){
-    startPreset()
-
-    downforce = 1000;
-    downforceInput.value = downforce;
-    downforceVal.textContent = downforce;
-
-    globalFriction = 0.25;
-    frictionInput.value = globalFriction;
-    frictionVal.textContent = globalFriction;
-
-    discPersistence = 99;
-    discPersistenceInput.value = discPersistence;
-    discPersistenceVal.textContent = discPersistence;
-
-    let numPoints = 20;
-    let numCascades = 20;
-    let r = W/100;
-
-    for (let j = 0; j < numCascades; j++){
-        for (let i = 0; i < numPoints; i++) {
-            const angle = (i / numPoints) * 2 * Math.PI;
-            const x = r * Math.cos(angle);
-            const y = r * Math.sin(angle);
-            ratio = 0.25 + 0.5*(j + 1)/(numCascades + 1)
-            centerX = W*ratio;
-            centerY = 0.5*H + ratio*0.5*H*Math.cos(4*Math.PI*ratio);
-            color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
-            addDisc(centerX + x, centerY + y, {velCurr:{x:0.0001*(W/dt)*x,y:0.0001*(W/dt)*y}, persistence:discPersistence});
-        }
-    }
-
-    runAfterFrames(100, () => {
-        numPoints = 10;
-        numCascades = 50;
-
-        r = 5*W/200;
-        for (let j = 0; j < numCascades; j++){
-            for (let i = 0; i < numPoints; i++) {
-                const angle = (i / numPoints) * 2 * Math.PI;
-                const x = r * Math.cos(angle);
-                const y = r * Math.sin(angle);
-                ratio = 0.25 + 0.5*(j + 1)/(numCascades + 1);
-                centerX = W*ratio;
-                centerY = H - 0.2*H - 0.1*ratio*H*Math.sin(8*Math.PI*ratio);
-                color = "#" + [Math.abs(Math.round(255*x/r)), Math.abs(Math.round(0.5*255*(x+y)/r)), Math.abs(Math.round(0.5*255*(x-y)/r))].map(x => x.toString(16).padStart(2, "0")).join("");
-                addDisc(centerX + x, centerY + y, {velCurr:{x:0.00005*(W/dt)*x,y:0.00005*(W/dt)*y}, persistence:discPersistence});
-            }
-        }
-
-        runAfterFrames(100, endPreset);
-    });
-}
-
-
-// pattern
-////////////////////////////////////////////////////////////////////////////////////////////////
-function pattern(){
-    startPreset()
-
-    dt = 0.01;
-    dtInput.value = dt;
-    dtVal.textContent = dt;
-
-    addDisc(W/2, H/2, {persistence:discPersistence, dragging:true});
-
-    numPoints = 500;
-    for (let i = 0; i < numPoints; i++) {
-        x = W/10;
-        y = (i+1)/(numPoints+2)*H,
-        r = Math.floor(255*(y/H))
-        g = Math.floor(255*(y/H))
-        b = Math.floor(255-255*(y/H))
-        addDisc(x, y, {velCurr:{x:(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
-    }
-    for (let i = 0; i < numPoints; i++) {
-        x = 9*W/10;
-        y = (i+1)/(numPoints+2)*H,
-        r = Math.floor(255*(y/H))
-        g = Math.floor(255 - 255*(y/H))
-        b = Math.floor(255*(y/H))
-        addDisc(x, y, {velCurr:{x:-(W/dt)/2000,y:0}, color:"#" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join(""), persistence:discPersistence});
-    }
-    runningPreset = false;    
-    preset1.classList.toggle("pressed");
-    preset2.classList.toggle("pressed");
-    preset3.classList.toggle("pressed");
-    preset4.classList.toggle("pressed");
-    preset5.classList.toggle("pressed");
 }
 
 clumps();
