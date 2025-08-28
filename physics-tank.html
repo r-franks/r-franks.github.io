@@ -833,6 +833,7 @@ function draw(){
     }
 
 // Loop
+let fps = 60;
 function loop(now){
   requestAnimationFrame(loop);
   const elapsed = (now - last) / 1000;
@@ -842,8 +843,8 @@ function loop(now){
   }
   draw();
   // stats
-  const fps = Math.round(1/Math.max(elapsed,1e-6));
-  document.getElementById('stats').textContent = `discs: ${discs.length} | segments: ${segments.length} | FPS: ${fps}`;
+  fps = (59/60)*fps + (1/60)*1/Math.max(elapsed,1e-6);
+  document.getElementById('stats').textContent = `discs: ${discs.length} | segments: ${segments.length} | FPS: ${Math.round(fps)}`;
 }
 
 requestAnimationFrame(loop);

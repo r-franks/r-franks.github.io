@@ -146,8 +146,8 @@
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <input id="dt" type="range" min="0" max="1" step="0.01" value="0.02">
-        <label>Δt: <span id="dtVal">0.02</span>s</label>
+        <input id="dt" type="range" min="0" max="1" step="0.01" value="0.05">
+        <label>Δt: <span id="dtVal">0.05</span>s</label>
       </div>
 
       <div class="row">
@@ -215,7 +215,7 @@ let fadeCounter = 1;
 let globalFadeOut = 1;
 let discPersistence = 100;
 let trail = false;
-let dt = 0.02;
+let dt = 0.05;
 let last = performance.now();
 let paused = false;
 let hideVelVector = false;
@@ -525,7 +525,6 @@ function draw(){
                     }
                 }
 
-
                 ctx.fillStyle = `rgba(255, 255, 255, 1)`
                 ctx.strokeStyle = `rgba(0, 0, 0, 1)`
                 ctx.beginPath();
@@ -549,6 +548,7 @@ function draw(){
 }
 
 // Loop
+let fps = 60;
 function loop(now){
   requestAnimationFrame(loop);
   const elapsed = (now - last) / 1000;
@@ -558,8 +558,8 @@ function loop(now){
   }
   draw();
   // stats
-  const fps = Math.round(1/Math.max(elapsed,1e-6));
-  document.getElementById('stats').textContent = `discs: ${discs.length} | FPS: ${fps}`;
+  fps = (59/60)*fps + (1/60)*1/Math.max(elapsed,1e-6);
+  document.getElementById('stats').textContent = `discs: ${discs.length} | FPS: ${Math.round(fps)}`;
 }
 
 requestAnimationFrame(loop);
@@ -834,7 +834,7 @@ function startPreset(){
     discs.length = 0;
     ctx.clearRect(0, 0, W, H);
 
-    dt = 0.01;
+    dt = 0.05;
     dtInput.value = dt;
     dtVal.textContent = dt;
 
