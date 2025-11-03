@@ -26,9 +26,16 @@
         box-sizing:border-box}
     h1{font-size:16px;
        margin:4px 0 10px}
+    input[type="color"] {
+    border-radius: 5px;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    }
     .row{display:flex;
          gap:8px;
-         margin-bottom:8px}
+         margin-bottom:8px;
+         align-items: center;}
     button:active {
     background: #1e2a46;           /* slightly lighter or darker */
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
@@ -74,6 +81,42 @@
     box-shadow: 1 1 1 #0b1220;                /* stem disappears */
     background: #202c46;
     }
+    /* color button button */
+    .colorBtn {
+    border-radius: 4px;
+    background: #1a2335;
+    border: 1px solid rgba(255,255,255,0.12);
+    font-family: monospace;
+    font-size: 14px;
+    padding: 6px 6px;
+    box-shadow: 0 4px 0 #0b1220;
+    transition: transform 0.05s, box-shadow 0.05s,
+    }
+
+    /* Press effect */
+    .colorBtn:active,
+    .colorBtn.pressed {
+    transform: translateY(2px);
+    box-shadow: 1 1 1 #0b1220;
+    background: repeating-linear-gradient(
+        90deg,
+        red,
+        orange,
+        yellow,
+        green,
+        cyan,
+        blue,
+        violet,
+        red
+    );
+    background-size: 400%;       /* enough for color variation */
+    background-repeat: repeat-x; /* tile it horizontally */
+    animation: rainbowShift 8s linear infinite;
+    }
+    @keyframes rainbowShift {
+        0%   { background-position: 0% 50%; }
+        100% { background-position: 400% 50%; } /* shift by full width */
+    }
   </style>
 </head>
 <body>
@@ -84,21 +127,21 @@
     <div id="ui">
     <h1 style="display: flex; justify-content: space-between; align-items: center;">
         ⚛️ Physics Tank 🐟
-        <button id="copyBtn" style="background-color: #8561D7;">Copy to 📋</button>
+        <button id="copyBtn" style="background-color: #8561D7;" title="Copy to clipboard">Copy to 📋</button>
     </h1>
       <div class="row">
-        <button id="fling">Fling 🤾</button>
-        <button id="addDisc">Add Disc</button>
-        <button id="clear">Clear Screen</button>
+        <button id="fling" title="Create and fling a new disc">Fling 🤾</button>
+        <button id="entityCancel" title="Delete all discs and segments">End Objects ❌</button>
+        <button id="clearScreen" title="Clear canvas">Wipe All 🧽</button>
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <input id="downforce" type="range" min="0" max="2000" value="0">
+        <input id="downforce" title="Downward gravity strength" type="range" min="0" max="2000" value="0">
         <label>Downforce: <span id="downforceVal">0</span> px/s²</label>
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <input id="grav" type="range" min="0" max="2000" value="500">
+        <input id="grav" title="Strength of gravity between discs" type="range" min="0" max="2000" value="500">
         <label>Gravity: <span id="gravVal">500 px³/ms²</span></label>
       </div>
 
@@ -113,19 +156,20 @@
       </div>
 
       <div class="row">
-        <button id="fade">No trail 🚫</button>  
-        <button id="velvector">No Velocity</button>
-        <input type="color" id="colorPicker" value="#4488ff">
-        <input type="color" id="velColorPicker" value="#ffd166">
+        <button id="fade" title="Discs do not leave trail">No trail 🚫</button>  
+        <button id="velvector" title="Hide velocity vector">No Velocity</button>
+        <input type="color" title="Disc color" id="colorPicker" value="#4488ff">
+        <button id="colorJiggle" title="Jiggle disc fill color" class="colorBtn">🎲</button>  
+        <input type="color" title="Velocity vector color" id="velColorPicker" value="#ffd166">
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <input id="alpha_downscale" type="range" min="1" max="100" step="1" value="100">
+        <input id="alpha_downscale" title="Length of disc trails" type="range" min="1" max="100" step="1" value="100">
         <label>Trail Length: <span id="alphaDownscaleVal">Infinity</span></label>
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <input id="discPersistence" type="range" min="1" max="100" step="1" value="100">
+        <input id="discPersistence" title="Time until discs fade away" type="range" min="1" max="100" step="1" value="100">
         <label>Disc Persistence: <span id="discPersistenceVal">Infinity</span></label>
       </div>
 
@@ -137,7 +181,7 @@
       <div class="row">
         <button id="pause">Pause ⏸️</button>
         <button id="step">Step 👣</button>
-        <button id="fill">Fill 🎨</button>
+        <button id="fill" title="Color-fill discs">Fill 🔴</button>
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
@@ -146,12 +190,12 @@
       </div>
 
       <div class="row">
-        <button id="controls">Show Controls 🎮</button>
-        <button id="Preset #1" class="keyBtn">1</button>
-        <button id="Preset #2" class="keyBtn">2</button>
-        <button id="Preset #3" class="keyBtn">3</button>
-        <button id="Preset #4" class="keyBtn">4</button>
-        <button id="Preset #5" class="keyBtn">5</button>
+        <button id="controls" title="More info about controls and shortcuts">About 🎮</button>
+        <button id="Preset #1" title="Start-up configuration" class="keyBtn">1</button>
+        <button id="Preset #2" title="Tubes" class="keyBtn">2</button>
+        <button id="Preset #3" title="Cascades" class="keyBtn">3</button>
+        <button id="Preset #4" title="Vortices" class="keyBtn">4</button>
+        <button id="Preset #5" title="Fun!" class="keyBtn">5</button>
       </div>
       <div class="stat" id="stats">discs: 0 | FPS: 0</div>
     </div>
@@ -185,6 +229,7 @@ const picker = document.getElementById("colorPicker");
 const velPicker = document.getElementById("velColorPicker");
 let runningPreset = false;
 let entityColor = "#4488ff";
+let jiggleColor = false;
 let velColor = "#ffd166"
 
 // Engine 
@@ -848,7 +893,7 @@ function loop(now){
   } else {
     fps = 60;
   }
-  document.getElementById('stats').textContent = `discs: ${discs.length} | segments: ${segments.length} | FPS: ${Math.round(fps)}`;
+  document.getElementById('stats').textContent = `discs: ${discs.length} | walls: ${segments.length} | FPS: ${Math.round(fps)}`;
 }
 
 requestAnimationFrame(loop);
@@ -868,10 +913,10 @@ velPicker.addEventListener("input", (event) => {
     const color = event.target.value; // hex string like "#1e90ff"
     velColor = color;
 });
-document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾';};
-document.getElementById('addDisc').onclick = ()=> addDisc(rand(100,W-100), rand(100,H-200), {r:discRadius, color: entityColor, persistence:discPersistence});
-document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Velocity 🚀' : 'No Velocity';};
-document.getElementById('clear').onclick = ()=>{ discs.length = 0; segments.length = 0; };
+document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾'; this.title = fling ? 'Continuously create discs' : 'Create and fling a new disc';};
+document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Velocity 🚀' : 'No Velocity'; this.title = hideVelVector ? 'Draw velocity vector' : 'Hide velocity vector';};
+document.getElementById('entityCancel').onclick = ()=>{ discs.length = 0; segments.length = 0; };
+document.getElementById('clearScreen').onclick = ()=>{ ctx.clearRect(0, 0, W, H); };
 document.getElementById('copyBtn').addEventListener('click', async () => {
     try {
         const blob = await new Promise(res => canvas.toBlob(res));
@@ -884,7 +929,7 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
     }
 });
 document.getElementById('controls').addEventListener('click', async () => {
-    alert('1. In "Fling" mode, click+drag elsewhere to create a moving disc\n2. In "Pour" mode, hold mouse down to continuously add discs\n3. Shift+click to spawn disc without velocity\n4. Click+drag disc to move it\n5. Click right mouse and drag to draw walls\n6. Backspace or "Clear Screen" to delete all entities\n7. Tap keys 1-5 or press numbered buttons to activate presets');
+    alert('1. In "Fling" mode, click+drag elsewhere to create a moving disc\n2. In "Pour" mode, hold mouse down to continuously add discs\n3. Shift+click to spawn disc without velocity\n4. Click+drag disc to move it\n5. Click right mouse and drag to draw walls\n6. Backspace or "End objects" to delete all entities\n7. Tap keys 1-5 or press numbered buttons to activate presets');
 });
 
 preset1 = document.getElementById('Preset #1')
@@ -892,15 +937,18 @@ preset2 = document.getElementById('Preset #2')
 preset3 = document.getElementById('Preset #3')
 preset4 = document.getElementById('Preset #4')
 preset5 = document.getElementById('Preset #5')
+colorJiggle = document.getElementById('colorJiggle')
+
 preset1.onclick = ()=>{ if(!runningPreset) defaultStart() };
 preset2.onclick = ()=>{ if(!runningPreset) tubes() };
 preset3.onclick = ()=>{ if(!runningPreset) cascade() };
 preset4.onclick = ()=>{ if(!runningPreset) vortex() };
 preset5.onclick = ()=>{ if(!runningPreset) pattern() };
+colorJiggle.onclick = ()=>{ colorJiggle.classList.toggle("pressed"); jiggleColor=!jiggleColor; };
 
 document.getElementById('pause').onclick = function(){ paused = !paused; this.textContent = paused ? 'Play ▶️' : 'Pause ⏸️'; };
 document.getElementById('step').onclick = ()=>{ if(paused) step(); };
-document.getElementById('fill').onclick = function(){ fill = !fill; this.textContent = fill ? 'No Fill 🪹' : 'Fill 🎨';};
+document.getElementById('fill').onclick = function(){ fill = !fill; this.textContent = fill ? 'No Fill ⭕' : 'Fill 🔴'; this.title = fill ? 'Draw disc shells only' : 'Color-fill discs';};
 
 const gravInput = document.getElementById('grav'); const gravVal = document.getElementById('gravVal');
 gravInput.oninput = ()=>{ gravity = Number(gravInput.value); gravVal.textContent = gravity };
@@ -919,7 +967,7 @@ dtInput.oninput = ()=>{ dt = Number(dtInput.value); dtVal.textContent = dt };
 
 const alphaDownscaleInput = document.getElementById('alpha_downscale'); const alphaDownscaleVal = document.getElementById('alphaDownscaleVal');
 alphaDownscaleInput.oninput = ()=>{ globalFadeRate = Number(alphaDownscaleInput.value); alphaDownscaleVal.textContent = globalFadeRate == 100 ? 'Infinity' : globalFadeRate};
-document.getElementById('fade').onclick = function(){ trail = !trail; this.textContent = trail ? 'No trail 🚫' : 'Trail 🐌'; };
+document.getElementById('fade').onclick = function(){ trail = !trail; this.textContent = trail ? 'No trail 🚫' : 'Trail 🐌'; this.title =  trail ? 'Discs do not leave trails' : 'Discs leave trails';};
 
 const discPersistenceInput = document.getElementById('discPersistence'); const discPersistenceVal = document.getElementById('discPersistenceVal');
 discPersistenceInput.oninput = ()=>{ discPersistence = Number(discPersistenceInput.value); discPersistenceVal.textContent = discPersistence == 100 ? 'Infinity' : discPersistence};
@@ -997,12 +1045,12 @@ canvas.addEventListener('pointerdown', e=>{
             pick.dragOffset = {x: mouse.x - pick.posCurr.x, y: mouse.y - pick.posCurr.y}; 
         }
         else if(e.shiftKey){ 
-            addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
+            addDisc(mouse.x, mouse.y, {r:discRadius, color:getEntityColor(), persistence:discPersistence});
         } else if(!fling){
             mouseDown = true;
-            addDisc(mouse.x, mouse.y, {r:discRadius, color:entityColor, persistence:discPersistence});
+            addDisc(mouse.x, mouse.y, {r:discRadius, color:getEntityColor(), persistence:discPersistence});
             spawnInterval = setInterval(() => {
-                if (mouseDown) addDisc(mouse.x +  rand(-1, 1), mouse.y +  rand(-1, 1), {r:discRadius, color:entityColor, persistence:discPersistence});
+                if (mouseDown) addDisc(mouse.x +  rand(-1, 1), mouse.y +  rand(-1, 1), {r:discRadius, color:getEntityColor(), persistence:discPersistence});
             }, 20); // every 100 ms
         }
     }
@@ -1060,6 +1108,73 @@ function pickDisc(x,y){
         return c;
     }
   }
+
+
+// get entity color
+////////////////////////////////////////////////////////////////////////////////////////////////
+function getEntityColor(){
+    if(jiggleColor){
+        hueJitter = 50;
+        satJitter = 0.2;
+        lightJitter = 0.1;
+
+        // Convert hex → RGB
+        let r = parseInt(entityColor.slice(1, 3), 16) / 255;
+        let g = parseInt(entityColor.slice(3, 5), 16) / 255;
+        let b = parseInt(entityColor.slice(5, 7), 16) / 255;
+
+        // RGB → HSL
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+            h = s = 0; // achromatic
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        // Apply controlled random perturbations
+        h = (h + (Math.random() * 2 - 1) * hueJitter / 360) % 1;
+        s = Math.min(1, Math.max(0, s + (Math.random() * 2 - 1) * satJitter));
+        l = Math.min(1, Math.max(0, l + (Math.random() * 2 - 1) * lightJitter));
+
+        // HSL → RGB
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+        let r2, g2, b2;
+        if (s === 0) {
+            r2 = g2 = b2 = l; // gray
+        } else {
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r2 = hue2rgb(p, q, h + 1/3);
+            g2 = hue2rgb(p, q, h);
+            b2 = hue2rgb(p, q, h - 1/3);
+        }
+
+        // Convert back to hex
+        const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
+        return `#${toHex(r2)}${toHex(g2)}${toHex(b2)}`;
+    }else{
+        return entityColor;
+    }
+
+}
+
 
 // default starting arrangement
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1183,7 +1298,7 @@ function startPreset(){
     discPersistenceVal.textContent = discPersistence;
 
     fill = false;
-    document.getElementById('fill').textContent = 'Fill 🎨';
+    document.getElementById('fill').textContent = 'Fill 🔴';
 
     paused = false;
     document.getElementById('pause').textContent = 'Pause ⏸️';
@@ -1207,7 +1322,7 @@ function tubes(){
     startPreset()
 
     fill = true;
-    document.getElementById('fill').textContent = 'No Fill 🪹';
+    document.getElementById('fill').textContent = 'No Fill ⭕';
 
     addDisc(W/10, H/9, {r:discRadius, velCurr:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
     addDisc(W/10, 2*H/9, {r:discRadius, velCurr:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
@@ -1218,7 +1333,7 @@ function tubes(){
         discs.length = 0;
 
         fill = false;
-        document.getElementById('fill').textContent = 'Fill 🎨';
+        document.getElementById('fill').textContent = 'Fill 🔴';
 
         addDisc(W/10, 5*H/9, {r:discRadius, velCurr:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
         addDisc(W/10, 6*H/9, {r:discRadius, velCurr:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
