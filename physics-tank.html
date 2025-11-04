@@ -1525,6 +1525,40 @@ function pattern(){
     preset4.classList.toggle("pressed");
     preset5.classList.toggle("pressed");
 }
+
+// Handle global paste (Ctrl+V anywhere)
+document.addEventListener('paste', async (e) => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const blob = item.getAsFile();
+      const img = new Image();
+
+      img.onload = () => {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Optionally scale to fit canvas
+        const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+        const x = (canvas.width - img.width * scale) / 2;
+        const y = (canvas.height - img.height * scale) / 2;
+        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+        // Clean up object URL
+        URL.revokeObjectURL(img.src);
+      };
+
+      img.src = URL.createObjectURL(blob);
+
+      // Prevent default so it doesn’t paste the image into any text input
+      e.preventDefault();
+      break;
+    }
+  }
+});
+
 defaultStart();
 
 // tubes();
