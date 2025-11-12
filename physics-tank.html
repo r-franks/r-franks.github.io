@@ -928,6 +928,7 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
         console.error('Failed to copy image:', err);
     }
 });
+
 document.getElementById('controls').addEventListener('click', async () => {
     alert('1. In "Fling" mode, click+drag elsewhere to create a moving disc\n2. In "Pour" mode, hold mouse down to continuously add discs\n3. Shift+click to spawn disc without velocity\n4. Click+drag disc to move it\n5. Click right mouse and drag to draw walls\n6. Backspace or "End objects" to delete all entities\n7. Ctrl+V to paste images into the canvas\n8. Tap keys 1-5 or press numbered buttons to activate presets');
 });
@@ -1050,7 +1051,8 @@ canvas.addEventListener('pointerdown', e=>{
             mouseDown = true;
             addDisc(mouse.x, mouse.y, {r:discRadius, color:getEntityColor(), persistence:discPersistence});
             spawnInterval = setInterval(() => {
-                if (mouseDown) addDisc(mouse.x +  rand(-1, 1), mouse.y +  rand(-1, 1), {r:discRadius, color:getEntityColor(), persistence:discPersistence});
+                theta = rand(0, 2*Math.PI);
+                if (mouseDown) addDisc(mouse.x + Math.cos(theta), mouse.y + Math.sin(theta), {r:discRadius, color:getEntityColor(), persistence:discPersistence});
             }, 20); // every 100 ms
         }
     }
@@ -1537,9 +1539,6 @@ document.addEventListener('paste', async (e) => {
       const img = new Image();
 
       img.onload = () => {
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         // Optionally scale to fit canvas
         const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
         const x = (canvas.width - img.width * scale) / 2;
