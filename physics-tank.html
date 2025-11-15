@@ -1286,10 +1286,11 @@ function startPreset(){
 
     hideVelVector = true;
     document.getElementById('velvector').textContent = 'Velocity 🚀';
+    document.getElementById('velvector').title = 'Draw velocity vector';
 
     trail = true;
     document.getElementById('fade').textContent = 'No trail 🚫';
-
+    document.getElementById('fade').title = 'Discs do not leave trails';
 
     globalFadeRate = 100;
     alphaDownscaleInput.value = globalFadeRate;
@@ -1301,6 +1302,7 @@ function startPreset(){
 
     fill = false;
     document.getElementById('fill').textContent = 'Fill 🔴';
+    document.getElementById('fill').title = 'Color-fill discs';
 
     paused = false;
     document.getElementById('pause').textContent = 'Pause ⏸️';
@@ -1325,6 +1327,7 @@ function tubes(){
 
     fill = true;
     document.getElementById('fill').textContent = 'No Fill ⭕';
+    document.getElementById('fill').title = 'Draw disc shells only';
 
     addDisc(W/10, H/9, {r:discRadius, velCurr:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
     addDisc(W/10, 2*H/9, {r:discRadius, velCurr:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
@@ -1336,6 +1339,7 @@ function tubes(){
 
         fill = false;
         document.getElementById('fill').textContent = 'Fill 🔴';
+        document.getElementById('fill').title = 'Color-fill discs'
 
         addDisc(W/10, 5*H/9, {r:discRadius, velCurr:{x:(1/16)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});
         addDisc(W/10, 6*H/9, {r:discRadius, velCurr:{x:(1/8)*(W/dt)/60, y:0}, color:entityColor, persistence:discPersistence});

@@ -85,12 +85,12 @@
     <div id="ui">
     <h1 style="display: flex; justify-content: space-between; align-items: center;">
         🦠 Cell Organization 🌀
-        <button id="copyBtn" style="background-color: #8561D7;">Copy to 📋</button>
+        <button id="copyBtn" style="background-color: #8561D7;" title="Copy to clipboard">Copy to 📋</button>
     </h1>
       <div class="row">
-        <button id="fling">Fling 🤾</button>
-        <button id="addDisc">Add Disc</button>
-        <button id="clear">Clear Screen</button>
+        <button id="fling" title="Create and fling a new disc">Fling 🤾</button>
+        <button id="entityCancel" title="Delete all discs">End Objects ❌</button>
+        <button id="clearScreen" title="Clear canvas">Wipe All 🧽</button>
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
@@ -125,8 +125,8 @@
 
       <div class="row">
         <button id="fade">Trail 🐌</button>  
-        <button id="velvector">No Velocity</button>
-        <input type="color" id="velColorPicker" value="#ffd166">
+        <button id="velvector" title="Hide velocity vector">No Velocity</button>
+        <input type="color" id="velColorPicker" title="Velocity vector color" value="#ffd166">
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
@@ -538,7 +538,7 @@ function draw(){
                 if(!hideVelVector){
                     ctx.beginPath();
                     ctx.moveTo(ghostPixelPosX, ghostPixelPosY);
-                    ctx.lineTo(ghostPixelPosX + pixelVelX, ghostPixelPosY + pixelVelY);
+                    ctx.lineTo(ghostPixelPosX + 0.5*pixelVelX, ghostPixelPosY + 0.5*pixelVelY);
                     ctx.strokeStyle=velColor;
                     ctx.stroke();
                 }
@@ -585,11 +585,11 @@ velPicker.addEventListener("input", (event) => {
     const color = event.target.value; // hex string like "#1e90ff"
     velColor = color;
 });
-document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾';};
-document.getElementById('addDisc').onclick = ()=> addDisc(rand(100,W-100), rand(100,H-200), {mass: discMass, color: entityColor, persistence:discPersistence});
-document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Velocity 🚀' : 'No Velocity';};
-document.getElementById('fill').onclick = function(){ fill = !fill; this.textContent = fill ? 'Hide Forces ∘' : 'Show Forces ⚛️';};
-document.getElementById('clear').onclick = ()=>{ discs.length = 0;};
+document.getElementById('fling').onclick = function(){ fling = !fling; this.textContent = fling ? 'Pour 🫗' : 'Fling 🤾'; this.title = fling ? 'Continuously create discs' : 'Create and fling a new disc';};
+document.getElementById('velvector').onclick = function(){ hideVelVector = !hideVelVector; this.textContent = hideVelVector ? 'Velocity 🚀' : 'No Velocity'; this.title = hideVelVector ? 'Draw velocity vector' : 'Hide velocity vector';};
+document.getElementById('fill').onclick = function(){ fill = !fill; this.textContent = fill ? 'Hide Forces ⚛️' : 'Show Forces ⚛️'; this.title = fill ? 'Hide forces' : 'Show forces';};
+document.getElementById('entityCancel').onclick = ()=>{ discs.length = 0;};
+document.getElementById('clearScreen').onclick = ()=>{ ctx.clearRect(0, 0, W, H); };
 document.getElementById('copyBtn').addEventListener('click', async () => {
     try {
         const blob = await new Promise(res => canvas.toBlob(res));
@@ -737,7 +737,8 @@ canvas.addEventListener('pointerdown', e=>{
             addDisc(trueX, trueY, {mass: discMass, persistence:discPersistence});
             spawnInterval = setInterval(() => {
                 jitter = unitToPixelRatio;
-                if (mouseDown) addDisc(trueX + rand(-jitter, jitter), trueY + rand(-jitter, jitter), {mass: discMass, persistence:discPersistence});
+                theta = rand(0, 2*Math.PI);
+                if (mouseDown) addDisc(trueX + jitter*Math.cos(theta), trueY + jitter*Math.sin(theta), {mass: discMass, persistence:discPersistence});
             }, 20); // every 100 ms
         }
     }
@@ -771,10 +772,8 @@ canvas.addEventListener('pointerup', e=>{
         trueY = unitToPixelRatio * mouse.y;
         const dx = trueX - mouse.start.x;
         const dy = trueY - mouse.start.y;
-        if(Math.hypot(dx, dy) > 6/unitToPixelRatio){ // fling create
-            console.log("fling");
+        if(Math.hypot(dx, dy) > 6*unitToPixelRatio){ // fling create
             const c = addDisc(mouse.start.x, mouse.start.y, {mass: discMass, persistence:discPersistence});
-            console.log(dx, dy);
             c.velCurr.x = dx; 
             c.velCurr.y = dy;
             c.velNext.x = dx; 
@@ -802,6 +801,36 @@ function pickDisc(x,y){
     }
   }
 }
+
+// Handle global paste (Ctrl+V anywhere)
+document.addEventListener('paste', async (e) => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const blob = item.getAsFile();
+      const img = new Image();
+
+      img.onload = () => {
+        // Optionally scale to fit canvas
+        const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+        const x = (canvas.width - img.width * scale) / 2;
+        const y = (canvas.height - img.height * scale) / 2;
+        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+        // Clean up object URL
+        URL.revokeObjectURL(img.src);
+      };
+
+      img.src = URL.createObjectURL(blob);
+
+      // Prevent default so it doesn’t paste the image into any text input
+      e.preventDefault();
+      break;
+    }
+  }
+});
 
 // default starting arrangement
 ////////////////////////////////////////////////////////////////////////////////////////////////
